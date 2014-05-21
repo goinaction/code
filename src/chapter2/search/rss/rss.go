@@ -72,9 +72,7 @@ func Retrieve(uri string) (*Document, error) {
 	}
 
 	// Close the response once we return from the function.
-	defer func() {
-		resp.Body.Close()
-	}()
+	defer resp.Body.Close()
 
 	// Unmarshal the document into our struct type.
 	document := &Document{}

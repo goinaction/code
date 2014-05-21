@@ -44,7 +44,7 @@ func main() {
 
 // find pulls down each feed and searches for the results.
 func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchResult) {
-	// Make sure each find results a result.
+	// Make sure each find returns a result.
 	var err error
 	defer func() {
 		if err != nil {
@@ -55,16 +55,14 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 	log.Printf("Search Feed Site[%s] For Uri[%s]\n", site.Name, site.Uri)
 
 	// Retrieve the RSS feed document.
-	var document *rss.Document
-	document, err = rss.Retrieve(site.Uri)
+	document, err := rss.Retrieve(site.Uri)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
 	}
 
 	// Search the document for the search term.
-	var searchResults []rss.SearchResult
-	searchResults, err = rss.Search(document, searchTerm)
+	searchResults, err := rss.Search(document, searchTerm)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
