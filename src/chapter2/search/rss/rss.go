@@ -55,7 +55,7 @@ type (
 	// SearchResult contains the result of a search.
 	SearchResult struct {
 		Field    string
-		Document *Item
+		Document Item
 	}
 )
 
@@ -75,7 +75,7 @@ func Retrieve(uri string) (*Document, error) {
 	defer resp.Body.Close()
 
 	// Unmarshal the document into our struct type.
-	document := &Document{}
+	var document Document
 	err = xml.NewDecoder(resp.Body).Decode(document)
 	if err != nil {
 		return nil, err
@@ -84,14 +84,14 @@ func Retrieve(uri string) (*Document, error) {
 	// Save the uri we used to retrieve this document.
 	document.Uri = uri
 
-	return document, err
+	return &document, err
 }
 
 // Search looks at the document for the specified search term.
 func Search(document *Document, searchTerm string) ([]SearchResult, error) {
 	var searchResults []SearchResult
 
-	for index, item := range document.Channel.Item {
+	for _, item := range document.Channel.Item {
 		// Check the title for the search term.
 		matched, err := regexp.MatchString(searchTerm, item.Title)
 		if err != nil {
@@ -102,7 +102,7 @@ func Search(document *Document, searchTerm string) ([]SearchResult, error) {
 		if matched {
 			searchResults = append(searchResults, SearchResult{
 				Field:    "Title",
-				Document: &document.Channel.Item[index],
+				Document: item,
 			})
 		}
 
@@ -116,7 +116,7 @@ func Search(document *Document, searchTerm string) ([]SearchResult, error) {
 		if matched {
 			searchResults = append(searchResults, SearchResult{
 				Field:    "Description",
-				Document: &document.Channel.Item[index],
+				Document: item,
 			})
 		}
 	}
