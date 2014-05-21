@@ -7,6 +7,7 @@ import (
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
+// main is the entry point for the program.
 func main() {
 	// Search term we are looking for.
 	searchTerm := "president"
@@ -54,8 +55,8 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 	log.Printf("Search Feed Site[%s] For Uri[%s]\n", site.Name, site.Uri)
 
 	// Retrieve the RSS feed document.
-	var rssDocument *rss.RSSDocument
-	rssDocument, err = rss.Retrieve(site.Uri)
+	var document *rss.Document
+	document, err = rss.Retrieve(site.Uri)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
@@ -63,7 +64,7 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 
 	// Search the document for the search term.
 	var searchResults []rss.SearchResult
-	searchResults, err = rss.Search(rssDocument, searchTerm)
+	searchResults, err = rss.Search(document, searchTerm)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return

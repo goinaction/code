@@ -1,7 +1,3 @@
-// Copyright 2013. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 package rss
 
 import (
@@ -12,8 +8,8 @@ import (
 )
 
 type (
-	// RSSItem defines the fields associated with the item tag in the buoy RSS document.
-	RSSItem struct {
+	// Item defines the fields associated with the item tag in the rss document.
+	Item struct {
 		XMLName     xml.Name `xml:"item"`
 		PubDate     string   `xml:"pubDate"`
 		Title       string   `xml:"title"`
@@ -23,34 +19,34 @@ type (
 		GeoRssPoint string   `xml:"georss:point"`
 	}
 
-	// RSSImage defines the fields associated with the image tag in the buoy RSS document.
-	RSSImage struct {
+	// Image defines the fields associated with the image tag in the rss document.
+	Image struct {
 		XMLName xml.Name `xml:"image"`
 		Url     string   `xml:"url"`
 		Title   string   `xml:"title"`
 		Link    string   `xml:"link"`
 	}
 
-	// RSSChannel defines the fields associated with the channel tag in the buoy RSS document.
-	RSSChannel struct {
-		XMLName        xml.Name  `xml:"channel"`
-		Title          string    `xml:"title"`
-		Description    string    `xml:"description"`
-		Link           string    `xml:"link"`
-		PubDate        string    `xml:"pubDate"`
-		LastBuildDate  string    `xml:"lastBuildDate"`
-		TTL            string    `xml:"ttl"`
-		Language       string    `xml:"language"`
-		ManagingEditor string    `xml:"managingEditor"`
-		WebMaster      string    `xml:"webMaster"`
-		Image          RSSImage  `xml:"image"`
-		Item           []RSSItem `xml:"item"`
+	// Channel defines the fields associated with the channel tag in the rss document.
+	Channel struct {
+		XMLName        xml.Name `xml:"channel"`
+		Title          string   `xml:"title"`
+		Description    string   `xml:"description"`
+		Link           string   `xml:"link"`
+		PubDate        string   `xml:"pubDate"`
+		LastBuildDate  string   `xml:"lastBuildDate"`
+		TTL            string   `xml:"ttl"`
+		Language       string   `xml:"language"`
+		ManagingEditor string   `xml:"managingEditor"`
+		WebMaster      string   `xml:"webMaster"`
+		Image          Image    `xml:"image"`
+		Item           []Item   `xml:"item"`
 	}
 
-	// RSSDocument defines the fields associated with the buoy RSS document.
-	RSSDocument struct {
-		XMLName xml.Name   `xml:"rss"`
-		Channel RSSChannel `xml:"channel"`
+	// Document defines the fields associated with the rss document.
+	Document struct {
+		XMLName xml.Name `xml:"rss"`
+		Channel Channel  `xml:"channel"`
 		Uri     string
 	}
 )
@@ -59,64 +55,70 @@ type (
 	// SearchResult contains the result of a search.
 	SearchResult struct {
 		Field    string
-		Document *RSSItem
+		Document *Item
 	}
 )
 
-// Retrieve performs a HTTP Get request for the RSS feed and unmarshals the results.
-func Retrieve(uri string) (*RSSDocument, error) {
+// Retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
+func Retrieve(uri string) (*Document, error) {
 	if uri == "" {
 		return nil, fmt.Errorf("No RSS Feed Uri Provided")
 	}
 
+	// Retrieve the rss feed document from the web.
 	resp, err := http.Get(uri)
 	if err != nil {
 		return nil, err
 	}
 
+	// Close the response once we return from the function.
 	defer func() {
 		resp.Body.Close()
 	}()
 
-	rssDocument := &RSSDocument{}
-	err = xml.NewDecoder(resp.Body).Decode(rssDocument)
+	// Unmarshal the document into our struct type.
+	document := &Document{}
+	err = xml.NewDecoder(resp.Body).Decode(document)
 	if err != nil {
 		return nil, err
 	}
 
-	rssDocument.Uri = uri
+	// Save the uri we used to retrieve this document.
+	document.Uri = uri
 
-	return rssDocument, err
+	return document, err
 }
 
 // Search looks at the document for the specified search term.
-func Search(rssDocument *RSSDocument, searchTerm string) ([]SearchResult, error) {
+func Search(document *Document, searchTerm string) ([]SearchResult, error) {
 	var searchResults []SearchResult
 
-	for index, rssItem := range rssDocument.Channel.Item {
-		// Check the title
-		matched, err := regexp.MatchString(searchTerm, rssItem.Title)
+	for index, item := range document.Channel.Item {
+		// Check the title for the search term.
+		matched, err := regexp.MatchString(searchTerm, item.Title)
 		if err != nil {
 			return nil, err
 		}
 
+		// If we found as match save the result.
 		if matched {
 			searchResults = append(searchResults, SearchResult{
 				Field:    "Title",
-				Document: &rssDocument.Channel.Item[index],
+				Document: &document.Channel.Item[index],
 			})
 		}
 
-		// Check the description
-		matched, err = regexp.MatchString(searchTerm, rssItem.Description)
+		// Check the description for the search term.
+		matched, err = regexp.MatchString(searchTerm, item.Description)
 		if err != nil {
 			return nil, err
 		}
 
+		// If we found as match save the result.
 		if matched {
 			searchResults = append(searchResults, SearchResult{
 				Field:    "Description",
-				Document: &rssDocument.Channel.Item[index],
+				Document: &document.Channel.Item[index],
 			})
 		}
 	}
