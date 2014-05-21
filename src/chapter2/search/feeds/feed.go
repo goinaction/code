@@ -19,25 +19,24 @@ type (
 )
 
 // Load retrieves and unmarshals the data for the program.
-func Load() ([]Site, error) {
+func Load(sites *[]Site) error {
 	// Get the current directory we are running inside.
 	pwd, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Read the entire file.
 	data, err := ioutil.ReadFile(pwd + "/" + dataFile)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Unmarshal the json document into a slice of sites.
-	var sites []Site
-	err = json.Unmarshal(data, &sites)
+	err = json.Unmarshal(data, sites)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return sites, nil
+	return nil
 }

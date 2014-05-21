@@ -13,8 +13,8 @@ func main() {
 	searchTerm := "president"
 
 	// Load the feeds for the data file.
-	log.Printf("Loading site feed.\n")
-	sites, err := feeds.Load()
+	var sites []feeds.Site
+	err := feeds.Load(&sites)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,7 +60,8 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 	}
 
 	// Search the document for the search term.
-	searchResults, err := rss.Search(document, searchTerm)
+	var searchResults []rss.SearchResult
+	err = rss.Search(document, searchTerm, &searchResults)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
