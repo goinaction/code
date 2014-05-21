@@ -111,7 +111,7 @@ func Search(document Document, searchTerm string) ([]SearchResult, error) {
 			return nil, err
 		}
 
-		// If we found as match save the result.
+		// If we found a match so save the result.
 		if matched {
 			searchResults = append(searchResults, SearchResult{
 				Field:    "Description",

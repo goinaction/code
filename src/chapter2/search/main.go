@@ -21,7 +21,6 @@ func main() {
 
 	// Perpare the slice of results and the channel to
 	// retrieve the results on.
-	var results []rss.SearchResult
 	captureResults := make(chan []rss.SearchResult)
 
 	// Launch goroutines to find us our results.
@@ -34,12 +33,10 @@ func main() {
 		select {
 		case findResults := <-captureResults:
 			for _, result := range findResults {
-				results = append(results, result)
+				display(result)
 			}
 		}
 	}
-
-	display(results)
 }
 
 // find pulls down each feed and searches for the results.
@@ -74,13 +71,11 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 }
 
 // display logs the results of the serach to the console.
-func display(results []rss.SearchResult) {
-	for _, result := range results {
-		switch result.Field {
-		case "Title":
-			log.Printf("Title:\n%s\n\n", result.Document.Title)
-		case "Description":
-			log.Printf("Description:\n%s\n\n", result.Document.Description)
-		}
+func display(result rss.SearchResult) {
+	switch result.Field {
+	case "Title":
+		log.Printf("Title:\n%s\n\n", result.Document.Title)
+	case "Description":
+		log.Printf("Description:\n%s\n\n", result.Document.Description)
 	}
 }
