@@ -87,17 +87,19 @@ func Retrieve(uri string, document *Document) error {
 }
 
 // Search looks at the document for the specified search term.
-func Search(document Document, searchTerm string, searchResults *[]SearchResult) error {
+func Search(document Document, searchTerm string) ([]SearchResult, error) {
+	var searchResults []SearchResult
+
 	for _, item := range document.Channel.Item {
 		// Check the title for the search term.
 		matched, err := regexp.MatchString(searchTerm, item.Title)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		// If we found as match save the result.
+		// If we found a match save the result.
 		if matched {
-			*searchResults = append(*searchResults, SearchResult{
+			searchResults = append(searchResults, SearchResult{
 				Field:    "Title",
 				Document: item,
 			})
@@ -106,17 +108,17 @@ func Search(document Document, searchTerm string, searchResults *[]SearchResult)
 		// Check the description for the search term.
 		matched, err = regexp.MatchString(searchTerm, item.Description)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
-		// If we found a match so save the result.
+		// If we found a match save the result.
 		if matched {
-			*searchResults = append(*searchResults, SearchResult{
+			searchResults = append(searchResults, SearchResult{
 				Field:    "Description",
 				Document: item,
 			})
 		}
 	}
 
-	return nil
+	return searchResults, nil
 }

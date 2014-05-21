@@ -60,8 +60,7 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 	}
 
 	// Search the document for the search term.
-	var searchResults []rss.SearchResult
-	err = rss.Search(document, searchTerm, &searchResults)
+	searchResults, err := rss.Search(document, searchTerm)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
