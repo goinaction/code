@@ -60,34 +60,35 @@ type (
 )
 
 // Retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func Retrieve(uri string, document *Document) error {
+func Retrieve(uri string) (*Document, error) {
 	if uri == "" {
-		return errors.New("No RSS Feed Uri Provided")
+		return nil, errors.New("No RSS Feed Uri Provided")
 	}
 
 	// Retrieve the rss feed document from the web.
 	resp, err := http.Get(uri)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Close the response once we return from the function.
 	defer resp.Body.Close()
 
 	// Unmarshal the document into our struct type.
-	err = xml.NewDecoder(resp.Body).Decode(document)
+	var document Document
+	err = xml.NewDecoder(resp.Body).Decode(&document)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Save the uri we used to retrieve this document.
 	document.Uri = uri
 
-	return nil
+	return &document, nil
 }
 
 // Search looks at the document for the specified search term.
-func Search(document Document, searchTerm string) ([]SearchResult, error) {
+func Search(document *Document, searchTerm string) ([]SearchResult, error) {
 	var searchResults []SearchResult
 
 	for _, item := range document.Channel.Item {
