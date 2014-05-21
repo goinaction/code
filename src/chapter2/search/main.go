@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"sample/search/feeds"
-	"sample/search/rss"
+	"github.com/goinaction/code/src/chapter2/search/feeds"
+	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
 func main() {
