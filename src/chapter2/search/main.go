@@ -55,7 +55,8 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 	log.Printf("Search Feed Site[%s] For Uri[%s]\n", site.Name, site.Uri)
 
 	// Retrieve the RSS feed document.
-	document, err := rss.Retrieve(site.Uri)
+	var document rss.Document
+	err = rss.Retrieve(site.Uri, &document)
 	if err != nil {
 		log.Printf("%s : %s", site.Uri, err)
 		return
