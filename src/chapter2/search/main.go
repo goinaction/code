@@ -13,8 +13,7 @@ func main() {
 	searchTerm := "president"
 
 	// Load the feeds for the data file.
-	var sites []feeds.Site
-	err := feeds.Load(&sites)
+	sites, err := feeds.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
