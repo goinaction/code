@@ -32,7 +32,7 @@ func main() {
 		select {
 		case findResults := <-captureResults:
 			for _, result := range findResults {
-				display(result)
+				display(&result)
 			}
 		}
 	}
@@ -69,7 +69,7 @@ func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchRe
 }
 
 // display logs the results of the serach to the console.
-func display(result rss.SearchResult) {
+func display(result *rss.SearchResult) {
 	switch result.Field {
 	case "Title":
 		log.Printf("Title:\n%s\n\n", result.Document.Title)
