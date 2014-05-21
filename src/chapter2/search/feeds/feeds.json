@@ -1,0 +1,150 @@
+[
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1001"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1008"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1006"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1007"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1057"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1021"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1012"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=1003"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=2"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=3"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=5"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=13"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=46"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=7"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=10"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=39"
+},
+{
+	"site" : "npr",
+	"link" : "http://www.npr.org/rss/rss.php?id=43"
+},
+{
+	"site" : "bbci",
+	"link" : "http://feeds.bbci.co.uk/news/rss.xml"
+},
+{
+	"site" : "bbci",
+	"link" : "http://feeds.bbci.co.uk/news/business/rss.xml"
+},
+{
+	"site" : "bbci",
+	"link" : "http://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_topstories.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_world.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_us.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_allpolitics.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_crime.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_tech.rss"
+},
+{
+	"site" : "cnn",
+	"link" : "http://rss.cnn.com/rss/cnn_health.rss"
+},
+{
+	"site" : "foxnews",
+	"link" : "http://rss.cnn.com/rss/cnn_topstories.rss"
+},
+{
+	"site" : "foxnews",
+	"link" : "http://feeds.foxnews.com/foxnews/opinion?format=xml"
+},
+{
+	"site" : "foxnews",
+	"link" : "http://feeds.foxnews.com/foxnews/politics?format=xml"
+},
+{
+	"site" : "foxnews",
+	"link" : "http://feeds.foxnews.com/foxnews/national?format=xml"
+},
+{
+	"site" : "foxnews",
+	"link" : "http://feeds.foxnews.com/foxnews/world?format=xml"
+},
+{
+	"site" : "nbcnews",
+	"link" : "http://feeds.nbcnews.com/feeds/topstories"
+},
+{
+	"site" : "nbcnews",
+	"link" : "http://feeds.nbcnews.com/feeds/usnews"
+},
+{
+	"site" : "nbcnews",
+	"link" : "http://rss.msnbc.msn.com/id/21491043/device/rss/rss.xml"
+},
+{
+	"site" : "nbcnews",
+	"link" : "http://rss.msnbc.msn.com/id/21491571/device/rss/rss.xml"
+},
+{
+	"site" : "nbcnews",
+	"link" : "http://rss.msnbc.msn.com/id/28180066/device/rss/rss.xml"
+}
+]

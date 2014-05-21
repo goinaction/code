@@ -1,0 +1,86 @@
+package main
+
+import (
+	"log"
+
+	"sample/search/feeds"
+	"sample/search/rss"
+)
+
+func main() {
+	// Search term we are looking for.
+	searchTerm := "president"
+
+	// Load the feeds for the data file.
+	log.Printf("Loading site feed.\n")
+	sites, err := feeds.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Perpare the slice of results and the channel to
+	// retrieve the results on.
+	var results []rss.SearchResult
+	captureResults := make(chan []rss.SearchResult)
+
+	// Launch goroutines to find us our results.
+	for _, site := range sites {
+		go find(searchTerm, site, captureResults)
+	}
+
+	// Wait for the result from each goroutine
+	for site := 0; site < len(sites); site++ {
+		select {
+		case findResults := <-captureResults:
+			for _, result := range findResults {
+				results = append(results, result)
+			}
+		}
+	}
+
+	display(results)
+}
+
+// find pulls down each feed and searches for the results.
+func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchResult) {
+	// Make sure each find results a result.
+	var err error
+	defer func() {
+		if err != nil {
+			captureResults <- nil
+		}
+	}()
+
+	log.Printf("Search Feed Site[%s] For Uri[%s]\n", site.Name, site.Uri)
+
+	// Retrieve the RSS feed document.
+	var rssDocument *rss.RSSDocument
+	rssDocument, err = rss.Retrieve(site.Uri)
+	if err != nil {
+		log.Printf("%s : %s", site.Uri, err)
+		return
+	}
+
+	// Search the document for the search term.
+	var searchResults []rss.SearchResult
+	searchResults, err = rss.Search(rssDocument, searchTerm)
+	if err != nil {
+		log.Printf("%s : %s", site.Uri, err)
+		return
+	}
+
+	// Write the results to the channel.
+	captureResults <- searchResults
+}
+
+// display logs the results of the serach to the console.
+func display(results []rss.SearchResult) {
+	for _, result := range results {
+		switch result.Field {
+		case "Title":
+			log.Printf("Title:\n%s\n\n", result.Document.Title)
+		case "Description":
+			log.Printf("Description:\n%s\n\n", result.Document.Description)
+		}
+	}
+}
