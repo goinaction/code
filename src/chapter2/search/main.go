@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// Launch a goroutine so we can shutdown the program
-	// once the last feed reports it's findings.
+	// once the last feed sends its results.
 	go func() {
 		// Wait for everything to be processed.
 		waitGroup.Wait()
