@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/goinaction/code/src/chapter2/search/data"
-	"github.com/goinaction/code/src/chapter2/search/feed"
+	search "github.com/goinaction/code/src/chapter2/search/feed"
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
@@ -21,29 +21,29 @@ func main() {
 	}
 
 	// Start the display routine.
-	results := feed.Display()
+	results := search.Display()
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(len(feeds))
 
 	// Launch a goroutine for each feed to find the results.
-	for _, data := range feeds {
-		var matcher feed.Matcher
+	for _, feed := range feeds {
+		var matcher search.Matcher
 
 		// Create the right type of matcher for this search.
-		switch data.Type {
+		switch feed.Type {
 		case "rss":
-			matcher = rss.NewMatcher(data)
+			matcher = rss.NewMatcher(feed)
 
 		default:
-			log.Fatalln("Invalid Type")
+			log.Fatalln("Invalid Feed Type")
 		}
 
 		// Launch the goroutine to perform the search.
 		go func() {
 			defer waitGroup.Done()
-			feed.Search(matcher, searchTerm, results)
+			search.Search(matcher, searchTerm, results)
 		}()
 	}
 
