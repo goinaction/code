@@ -1,4 +1,4 @@
-package feeds
+package data
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	dataFile = "feeds/feeds.json"
+	dataFile = "data/data.json"
 )
 
 type (

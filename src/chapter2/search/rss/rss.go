@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/goinaction/code/src/chapter2/search/feeds"
-	"github.com/goinaction/code/src/chapter2/search/find"
+	"github.com/goinaction/code/src/chapter2/search/data"
+	"github.com/goinaction/code/src/chapter2/search/feed"
 )
 
 type (
@@ -57,20 +57,20 @@ type (
 type (
 	// Implements the Matcher interface.
 	Feed struct {
-		Site *feeds.Site
+		Site *data.Site
 	}
 )
 
 // New creates a value of Feed for use.
-func New(site feeds.Site) *Feed {
+func New(site data.Site) *Feed {
 	return &Feed{
 		Site: &site,
 	}
 }
 
 // Match looks at the document for the specified search term.
-func (s *Feed) Match(searchTerm string) ([]find.Result, error) {
-	var results []find.Result
+func (s *Feed) Match(searchTerm string) ([]feed.Result, error) {
+	var results []feed.Result
 
 	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", s.Site.Type, s.Site.Name, s.Site.Uri)
 
@@ -89,7 +89,7 @@ func (s *Feed) Match(searchTerm string) ([]find.Result, error) {
 
 		// If we found a match save the result.
 		if matched {
-			results = append(results, find.Result{
+			results = append(results, feed.Result{
 				Field:   "Title",
 				Content: item.Title,
 			})
@@ -103,7 +103,7 @@ func (s *Feed) Match(searchTerm string) ([]find.Result, error) {
 
 		// If we found a match save the result.
 		if matched {
-			results = append(results, find.Result{
+			results = append(results, feed.Result{
 				Field:   "Description",
 				Content: item.Description,
 			})

@@ -1,4 +1,4 @@
-package find
+package feed
 
 import (
 	"log"
@@ -19,7 +19,7 @@ type (
 )
 
 // Search pulls down each feed looking for the search term.
-func Search(matcher Matcher, searchTerm string, result chan Result, waitGroup *sync.WaitGroup) {
+func Search(matcher Matcher, searchTerm string, results chan Result, waitGroup *sync.WaitGroup) {
 	// Call done so we can report we are finished processing.
 	defer func() {
 		waitGroup.Done()
@@ -34,6 +34,20 @@ func Search(matcher Matcher, searchTerm string, result chan Result, waitGroup *s
 
 	// Write the results to the channel.
 	for _, searchResult := range searchResults {
-		result <- searchResult
+		results <- searchResult
 	}
+}
+
+// Display writes results to the console window.
+func Display() chan Result {
+	// Create a channel to receive the results on.
+	result := make(chan Result)
+
+	go func() {
+		for found := range result {
+			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
+		}
+	}()
+
+	return result
 }
