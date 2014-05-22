@@ -38,6 +38,8 @@ func Display() chan Result {
 	result := make(chan Result)
 
 	go func() {
+		// Wait for results from the different feeds and
+		// display them.
 		for found := range result {
 			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
 		}
