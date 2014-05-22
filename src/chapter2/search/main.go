@@ -42,11 +42,9 @@ func main() {
 
 	// Wait for the result from each goroutine
 	for site := 0; site < len(sites); site++ {
-		select {
-		case found := <-results:
-			for _, result := range found {
-				log.Printf("%s:\n%s\n\n", result.Field, result.Content)
-			}
+		found := <-results
+		for _, result := range found {
+			log.Printf("%s:\n%s\n\n", result.Field, result.Content)
 		}
 	}
 }
