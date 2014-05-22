@@ -26,8 +26,7 @@ func main() {
 
 	// Wait for the result from each goroutine
 	go func() {
-		for {
-			found := <-result
+		for found := range result {
 			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
 		}
 	}()
@@ -55,4 +54,7 @@ func main() {
 
 	// Wait for everything to be processed.
 	waitGroup.Wait()
+
+	// Close the channel and exit.
+	close(result)
 }
