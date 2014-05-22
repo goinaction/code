@@ -56,26 +56,26 @@ type (
 
 type (
 	// Implements the Matcher interface.
-	Feed struct {
+	matcher struct {
 		Site *data.Site
 	}
 )
 
-// New creates a value of Feed for use.
-func New(site data.Site) *Feed {
-	return &Feed{
+// NewMatcher creates a value of matcher for use.
+func NewMatcher(site data.Site) feed.Matcher {
+	return &matcher{
 		Site: &site,
 	}
 }
 
 // Match looks at the document for the specified search term.
-func (s *Feed) Match(searchTerm string) ([]feed.Result, error) {
+func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 	var results []feed.Result
 
-	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", s.Site.Type, s.Site.Name, s.Site.Uri)
+	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", m.Site.Type, m.Site.Name, m.Site.Uri)
 
 	// Retrieve the data to search.
-	document, err := s.retrieve()
+	document, err := m.retrieve()
 	if err != nil {
 		return nil, err
 	}
@@ -114,13 +114,13 @@ func (s *Feed) Match(searchTerm string) ([]feed.Result, error) {
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (s *Feed) retrieve() (*Document, error) {
-	if s.Site.Uri == "" {
+func (m *matcher) retrieve() (*Document, error) {
+	if m.Site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
 
 	// Retrieve the rss feed document from the web.
-	resp, err := http.Get(s.Site.Uri)
+	resp, err := http.Get(m.Site.Uri)
 	if err != nil {
 		return nil, err
 	}
