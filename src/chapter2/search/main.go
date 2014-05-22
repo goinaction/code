@@ -26,7 +26,7 @@ func main() {
 
 	// Wait for the result from each goroutine
 	go func() {
-		for site := 0; site < len(sites); site++ {
+		for {
 			found := <-result
 			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
 		}
