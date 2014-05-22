@@ -63,7 +63,7 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 	var results []find.Result
 
 	// Retrieve the data to search.
-	document, err := s.retrieve(site)
+	document, err := retrieve(site)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (s *Search) retrieve(site *feeds.Site) (*Document, error) {
+func retrieve(site *feeds.Site) (*Document, error) {
 	if site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
