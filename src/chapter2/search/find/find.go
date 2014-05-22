@@ -1,9 +1,6 @@
 package find
 
-import (
-	"log"
-	"sync"
-)
+import "log"
 
 type (
 	// Result contains the result of a search.
@@ -19,12 +16,7 @@ type (
 )
 
 // Search pulls down each feed looking for the search term.
-func Search(matcher Matcher, searchTerm string, result chan Result, waitGroup *sync.WaitGroup) {
-	// Call done so we can report we are finished processing.
-	defer func() {
-		waitGroup.Done()
-	}()
-
+func Search(matcher Matcher, searchTerm string, result chan Result) {
 	// Search the data for the search term.
 	searchResults, err := matcher.Match(searchTerm)
 	if err != nil {
