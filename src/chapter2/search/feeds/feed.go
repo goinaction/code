@@ -15,6 +15,7 @@ type (
 	Site struct {
 		Name string `json:"site"`
 		Uri  string `json:"link"`
+		Type string `json:"type"`
 	}
 )
 

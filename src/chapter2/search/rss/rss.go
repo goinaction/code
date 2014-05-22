@@ -5,6 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"regexp"
+
+	"github.com/goinaction/code/src/chapter2/search/feeds"
+	"github.com/goinaction/code/src/chapter2/search/find"
 )
 
 type (
@@ -47,26 +50,22 @@ type (
 	Document struct {
 		XMLName xml.Name `xml:"rss"`
 		Channel Channel  `xml:"channel"`
-		Uri     string
 	}
 )
 
 type (
-	// SearchResult contains the result of a search.
-	SearchResult struct {
-		Field    string
-		Document Item
-	}
+	// Implements the searcher interface.
+	Search struct{}
 )
 
 // Retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func Retrieve(uri string) (*Document, error) {
-	if uri == "" {
+func (s *Search) Retrieve(site feeds.Site) ([]find.SearchData, error) {
+	if site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
 
 	// Retrieve the rss feed document from the web.
-	resp, err := http.Get(uri)
+	resp, err := http.Get(site.Uri)
 	if err != nil {
 		return nil, err
 	}
@@ -74,52 +73,58 @@ func Retrieve(uri string) (*Document, error) {
 	// Close the response once we return from the function.
 	defer resp.Body.Close()
 
-	// Unmarshal the document into our struct type.
-	var document Document
-	err = xml.NewDecoder(resp.Body).Decode(&document)
+	// Unmarshal the rss feed document into our struct type.
+	var rssDocument Document
+	err = xml.NewDecoder(resp.Body).Decode(&rssDocument)
 	if err != nil {
 		return nil, err
 	}
 
-	// Save the uri we used to retrieve this document.
-	document.Uri = uri
+	// Create the slice of search data to be returned.
+	searchData := make([]find.SearchData, len(rssDocument.Channel.Item))
+	for _, item := range rssDocument.Channel.Item {
+		searchData = append(searchData, find.SearchData{
+			Title:       item.Title,
+			Description: item.Description,
+		})
+	}
 
-	return &document, nil
+	return searchData, nil
 }
 
-// Search looks at the document for the specified search term.
-func Search(document *Document, searchTerm string) ([]SearchResult, error) {
-	var searchResults []SearchResult
+// Match looks at the document for the specified search term.
+func (s *Search) Match(searchData []find.SearchData, searchTerm string) ([]find.Result, error) {
+	var results []find.Result
 
-	for _, item := range document.Channel.Item {
+	for _, data := range searchData {
 		// Check the title for the search term.
-		matched, err := regexp.MatchString(searchTerm, item.Title)
+		matched, err := regexp.MatchString(searchTerm, data.Title)
 		if err != nil {
 			return nil, err
 		}
 
 		// If we found a match save the result.
 		if matched {
-			searchResults = append(searchResults, SearchResult{
-				Field:    "Title",
-				Document: item,
+			results = append(results, find.Result{
+				Field:   "Title",
+				Content: data.Title,
 			})
 		}
 
 		// Check the description for the search term.
-		matched, err = regexp.MatchString(searchTerm, item.Description)
+		matched, err = regexp.MatchString(searchTerm, data.Description)
 		if err != nil {
 			return nil, err
 		}
 
 		// If we found a match save the result.
 		if matched {
-			searchResults = append(searchResults, SearchResult{
-				Field:    "Description",
-				Document: item,
+			results = append(results, find.Result{
+				Field:   "Description",
+				Content: data.Description,
 			})
 		}
 	}
 
-	return searchResults, nil
+	return results, nil
 }

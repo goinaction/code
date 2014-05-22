@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/goinaction/code/src/chapter2/search/feeds"
+	"github.com/goinaction/code/src/chapter2/search/find"
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
@@ -20,60 +21,29 @@ func main() {
 
 	// Perpare the slice of results and the channel to
 	// retrieve the results on.
-	captureResults := make(chan []rss.SearchResult)
+	results := make(chan []find.Result)
 
-	// Launch goroutines to find us our results.
+	// Launch a goroutine for each feed to find the results.
 	for _, site := range sites {
-		go find(searchTerm, site, captureResults)
+		var matcher find.Matcher
+
+		// Create the right type of matcher for this search.
+		switch site.Type {
+		case "rss":
+			matcher = new(rss.Search)
+		}
+
+		// Launch the goroutine to perform the search.
+		go find.Search(matcher, searchTerm, site, results)
 	}
 
 	// Wait for the result from each goroutine
 	for site := 0; site < len(sites); site++ {
 		select {
-		case findResults := <-captureResults:
-			for _, result := range findResults {
-				display(&result)
+		case found := <-results:
+			for _, result := range found {
+				log.Printf("%s:\n%s\n\n", result.Field, result.Content)
 			}
 		}
-	}
-}
-
-// find pulls down each feed and searches for the results.
-func find(searchTerm string, site feeds.Site, captureResults chan []rss.SearchResult) {
-	// Make sure each find returns a result.
-	var err error
-	defer func() {
-		if err != nil {
-			captureResults <- nil
-		}
-	}()
-
-	log.Printf("Search Feed Site[%s] For Uri[%s]\n", site.Name, site.Uri)
-
-	// Retrieve the RSS feed document.
-	document, err := rss.Retrieve(site.Uri)
-	if err != nil {
-		log.Printf("%s : %s", site.Uri, err)
-		return
-	}
-
-	// Search the document for the search term.
-	searchResults, err := rss.Search(document, searchTerm)
-	if err != nil {
-		log.Printf("%s : %s", site.Uri, err)
-		return
-	}
-
-	// Write the results to the channel.
-	captureResults <- searchResults
-}
-
-// display logs the results of the serach to the console.
-func display(result *rss.SearchResult) {
-	switch result.Field {
-	case "Title":
-		log.Printf("Title:\n%s\n\n", result.Document.Title)
-	case "Description":
-		log.Printf("Description:\n%s\n\n", result.Document.Description)
 	}
 }
