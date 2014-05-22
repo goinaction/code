@@ -42,9 +42,7 @@ func main() {
 		// Create the right type of matcher for this search.
 		switch site.Type {
 		case "rss":
-			matcher = &rss.Search{
-				Site: site,
-			}
+			matcher = rss.New(site)
 
 		default:
 			log.Fatalln("Invalid Type")

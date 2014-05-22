@@ -56,13 +56,19 @@ type (
 
 type (
 	// Implements the Matcher interface.
-	Search struct {
-		Site feeds.Site
+	Feed struct {
+		Site *feeds.Site
 	}
 )
 
+func New(site feeds.Site) *Feed {
+	return &Feed{
+		Site: &site,
+	}
+}
+
 // Match looks at the document for the specified search term.
-func (s *Search) Match(searchTerm string) ([]find.Result, error) {
+func (s *Feed) Match(searchTerm string) ([]find.Result, error) {
 	var results []find.Result
 
 	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", s.Site.Type, s.Site.Name, s.Site.Uri)
@@ -107,7 +113,7 @@ func (s *Search) Match(searchTerm string) ([]find.Result, error) {
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (s *Search) retrieve() (*Document, error) {
+func (s *Feed) retrieve() (*Document, error) {
 	if s.Site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
