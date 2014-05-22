@@ -18,7 +18,7 @@ type (
 )
 
 // Search pulls down each feed looking for the search term.
-func Search(matcher Matcher, searchTerm string, results chan Result) {
+func Search(matcher Matcher, searchTerm string, results chan<- Result) {
 	// Search the data for the search term.
 	searchResults, err := matcher.Match(searchTerm)
 	if err != nil {
@@ -33,7 +33,7 @@ func Search(matcher Matcher, searchTerm string, results chan Result) {
 }
 
 // Display writes results to the console window.
-func Display() chan Result {
+func Display() chan<- Result {
 	// Create a channel to receive the results on.
 	result := make(chan Result)
 
