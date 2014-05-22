@@ -49,7 +49,10 @@ func main() {
 		}
 
 		// Launch the goroutine to perform the search.
-		go find.Search(matcher, searchTerm, result, &waitGroup)
+		go func() {
+			find.Search(matcher, searchTerm, result)
+			waitGroup.Done()
+		}()
 	}
 
 	// Wait for everything to be processed.
