@@ -55,7 +55,7 @@ type (
 )
 
 type (
-	// Implements the searcher interface.
+	// Implements the Matcher interface.
 	Search struct {
 		Site feeds.Site
 	}
