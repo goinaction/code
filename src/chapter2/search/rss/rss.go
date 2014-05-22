@@ -62,9 +62,9 @@ type (
 )
 
 // NewMatcher creates a value of matcher for use.
-func NewMatcher(feed data.Feed) feed.Matcher {
+func NewMatcher(feed *data.Feed) feed.Matcher {
 	return &matcher{
-		Feed: &feed,
+		Feed: feed,
 	}
 }
 

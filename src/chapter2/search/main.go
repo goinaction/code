@@ -9,6 +9,21 @@ import (
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
+// NewMatcher is a factory that creates matcher values based
+// on the type of feed specified.
+func NewMatcher(feed data.Feed) search.Matcher {
+	// Create the right type of matcher for this search.
+	switch feed.Type {
+	case "rss":
+		return rss.NewMatcher(&feed)
+
+		// TODO: Add new Matchers here
+	}
+
+	log.Fatalln("Invalid Feed Type")
+	return nil
+}
+
 // main is the entry point for the program.
 func main() {
 	// Search term we are looking for.
@@ -29,16 +44,8 @@ func main() {
 
 	// Launch a goroutine for each feed to find the results.
 	for _, feed := range feeds {
-		var matcher search.Matcher
-
-		// Create the right type of matcher for this search.
-		switch feed.Type {
-		case "rss":
-			matcher = rss.NewMatcher(feed)
-
-		default:
-			log.Fatalln("Invalid Feed Type")
-		}
+		// Create a matcher for the search.
+		matcher := NewMatcher(feed)
 
 		// Launch the goroutine to perform the search.
 		go func() {
