@@ -41,7 +41,10 @@ func main() {
 		}
 
 		// Launch the goroutine to perform the search.
-		go feed.Search(matcher, searchTerm, results, &waitGroup)
+		go func() {
+			defer waitGroup.Done()
+			feed.Search(matcher, searchTerm, results)
+		}()
 	}
 
 	// Wait for everything to be processed.
