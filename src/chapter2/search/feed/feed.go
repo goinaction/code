@@ -33,7 +33,7 @@ func Search(matcher Matcher, searchTerm string, results chan<- Result) {
 }
 
 // Display writes results to the console window.
-func Display() chan<- Result {
+func Display(done chan struct{}) chan<- Result {
 	// Create a channel to receive the results on.
 	result := make(chan Result)
 
@@ -43,6 +43,8 @@ func Display() chan<- Result {
 		for found := range result {
 			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
 		}
+
+		done <- struct{}{}
 	}()
 
 	return result

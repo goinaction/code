@@ -40,8 +40,10 @@ func main() {
 		log.Fatal(err)
 	}
 
+	done := make(chan struct{})
+
 	// Start the display routine.
-	results := search.Display()
+	results := search.Display(done)
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
@@ -64,4 +66,5 @@ func main() {
 
 	// Close the channel and exit.
 	close(results)
+	<-done
 }
