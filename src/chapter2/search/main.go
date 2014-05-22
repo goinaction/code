@@ -57,8 +57,8 @@ func main() {
 
 		// Launch the goroutine to perform the search.
 		go func() {
-			defer waitGroup.Done()
 			search.Search(matcher, searchTerm, results)
+			waitGroup.Done()
 		}()
 	}
 
