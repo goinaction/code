@@ -2,6 +2,7 @@ package find
 
 import (
 	"log"
+	"sync"
 
 	"github.com/goinaction/code/src/chapter2/search/feeds"
 )
@@ -29,13 +30,10 @@ type (
 )
 
 // Search pulls down each feed looking for the search term.
-func Search(matcher Matcher, searchTerm string, site feeds.Site, captureResults chan []Result) {
-	// Make sure each find returns a result.
-	var err error
+func Search(matcher Matcher, searchTerm string, site feeds.Site, result chan Result, waitGroup *sync.WaitGroup) {
+	// Call done so we can report we are finished processing.
 	defer func() {
-		if err != nil {
-			captureResults <- nil
-		}
+		waitGroup.Done()
 	}()
 
 	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", site.Type, site.Name, site.Uri)
@@ -55,5 +53,7 @@ func Search(matcher Matcher, searchTerm string, site feeds.Site, captureResults 
 	}
 
 	// Write the results to the channel.
-	captureResults <- searchResults
+	for _, searchResult := range searchResults {
+		result <- searchResult
+	}
 }

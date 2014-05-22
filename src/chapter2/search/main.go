@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"sync"
 
 	"github.com/goinaction/code/src/chapter2/search/feeds"
 	"github.com/goinaction/code/src/chapter2/search/find"
@@ -21,7 +22,19 @@ func main() {
 
 	// Perpare the slice of results and the channel to
 	// retrieve the results on.
-	results := make(chan []find.Result)
+	result := make(chan find.Result)
+
+	// Wait for the result from each goroutine
+	go func() {
+		for site := 0; site < len(sites); site++ {
+			found := <-result
+			log.Printf("%s:\n%s\n\n", found.Field, found.Content)
+		}
+	}()
+
+	// Setup a wait group so we can process all the feeds.
+	var waitGroup sync.WaitGroup
+	waitGroup.Add(len(sites))
 
 	// Launch a goroutine for each feed to find the results.
 	for _, site := range sites {
@@ -37,14 +50,9 @@ func main() {
 		}
 
 		// Launch the goroutine to perform the search.
-		go find.Search(matcher, searchTerm, site, results)
+		go find.Search(matcher, searchTerm, site, result, &waitGroup)
 	}
 
-	// Wait for the result from each goroutine
-	for site := 0; site < len(sites); site++ {
-		found := <-results
-		for _, result := range found {
-			log.Printf("%s:\n%s\n\n", result.Field, result.Content)
-		}
-	}
+	// Wait for everything to be processed.
+	waitGroup.Wait()
 }
