@@ -61,6 +61,7 @@ type (
 	}
 )
 
+// New creates a value of Feed for use.
 func New(site feeds.Site) *Feed {
 	return &Feed{
 		Site: &site,
