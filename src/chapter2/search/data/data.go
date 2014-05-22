@@ -20,15 +20,17 @@ type (
 
 // Load retrieves and unmarshals the data for the program.
 func Load() ([]Feed, error) {
-	// Read the entire file.
+	// Open the file.
 	file, err := os.Open(dataFile)
 	if err != nil {
 		return nil, err
 	}
 
+	// Schedule the file to be closed once
+	// the function returns.
 	defer file.Close()
 
-	// Unmarshal the json document into a slice of feeds.
+	// Decode the file into a slice of feed values.
 	var feeds []Feed
 	err = json.NewDecoder(file).Decode(&feeds)
 	if err != nil {
