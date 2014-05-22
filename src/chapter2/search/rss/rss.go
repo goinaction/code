@@ -63,14 +63,14 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 	var results []find.Result
 
 	// Retrieve the data to search.
-	searchData, err := s.retrieve(site)
+	document, err := s.retrieve(site)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, data := range searchData {
+	for _, item := range document.Channel.Item {
 		// Check the title for the search term.
-		matched, err := regexp.MatchString(searchTerm, data.Title)
+		matched, err := regexp.MatchString(searchTerm, item.Title)
 		if err != nil {
 			return nil, err
 		}
@@ -79,12 +79,12 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 		if matched {
 			results = append(results, find.Result{
 				Field:   "Title",
-				Content: data.Title,
+				Content: item.Title,
 			})
 		}
 
 		// Check the description for the search term.
-		matched, err = regexp.MatchString(searchTerm, data.Description)
+		matched, err = regexp.MatchString(searchTerm, item.Description)
 		if err != nil {
 			return nil, err
 		}
@@ -93,7 +93,7 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 		if matched {
 			results = append(results, find.Result{
 				Field:   "Description",
-				Content: data.Description,
+				Content: item.Description,
 			})
 		}
 	}
@@ -102,7 +102,7 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (s *Search) retrieve(site *feeds.Site) ([]find.SearchData, error) {
+func (s *Search) retrieve(site *feeds.Site) (*Document, error) {
 	if site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
@@ -117,20 +117,11 @@ func (s *Search) retrieve(site *feeds.Site) ([]find.SearchData, error) {
 	defer resp.Body.Close()
 
 	// Unmarshal the rss feed document into our struct type.
-	var rssDocument Document
-	err = xml.NewDecoder(resp.Body).Decode(&rssDocument)
+	var document Document
+	err = xml.NewDecoder(resp.Body).Decode(&document)
 	if err != nil {
 		return nil, err
 	}
 
-	// Create the slice of search data to be returned.
-	searchData := make([]find.SearchData, len(rssDocument.Channel.Item))
-	for _, item := range rssDocument.Channel.Item {
-		searchData = append(searchData, find.SearchData{
-			Title:       item.Title,
-			Description: item.Description,
-		})
-	}
-
-	return searchData, nil
+	return &document, nil
 }

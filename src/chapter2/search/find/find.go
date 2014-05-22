@@ -8,12 +8,6 @@ import (
 )
 
 type (
-	// SearchData contains the data we can search on.
-	SearchData struct {
-		Title       string
-		Description string
-	}
-
 	// Result contains the result of a search.
 	Result struct {
 		Field   string
