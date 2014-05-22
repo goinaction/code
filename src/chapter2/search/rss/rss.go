@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"net/http"
+	"regexp"
 
 	"github.com/goinaction/code/src/chapter2/search/feeds"
 	"github.com/goinaction/code/src/chapter2/search/find"
@@ -57,8 +58,51 @@ type (
 	Search struct{}
 )
 
-// Retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (s *Search) Retrieve(site feeds.Site) ([]find.SearchData, error) {
+// Match looks at the document for the specified search term.
+func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, error) {
+	var results []find.Result
+
+	// Retrieve the data to search.
+	searchData, err := s.retrieve(site)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, data := range searchData {
+		// Check the title for the search term.
+		matched, err := regexp.MatchString(searchTerm, data.Title)
+		if err != nil {
+			return nil, err
+		}
+
+		// If we found a match save the result.
+		if matched {
+			results = append(results, find.Result{
+				Field:   "Title",
+				Content: data.Title,
+			})
+		}
+
+		// Check the description for the search term.
+		matched, err = regexp.MatchString(searchTerm, data.Description)
+		if err != nil {
+			return nil, err
+		}
+
+		// If we found a match save the result.
+		if matched {
+			results = append(results, find.Result{
+				Field:   "Description",
+				Content: data.Description,
+			})
+		}
+	}
+
+	return results, nil
+}
+
+// retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
+func (s *Search) retrieve(site *feeds.Site) ([]find.SearchData, error) {
 	if site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
