@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"net/http"
-	"regexp"
 
 	"github.com/goinaction/code/src/chapter2/search/feeds"
 	"github.com/goinaction/code/src/chapter2/search/find"
@@ -90,41 +89,4 @@ func (s *Search) Retrieve(site feeds.Site) ([]find.SearchData, error) {
 	}
 
 	return searchData, nil
-}
-
-// Match looks at the document for the specified search term.
-func (s *Search) Match(searchData []find.SearchData, searchTerm string) ([]find.Result, error) {
-	var results []find.Result
-
-	for _, data := range searchData {
-		// Check the title for the search term.
-		matched, err := regexp.MatchString(searchTerm, data.Title)
-		if err != nil {
-			return nil, err
-		}
-
-		// If we found a match save the result.
-		if matched {
-			results = append(results, find.Result{
-				Field:   "Title",
-				Content: data.Title,
-			})
-		}
-
-		// Check the description for the search term.
-		matched, err = regexp.MatchString(searchTerm, data.Description)
-		if err != nil {
-			return nil, err
-		}
-
-		// If we found a match save the result.
-		if matched {
-			results = append(results, find.Result{
-				Field:   "Description",
-				Content: data.Description,
-			})
-		}
-	}
-
-	return results, nil
 }
