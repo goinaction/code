@@ -59,11 +59,13 @@ func main() {
 		}()
 	}
 
+	// Launch a goroutine so we can shutdown the program
+	// once the last feed reports it's findings.
 	go func() {
 		// Wait for everything to be processed.
 		waitGroup.Wait()
 
-		// Close the channel and exit.
+		// Close the channel.
 		close(results)
 	}()
 
