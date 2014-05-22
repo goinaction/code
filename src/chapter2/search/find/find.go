@@ -13,9 +13,7 @@ type (
 		Field   string
 		Content string
 	}
-)
 
-type (
 	// Matcher defines the behavior required by the Search function.
 	Matcher interface {
 		Match(site *feeds.Site, searchTerm string) ([]Result, error)
