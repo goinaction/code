@@ -14,8 +14,8 @@ func main() {
 	// Search term we are looking for.
 	searchTerm := "president"
 
-	// Load the feeds for the data file.
-	sites, err := data.Load()
+	// Load the feeds from the data file.
+	feeds, err := data.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,16 +25,16 @@ func main() {
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
-	waitGroup.Add(len(sites))
+	waitGroup.Add(len(feeds))
 
 	// Launch a goroutine for each feed to find the results.
-	for _, site := range sites {
+	for _, data := range feeds {
 		var matcher feed.Matcher
 
 		// Create the right type of matcher for this search.
-		switch site.Type {
+		switch data.Type {
 		case "rss":
-			matcher = rss.NewMatcher(site)
+			matcher = rss.NewMatcher(data)
 
 		default:
 			log.Fatalln("Invalid Type")

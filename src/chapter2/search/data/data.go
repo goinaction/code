@@ -11,8 +11,8 @@ const (
 )
 
 type (
-	// Site contains information about an rss feed.
-	Site struct {
+	// Feed contains information about an rss feed.
+	Feed struct {
 		Name string `json:"site"`
 		Uri  string `json:"link"`
 		Type string `json:"type"`
@@ -20,7 +20,7 @@ type (
 )
 
 // Load retrieves and unmarshals the data for the program.
-func Load() ([]Site, error) {
+func Load() ([]Feed, error) {
 	// Get the current directory we are running inside.
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -33,12 +33,12 @@ func Load() ([]Site, error) {
 		return nil, err
 	}
 
-	// Unmarshal the json document into a slice of sites.
-	var sites []Site
-	err = json.Unmarshal(data, &sites)
+	// Unmarshal the json document into a slice of feeds.
+	var feeds []Feed
+	err = json.Unmarshal(data, &feeds)
 	if err != nil {
 		return nil, err
 	}
 
-	return sites, nil
+	return feeds, nil
 }

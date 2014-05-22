@@ -57,14 +57,14 @@ type (
 type (
 	// Implements the Matcher interface.
 	matcher struct {
-		Site *data.Site
+		Feed *data.Feed
 	}
 )
 
 // NewMatcher creates a value of matcher for use.
-func NewMatcher(site data.Site) feed.Matcher {
+func NewMatcher(feed data.Feed) feed.Matcher {
 	return &matcher{
-		Site: &site,
+		Feed: &feed,
 	}
 }
 
@@ -72,7 +72,7 @@ func NewMatcher(site data.Site) feed.Matcher {
 func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 	var results []feed.Result
 
-	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", m.Site.Type, m.Site.Name, m.Site.Uri)
+	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", m.Feed.Type, m.Feed.Name, m.Feed.Uri)
 
 	// Retrieve the data to search.
 	document, err := m.retrieve()
@@ -115,12 +115,12 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
 func (m *matcher) retrieve() (*document, error) {
-	if m.Site.Uri == "" {
+	if m.Feed.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
 
 	// Retrieve the rss feed document from the web.
-	resp, err := http.Get(m.Site.Uri)
+	resp, err := http.Get(m.Feed.Uri)
 	if err != nil {
 		return nil, err
 	}
