@@ -42,14 +42,16 @@ func main() {
 		// Create the right type of matcher for this search.
 		switch site.Type {
 		case "rss":
-			matcher = new(rss.Search)
+			matcher = &rss.Search{
+				Site: site,
+			}
 
 		default:
 			log.Fatalln("Invalid Type")
 		}
 
 		// Launch the goroutine to perform the search.
-		go find.Search(matcher, searchTerm, site, result, &waitGroup)
+		go find.Search(matcher, searchTerm, result, &waitGroup)
 	}
 
 	// Wait for everything to be processed.

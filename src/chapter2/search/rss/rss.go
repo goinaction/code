@@ -3,6 +3,7 @@ package rss
 import (
 	"encoding/xml"
 	"errors"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -55,15 +56,19 @@ type (
 
 type (
 	// Implements the searcher interface.
-	Search struct{}
+	Search struct {
+		Site feeds.Site
+	}
 )
 
 // Match looks at the document for the specified search term.
-func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, error) {
+func (s *Search) Match(searchTerm string) ([]find.Result, error) {
 	var results []find.Result
 
+	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", s.Site.Type, s.Site.Name, s.Site.Uri)
+
 	// Retrieve the data to search.
-	document, err := retrieve(site)
+	document, err := s.retrieve()
 	if err != nil {
 		return nil, err
 	}
@@ -102,13 +107,13 @@ func (s *Search) Match(site *feeds.Site, searchTerm string) ([]find.Result, erro
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func retrieve(site *feeds.Site) (*Document, error) {
-	if site.Uri == "" {
+func (s *Search) retrieve() (*Document, error) {
+	if s.Site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
 
 	// Retrieve the rss feed document from the web.
-	resp, err := http.Get(site.Uri)
+	resp, err := http.Get(s.Site.Uri)
 	if err != nil {
 		return nil, err
 	}
