@@ -10,7 +10,10 @@ import (
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
 
+// init is called before main.
 func init() {
+	// Change the log to write to stdout instead
+	// of its default device stderr.
 	log.SetOutput(os.Stdout)
 }
 
