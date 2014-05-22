@@ -2,7 +2,6 @@ package data
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 )
 
@@ -21,21 +20,17 @@ type (
 
 // Load retrieves and unmarshals the data for the program.
 func Load() ([]Feed, error) {
-	// Get the current directory we are running inside.
-	pwd, err := os.Getwd()
+	// Read the entire file.
+	file, err := os.Open(dataFile)
 	if err != nil {
 		return nil, err
 	}
 
-	// Read the entire file.
-	data, err := ioutil.ReadFile(pwd + "/" + dataFile)
-	if err != nil {
-		return nil, err
-	}
+	defer file.Close()
 
 	// Unmarshal the json document into a slice of feeds.
 	var feeds []Feed
-	err = json.Unmarshal(data, &feeds)
+	err = json.NewDecoder(file).Decode(&feeds)
 	if err != nil {
 		return nil, err
 	}

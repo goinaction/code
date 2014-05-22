@@ -26,7 +26,7 @@ type (
 	// image defines the fields associated with the image tag in the rss document.
 	image struct {
 		XMLName xml.Name `xml:"image"`
-		Url     string   `xml:"url"`
+		URL     string   `xml:"url"`
 		Title   string   `xml:"title"`
 		Link    string   `xml:"link"`
 	}
@@ -116,7 +116,7 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
 func (m *matcher) retrieve() (*document, error) {
 	if m.Feed.Uri == "" {
-		return nil, errors.New("No RSS Feed Uri Provided")
+		return nil, errors.New("No rss feed uri provided")
 	}
 
 	// Retrieve the rss feed document from the web.

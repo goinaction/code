@@ -2,12 +2,17 @@ package main
 
 import (
 	"log"
+	"os"
 	"sync"
 
 	"github.com/goinaction/code/src/chapter2/search/data"
 	search "github.com/goinaction/code/src/chapter2/search/feed"
 	"github.com/goinaction/code/src/chapter2/search/rss"
 )
+
+func init() {
+	log.SetOutput(os.Stdout)
+}
 
 // NewMatcher is a factory that creates matcher values based
 // on the type of feed specified.
