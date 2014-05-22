@@ -12,8 +12,8 @@ import (
 )
 
 type (
-	// Item defines the fields associated with the item tag in the rss document.
-	Item struct {
+	// item defines the fields associated with the item tag in the rss document.
+	item struct {
 		XMLName     xml.Name `xml:"item"`
 		PubDate     string   `xml:"pubDate"`
 		Title       string   `xml:"title"`
@@ -23,16 +23,16 @@ type (
 		GeoRssPoint string   `xml:"georss:point"`
 	}
 
-	// Image defines the fields associated with the image tag in the rss document.
-	Image struct {
+	// image defines the fields associated with the image tag in the rss document.
+	image struct {
 		XMLName xml.Name `xml:"image"`
 		Url     string   `xml:"url"`
 		Title   string   `xml:"title"`
 		Link    string   `xml:"link"`
 	}
 
-	// Channel defines the fields associated with the channel tag in the rss document.
-	Channel struct {
+	// channel defines the fields associated with the channel tag in the rss document.
+	channel struct {
 		XMLName        xml.Name `xml:"channel"`
 		Title          string   `xml:"title"`
 		Description    string   `xml:"description"`
@@ -43,14 +43,14 @@ type (
 		Language       string   `xml:"language"`
 		ManagingEditor string   `xml:"managingEditor"`
 		WebMaster      string   `xml:"webMaster"`
-		Image          Image    `xml:"image"`
-		Item           []Item   `xml:"item"`
+		Image          image    `xml:"image"`
+		Item           []item   `xml:"item"`
 	}
 
-	// Document defines the fields associated with the rss document.
-	Document struct {
+	// document defines the fields associated with the rss document.
+	document struct {
 		XMLName xml.Name `xml:"rss"`
-		Channel Channel  `xml:"channel"`
+		Channel channel  `xml:"channel"`
 	}
 )
 
@@ -80,9 +80,9 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 		return nil, err
 	}
 
-	for _, item := range document.Channel.Item {
+	for _, channelItem := range document.Channel.Item {
 		// Check the title for the search term.
-		matched, err := regexp.MatchString(searchTerm, item.Title)
+		matched, err := regexp.MatchString(searchTerm, channelItem.Title)
 		if err != nil {
 			return nil, err
 		}
@@ -91,12 +91,12 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 		if matched {
 			results = append(results, feed.Result{
 				Field:   "Title",
-				Content: item.Title,
+				Content: channelItem.Title,
 			})
 		}
 
 		// Check the description for the search term.
-		matched, err = regexp.MatchString(searchTerm, item.Description)
+		matched, err = regexp.MatchString(searchTerm, channelItem.Description)
 		if err != nil {
 			return nil, err
 		}
@@ -105,7 +105,7 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 		if matched {
 			results = append(results, feed.Result{
 				Field:   "Description",
-				Content: item.Description,
+				Content: channelItem.Description,
 			})
 		}
 	}
@@ -114,7 +114,7 @@ func (m *matcher) Match(searchTerm string) ([]feed.Result, error) {
 }
 
 // retrieve performs a HTTP Get request for the rss feed and unmarshals the results.
-func (m *matcher) retrieve() (*Document, error) {
+func (m *matcher) retrieve() (*document, error) {
 	if m.Site.Uri == "" {
 		return nil, errors.New("No RSS Feed Uri Provided")
 	}
@@ -129,7 +129,7 @@ func (m *matcher) retrieve() (*Document, error) {
 	defer resp.Body.Close()
 
 	// Unmarshal the rss feed document into our struct type.
-	var document Document
+	var document document
 	err = xml.NewDecoder(resp.Body).Decode(&document)
 	if err != nil {
 		return nil, err
