@@ -16,3 +16,13 @@ func NewMatcher(feed *match.Feed) match.Matcher {
 		return &defaultMatcher{feed}
 	}
 }
+
+// defaultMatcher implements the Matcher interface.
+type defaultMatcher struct {
+	*match.Feed
+}
+
+// Search looks at the document for the specified search term.
+func (m *defaultMatcher) Search(searchTerm string) ([]*match.Result, error) {
+	return nil, nil
+}
