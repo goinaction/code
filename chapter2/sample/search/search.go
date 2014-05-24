@@ -6,7 +6,7 @@ import (
 )
 
 // A map of registered matchers for searching.
-var matchers map[string]Matcher = make(map[string]Matcher)
+var matchers map[string]Matcher = map[string]Matcher{}
 
 // Register is called to register a matcher for use
 // by the program.
