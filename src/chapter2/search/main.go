@@ -2,33 +2,26 @@ package main
 
 import (
 	"log"
-	"os"
 	"sync"
-
-	"github.com/goinaction/code/src/chapter2/search/data"
-	search "github.com/goinaction/code/src/chapter2/search/feed"
-	"github.com/goinaction/code/src/chapter2/search/rss"
 )
-
-// init is called before main.
-func init() {
-	// Change the log to write to stdout instead
-	// of its default device stderr.
-	log.SetOutput(os.Stdout)
-}
 
 // NewMatcher is a factory that creates matcher values based
 // on the type of feed specified.
-func NewMatcher(feed data.Feed) search.Matcher {
+func NewMatcher(feed *Feed) Matcher {
 	// Create the right type of matcher for this search.
 	switch feed.Type {
 	case "rss":
-		return rss.NewMatcher(&feed)
+		return &rssMatcher{Feed: feed}
 
 		// TODO: Add new Matchers here
 	}
 
-	log.Fatalln("Invalid Feed Type")
+	// TODO: make a matcher implementation that never matches anything
+	// then return that.
+	// Right now your program will do this when you hit an atom feed
+	// "Invalid Feed Type"
+	// Panic: call to nil interface method.
+	log.Fatal("Invalid Feed Type")
 	return nil
 }
 
@@ -38,16 +31,18 @@ func main() {
 	searchTerm := "president"
 
 	// Load the feeds from the data file.
-	feeds, err := data.Load()
+	feeds, err := Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Create a channel to receive the results on.
-	results := make(chan search.Result)
+	results := make(chan Result)
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
+
+	// TODO: needs a comment why this is done here rather than inside the loop.
 	waitGroup.Add(len(feeds))
 
 	// Launch a goroutine for each feed to find the results.
@@ -57,13 +52,17 @@ func main() {
 
 		// Launch the goroutine to perform the search.
 		go func() {
-			search.Search(matcher, searchTerm, results)
+			Search(matcher, searchTerm, results)
 			waitGroup.Done()
 		}()
 	}
 
-	// Launch a goroutine so we can shutdown the program
-	// once the last feed sends its results.
+	// TODO: this is correct, but needs an explanation, ie
+	// why not write
+	// waitGroup.Wait() ; close(results); search.Display(results)
+	// or
+	// go search.Display(results); waitGroup.Wait(); close(results)
+	//
 	go func() {
 		// Wait for everything to be processed.
 		waitGroup.Wait()
@@ -73,5 +72,5 @@ func main() {
 	}()
 
 	// Display the results.
-	search.Display(results)
+	Display(results)
 }
