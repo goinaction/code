@@ -53,7 +53,7 @@ type (
 
 // rssMatcher implements the Matcher interface.
 type rssMatcher struct {
-	*Feed
+	Feed
 }
 
 // Match looks at the document for the specified search term.

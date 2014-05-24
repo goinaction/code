@@ -7,7 +7,7 @@ import (
 
 // NewMatcher is a factory that creates matcher values based
 // on the type of feed specified.
-func NewMatcher(feed *Feed) Matcher {
+func NewMatcher(feed Feed) Matcher {
 	// Create the right type of matcher for this search.
 	switch feed.Type {
 	case "rss":
