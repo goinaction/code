@@ -26,8 +26,8 @@ func Run(searchTerm string) {
 		log.Fatal(err)
 	}
 
-	// Create a channel to receive match results to display.
-	results := make(chan *Result)
+	// Create a buffered channel to receive match results to display.
+	results := make(chan *Result, len(feeds))
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
