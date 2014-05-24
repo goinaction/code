@@ -10,6 +10,10 @@ var matchers map[string]Matcher = map[string]Matcher{}
 
 // Register is called to register a matcher for use by the program.
 func Register(feedType string, matcher Matcher) {
+	if _, ok := matchers[feedType]; ok == true {
+		log.Fatalln(feedType, "matcher already registered")
+	}
+
 	log.Println("Register", feedType)
 	matchers[feedType] = matcher
 }
