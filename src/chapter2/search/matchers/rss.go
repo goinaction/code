@@ -125,10 +125,8 @@ func (m *rssMatcher) retrieve() (*document, error) {
 	}
 
 	// Decode the rss feed document into our struct type.
+	// We don't need to check for errors, the caller can do this.
 	var document document
-	if err := xml.NewDecoder(resp.Body).Decode(&document); err != nil {
-		return nil, err
-	}
-
-	return &document, nil
+	err = xml.NewDecoder(resp.Body).Decode(&document)
+	return &document, err
 }

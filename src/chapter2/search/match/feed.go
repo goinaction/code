@@ -30,11 +30,8 @@ func RetrieveFeed() ([]*Feed, error) {
 	defer file.Close()
 
 	// Decode the file into a slice of feed values.
+	// We don't need to check for errors, the caller can do this.
 	var feeds []*Feed
 	err = json.NewDecoder(file).Decode(&feeds)
-	if err != nil {
-		return nil, err
-	}
-
-	return feeds, nil
+	return feeds, err
 }
