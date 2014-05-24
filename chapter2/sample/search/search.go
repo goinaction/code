@@ -8,10 +8,8 @@ import (
 // A map of registered matchers for searching.
 var matchers map[string]Matcher = map[string]Matcher{}
 
-// Register is called to register a matcher for use
-// by the program.
+// Register is called to register a matcher for use by the program.
 func Register(feedType string, matcher Matcher) {
-	// Assign the matcher to the specified key.
 	log.Println("Register", feedType)
 	matchers[feedType] = matcher
 }
