@@ -7,6 +7,6 @@ import (
 
 // main is the entry point for the program.
 func main() {
-	// Perform the search.
+	// Perform the search for the specified term.
 	search.Run("president")
 }

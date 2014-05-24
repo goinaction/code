@@ -9,7 +9,7 @@ var (
 	// Used to synchronize access to the matchers map.
 	lock sync.Mutex
 
-	// A map of registered matchers for searching
+	// A map of registered matchers for searching.
 	matchers map[string]Matcher = make(map[string]Matcher)
 )
 

@@ -56,7 +56,7 @@ type (
 // rssMatcher implements the Matcher interface.
 type rssMatcher struct{}
 
-// init registered the matcher with the program
+// init registeres the matcher with the program.
 func init() {
 	search.Register("rss", &rssMatcher{})
 }

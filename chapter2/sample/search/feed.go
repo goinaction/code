@@ -16,8 +16,7 @@ type Feed struct {
 	Type string `json:"type"`
 }
 
-// RetrieveFeed reads and unmarshals the feed data file
-// into a native slice for use.
+// RetrieveFeed reads and unmarshals the feed data file.
 func RetrieveFeed() ([]*Feed, error) {
 	// Open the file.
 	file, err := os.Open(dataFile)
@@ -29,9 +28,11 @@ func RetrieveFeed() ([]*Feed, error) {
 	// the function returns.
 	defer file.Close()
 
-	// Decode the file into a slice of feed values.
-	// We don't need to check for errors, the caller can do this.
+	// Decode the file into a slice of pointers
+	// to Feed values.
 	var feeds []*Feed
 	err = json.NewDecoder(file).Decode(&feeds)
+
+	// We don't need to check for errors, the caller can do this.
 	return feeds, err
 }

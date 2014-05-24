@@ -3,7 +3,7 @@ package search
 // defaultMatcher implements the defaut matcher.
 type defaultMatcher struct{}
 
-// init registered the matcher with the program
+// init registeres the default matcher with the program.
 func init() {
 	Register("default", &defaultMatcher{})
 }
