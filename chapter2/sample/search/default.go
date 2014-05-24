@@ -5,7 +5,8 @@ type defaultMatcher struct{}
 
 // init registeres the default matcher with the program.
 func init() {
-	Register("default", &defaultMatcher{})
+	var matcher *defaultMatcher
+	Register("default", matcher)
 }
 
 // Search implements the behavior for the default matcher.

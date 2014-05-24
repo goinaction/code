@@ -58,7 +58,8 @@ type rssMatcher struct{}
 
 // init registeres the matcher with the program.
 func init() {
-	search.Register("rss", &rssMatcher{})
+	var matcher *rssMatcher
+	search.Register("rss", matcher)
 }
 
 // Search looks at the document for the specified search term.
