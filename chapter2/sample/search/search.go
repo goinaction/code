@@ -42,15 +42,11 @@ func Run(searchTerm string) {
 			matcher = matchers["default"]
 		}
 
-		// Make a copy of the value to give each goroutine
-		// their own copy.
-		find := feed
-
 		// Launch the goroutine to perform the search.
-		go func() {
-			Match(matcher, find, searchTerm, results)
+		go func(feed *Feed) {
+			Match(matcher, feed, searchTerm, results)
 			waitGroup.Done()
-		}()
+		}(feed)
 	}
 
 	// Launch a groutine to monitor when all the work is done.
