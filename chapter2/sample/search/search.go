@@ -5,21 +5,12 @@ import (
 	"sync"
 )
 
-var (
-	// Used to synchronize access to the matchers map.
-	lock sync.Mutex
-
-	// A map of registered matchers for searching.
-	matchers map[string]Matcher = make(map[string]Matcher)
-)
+// A map of registered matchers for searching.
+var matchers map[string]Matcher = make(map[string]Matcher)
 
 // Register is called to register a matcher for use
 // by the program.
 func Register(feedType string, matcher Matcher) {
-	// Enter a critical section and schedule the unlock.
-	lock.Lock()
-	defer lock.Unlock()
-
 	// Assign the matcher to the specified key.
 	log.Println("Register", feedType)
 	matchers[feedType] = matcher
@@ -45,14 +36,14 @@ func Run(searchTerm string) {
 
 	// Launch a goroutine for each feed to find the results.
 	for _, feed := range feeds {
-		// Create a matcher for the search.
+		// Retrieve a matcher for the search.
 		matcher, ok := matchers[feed.Type]
 		if !ok {
 			matcher = matchers["default"]
 		}
 
 		// Make a copy of the value to give each goroutine
-		// there own copy of the value.
+		// their own copy.
 		find := feed
 
 		// Launch the goroutine to perform the search.
