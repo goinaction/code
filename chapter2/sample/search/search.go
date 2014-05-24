@@ -1,26 +1,40 @@
-package main
+package search
 
 import (
 	"log"
 	"sync"
-
-	"github.com/goinaction/code/src/chapter2/search/match"
-	"github.com/goinaction/code/src/chapter2/search/matchers"
 )
 
-// main is the entry point for the program.
-func main() {
-	// Search term we are looking for.
-	searchTerm := "president"
+var (
+	// Used to synchronize access to the matchers map.
+	lock sync.Mutex
 
+	// A map of registered matchers for searching
+	matchers map[string]Matcher = make(map[string]Matcher)
+)
+
+// Register is called to register a matcher for use
+// by the program.
+func Register(feedType string, matcher Matcher) {
+	// Enter a critical section and schedule the unlock.
+	lock.Lock()
+	defer lock.Unlock()
+
+	// Assign the matcher to the specified key.
+	log.Println("Register", feedType)
+	matchers[feedType] = matcher
+}
+
+// Run performs the search logic.
+func Run(searchTerm string) {
 	// RetrieveFeed returns the list of feeds to search through.
-	feeds, err := match.RetrieveFeed()
+	feeds, err := RetrieveFeed()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Create a channel to receive match results to display.
-	results := make(chan *match.Result)
+	results := make(chan *Result)
 
 	// Setup a wait group so we can process all the feeds.
 	var waitGroup sync.WaitGroup
@@ -32,11 +46,18 @@ func main() {
 	// Launch a goroutine for each feed to find the results.
 	for _, feed := range feeds {
 		// Create a matcher for the search.
-		matcher := matchers.NewMatcher(feed)
+		matcher, ok := matchers[feed.Type]
+		if !ok {
+			matcher = matchers["default"]
+		}
+
+		// Make a copy of the value to give each goroutine
+		// there own copy of the value.
+		find := feed
 
 		// Launch the goroutine to perform the search.
 		go func() {
-			match.Match(matcher, searchTerm, results)
+			Match(matcher, find, searchTerm, results)
 			waitGroup.Done()
 		}()
 	}
@@ -53,5 +74,5 @@ func main() {
 
 	// Start displaying results as they are avaiable and
 	// return after the final result is displayed.
-	match.Display(results)
+	Display(results)
 }

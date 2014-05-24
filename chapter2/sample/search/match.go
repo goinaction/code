@@ -1,4 +1,4 @@
-package match
+package search
 
 import (
 	"fmt"
@@ -13,13 +13,14 @@ type Result struct {
 
 // Matcher defines the behavior required by the Search function.
 type Matcher interface {
-	Search(searchTerm string) ([]*Result, error)
+	Search(feed *Feed, searchTerm string) ([]*Result, error)
 }
 
-// Match pulls down each feed looking for the search term.
-func Match(matcher Matcher, searchTerm string, results chan<- *Result) {
-	// Search the data for the search term.
-	searchResults, err := matcher.Search(searchTerm)
+// Match is launched as a goroutine for each indidivudal feed to perform
+// the specific search logic for the feed type.
+func Match(matcher Matcher, feed *Feed, searchTerm string, results chan<- *Result) {
+	// Perform the search agains the specified matcher.
+	searchResults, err := matcher.Search(feed, searchTerm)
 	if err != nil {
 		log.Println(err)
 		return

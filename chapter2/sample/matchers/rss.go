@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/goinaction/code/src/chapter2/search/match"
+	"github.com/goinaction/code/chapter2/sample/search"
 )
 
 type (
@@ -54,18 +54,21 @@ type (
 )
 
 // rssMatcher implements the Matcher interface.
-type rssMatcher struct {
-	*match.Feed
+type rssMatcher struct{}
+
+// init registered the matcher with the program
+func init() {
+	search.Register("rss", &rssMatcher{})
 }
 
 // Search looks at the document for the specified search term.
-func (m *rssMatcher) Search(searchTerm string) ([]*match.Result, error) {
-	var results []*match.Result
+func (m *rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Result, error) {
+	var results []*search.Result
 
-	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", m.Type, m.Name, m.Uri)
+	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", feed.Type, feed.Name, feed.Uri)
 
 	// Retrieve the data to search.
-	document, err := m.retrieve()
+	document, err := m.retrieve(feed)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +82,7 @@ func (m *rssMatcher) Search(searchTerm string) ([]*match.Result, error) {
 
 		// If we found a match save the result.
 		if matched {
-			results = append(results, &match.Result{
+			results = append(results, &search.Result{
 				Field:   "Title",
 				Content: channelItem.Title,
 			})
@@ -93,7 +96,7 @@ func (m *rssMatcher) Search(searchTerm string) ([]*match.Result, error) {
 
 		// If we found a match save the result.
 		if matched {
-			results = append(results, &match.Result{
+			results = append(results, &search.Result{
 				Field:   "Description",
 				Content: channelItem.Description,
 			})
@@ -104,13 +107,13 @@ func (m *rssMatcher) Search(searchTerm string) ([]*match.Result, error) {
 }
 
 // retrieve performs a HTTP Get request for the rss feed and decodes the results.
-func (m *rssMatcher) retrieve() (*document, error) {
-	if m.Uri == "" {
+func (m *rssMatcher) retrieve(feed *search.Feed) (*document, error) {
+	if feed.Uri == "" {
 		return nil, errors.New("No rss feed uri provided")
 	}
 
 	// Retrieve the rss feed document from the web.
-	resp, err := http.Get(m.Uri)
+	resp, err := http.Get(feed.Uri)
 	if err != nil {
 		return nil, err
 	}
