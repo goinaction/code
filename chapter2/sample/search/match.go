@@ -17,10 +17,10 @@ type Matcher interface {
 	Search(feed *Feed, searchTerm string) ([]*Result, error)
 }
 
-// Match is launched as a goroutine for each indidivudal feed to perform
-// the specific search logic for the feed type.
+// Match is launched as a goroutine for each indidivudal feed to run
+// searches concurrently.
 func Match(matcher Matcher, feed *Feed, searchTerm string, results chan<- *Result) {
-	// Perform the search agains the specified matcher.
+	// Perform the search against the specified matcher.
 	searchResults, err := matcher.Search(feed, searchTerm)
 	if err != nil {
 		log.Println(err)

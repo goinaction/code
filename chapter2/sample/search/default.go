@@ -1,6 +1,6 @@
 package search
 
-// defaultMatcher implements the defaut matcher.
+// defaultMatcher implements the default matcher.
 type defaultMatcher struct{}
 
 // init registeres the default matcher with the program.
