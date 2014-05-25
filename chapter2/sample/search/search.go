@@ -20,8 +20,8 @@ func Register(feedType string, matcher Matcher) {
 
 // Run performs the search logic.
 func Run(searchTerm string) {
-	// RetrieveFeed returns the list of feeds to search through.
-	feeds, err := RetrieveFeed()
+	// Retrieve the list of feeds to search through.
+	feeds, err := RetrieveFeeds()
 	if err != nil {
 		log.Fatal(err)
 	}
