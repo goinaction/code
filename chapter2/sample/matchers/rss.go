@@ -3,6 +3,7 @@ package matchers
 import (
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -125,7 +126,7 @@ func (m *rssMatcher) retrieve(feed *search.Feed) (*document, error) {
 	// Check the status code for a 200 so we know we have received a
 	// proper response.
 	if resp.StatusCode != 200 {
-		return nil, err
+		return nil, fmt.Errorf("HTTP Response Error %d\n", resp.StatusCode)
 	}
 
 	// Decode the rss feed document into our struct type.
