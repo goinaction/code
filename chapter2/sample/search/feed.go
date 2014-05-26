@@ -16,7 +16,7 @@ type Feed struct {
 	Type string `json:"type"`
 }
 
-// RetrieveFeed reads and unmarshals the feed data file.
+// RetrieveFeeds reads and unmarshals the feed data file.
 func RetrieveFeeds() ([]*Feed, error) {
 	// Open the file.
 	file, err := os.Open(dataFile)
