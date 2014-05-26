@@ -8,16 +8,6 @@ import (
 // A map of registered matchers for searching.
 var matchers map[string]Matcher = map[string]Matcher{}
 
-// Register is called to register a matcher for use by the program.
-func Register(feedType string, matcher Matcher) {
-	if _, exists := matchers[feedType]; exists {
-		log.Fatalln(feedType, "Matcher already registered")
-	}
-
-	log.Println("Register", feedType, "matcher")
-	matchers[feedType] = matcher
-}
-
 // Run performs the search logic.
 func Run(searchTerm string) {
 	// Retrieve the list of feeds to search through.
@@ -64,4 +54,14 @@ func Run(searchTerm string) {
 	// Start displaying results as they are avaiable and
 	// return after the final result is displayed.
 	Display(results)
+}
+
+// Register is called to register a matcher for use by the program.
+func Register(feedType string, matcher Matcher) {
+	if _, exists := matchers[feedType]; exists {
+		log.Fatalln(feedType, "Matcher already registered")
+	}
+
+	log.Println("Register", feedType, "matcher")
+	matchers[feedType] = matcher
 }
