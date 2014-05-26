@@ -8,7 +8,7 @@ import (
 //<start id="refactoredticket">
 type SpeedingTicket struct {
 	DocumentNumber int
-	Driver
+	Driver         Driver
 	IssuingOfficer string
 	Location       string
 	PostedSpeed    int
@@ -48,7 +48,7 @@ func main() {
 
 	tix.Driver = d //<co id="assigndriver" />
 
-	tix.LicenseNumber = "G234-0598-01287"
+	// 	tix.LicenseNumber = "G234-0598-01287"
 	tix.IssuingOfficer = "Officer D. Duck"
 	tix.Location = "Intersection of HWY 54 and HWY 41"
 	tix.PostedSpeed = 55
@@ -59,7 +59,7 @@ func main() {
 	//<start id="shorterway">
 	tix3 := SpeedingTicket{
 		84756,
-		&Driver{"G234-0598-01287", //<co id="embeddedstructliteral" />
+		Driver{"G234-0598-01287", //<co id="embeddedstructliteral" />
 			"Speedy Gonzales",
 			"123 Any Street",
 			"Albuquerque",
