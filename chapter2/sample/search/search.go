@@ -35,13 +35,13 @@ func Run(searchTerm string) {
 		}
 
 		// Launch the goroutine to perform the search.
-		go func(feed *Feed) {
+		go func(matcher Matcher, feed *Feed) {
 			Match(matcher, feed, searchTerm, results)
 			waitGroup.Done()
-		}(feed)
+		}(matcher, feed)
 	}
 
-	// Launch a groutine to monitor when all the work is done.
+	// Launch a goroutine to monitor when all the work is done.
 	go func() {
 		// Wait for everything to be processed.
 		waitGroup.Wait()
