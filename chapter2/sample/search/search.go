@@ -51,7 +51,7 @@ func Run(searchTerm string) {
 		close(results)
 	}()
 
-	// Start displaying results as they are avaiable and
+	// Start displaying results as they are available and
 	// return after the final result is displayed.
 	Display(results)
 }
