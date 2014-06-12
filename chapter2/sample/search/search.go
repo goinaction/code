@@ -2,18 +2,11 @@ package search
 
 import (
 	"log"
-	"os"
 	"sync"
 )
 
 // A map of registered matchers for searching.
 var matchers map[string]Matcher = make(map[string]Matcher)
-
-// initis called prior to main.
-func init() {
-	// Change the device for logging to stdout.
-	log.SetOutput(os.Stdout)
-}
 
 // Run performs the search logic.
 func Run(searchTerm string) {
