@@ -7,117 +7,163 @@ package main
 import (
 	"log"
 	"sync"
+	"time"
 
 	"github.com/goinaction/code/chapter6/patterns/stream/station"
 	"github.com/goinaction/code/chapter6/patterns/stream/timezone"
 )
 
 const (
-	buffer           = 30
-	totalWorkers     = 10
 	geoNamesUserName = "ardanstudios"
 )
 
-func main() {
-	FindTimezones()
-}
+// processor manages a stream of work.
+type processor struct {
+	// This channel is used to shutdown the program.
+	shutdown chan struct{}
 
-// FindTimezones use concurrency to retrieve timezones for a set of stations.
-func FindTimezones() {
+	// The WaitGroup keeps track of all running goroutines.
+	waitGroup sync.WaitGroup
+
 	// This channel buffers all the work coming in off the stream.
-	stream := make(chan *station.Station, buffer)
+	stream chan *station.Station
 
 	// This channel contains the current work being processed.
-	work := make(chan *station.Station, totalWorkers)
+	work chan *station.Station
 
 	// This channel is used to communicate work that has been processed
 	// back to the main processing routine.
-	processed := make(chan *station.Station, 1)
+	processed chan *station.Station
 
-	totalStations := StartStream(stream)
-	LaunchWorkRoutines(work, processed)
-	stations := ProcessWork(stream, work, processed, totalStations)
+	// Total number of workers to process work.
+	totalWorkers int
+}
 
-	// Shutdown the goroutines that perform the work
-	close(work)
-
-	// Display the results for all the processed work.
-	for _, station := range stations {
-		if station.Err != nil {
-			log.Printf("Station[%s]\tERROR[%s]\n", station.Name, station.Err)
-		} else {
-			log.Printf("Station[%s]\tTZ[%s]\n", station.Name, station.Timezone.TimezoneId)
-		}
+// FindTimezones use concurrency to retrieve timezones for a set of stations.
+func main() {
+	p := processor{
+		shutdown:     make(chan struct{}),
+		stream:       make(chan *station.Station, 30),
+		work:         make(chan *station.Station, 10),
+		processed:    make(chan *station.Station, 1),
+		totalWorkers: 10,
 	}
+
+	p.Run()
+	time.Sleep(5 * time.Second)
+	p.Shutdown()
+}
+
+// Run launches the goroutines to process the stream.
+func (p *processor) Run() {
+	p.LaunchWorkRoutines()
+	p.ProcessWork()
+	p.StartStream()
+}
+
+// Shutdown shutdown all the running goroutines.
+func (p *processor) Shutdown() {
+	log.Println("Shutdown\t: Started")
+
+	close(p.shutdown)
+	p.waitGroup.Wait()
+
+	log.Println("Shutdown\t: Completed")
 }
 
 // StartStream simulates the loading of work from a stream into the stream channel so
 // it can be processed.
-func StartStream(stream chan<- *station.Station) int {
-	// Retrieve the set of stations to process.
-	stations := station.LoadStations()
+func (p *processor) StartStream() {
+	p.waitGroup.Add(1)
 
 	// Launch a goroutine to load these stations
 	// into the stream channel.
 	go func() {
-		for _, station := range stations {
-			stream <- station
+		for {
+			log.Println("Stream\t: Send Burst")
+
+			// Read the file for work to be accomplished.
+			stations := station.LoadStations()
+
+			// Load the work into the stream channel.
+			for _, station := range stations {
+				p.stream <- station
+			}
+
+			select {
+			// If we are being signaled to shutdown, do so.
+			case <-p.shutdown:
+				log.Println("Stream\t: Shutdown")
+				p.waitGroup.Done()
+				return
+
+			// Sleep for two seconds and send another burst.
+			case <-time.After(2 * time.Second):
+			}
 		}
-
-		// Close the stream channel once the last station
-		// is loaded. This will let us determine when the last
-		// station is pulled from the stream.
-		close(stream)
 	}()
-
-	// Return the number of stations we will be processing.
-	return len(stations)
 }
 
 // LaunchWorkRoutines launch the goroutines that perform the actual work. These goroutines
 // call into the GeoNames api to retrieve the timezone information for each station.
-func LaunchWorkRoutines(work <-chan *station.Station, processed chan<- *station.Station) {
-	for worker := 0; worker <= totalWorkers; worker++ {
+func (p *processor) LaunchWorkRoutines() {
+	p.waitGroup.Add(p.totalWorkers)
+
+	for worker := 0; worker <= p.totalWorkers; worker++ {
 		// Launch a goroutine to process work.
 		go func() {
-			// Pull a station off the work channel.
-			for station := range work {
-				log.Printf("Work\t: Processing\t: %s\n", station.Name)
+			for {
+				select {
+				case <-p.shutdown:
+					log.Println("Work\t: Shutdown")
+					p.waitGroup.Done()
+					return
 
-				// Call into the geonames api.
-				station.Timezone, station.Err = timezone.RetrieveGeoNamesTimezone(
-					station.Location.Coordinates[1],
-					station.Location.Coordinates[0],
-					geoNamesUserName)
+				// Pull a station off the work channel.
+				case station := <-p.work:
+					log.Printf("Work\t: Processing\t: %s\n", station.Name)
 
-				// Push the station on the processed channel
-				// so it can be saved and returned.
-				processed <- station
+					// Call into the geonames api.
+					station.Timezone, station.Err = timezone.RetrieveGeoNamesTimezone(
+						station.Location.Coordinates[1],
+						station.Location.Coordinates[0],
+						geoNamesUserName)
+
+					select {
+					case <-p.shutdown:
+						log.Println("Work\t: Shutdown")
+						p.waitGroup.Done()
+						return
+
+					default:
+					}
+
+					// Push the station on the processed channel
+					// so it can be saved and returned.
+					p.processed <- station
+				}
 			}
-
-			log.Println("Work\t: Shutdown")
 		}()
 	}
 }
 
 // ProcessWork coordinates the work of retrieving timezone information for all the work in the stream. It move
 // work from the stream into the work channel and receives processed worked.
-func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, processed <-chan *station.Station, totalStations int) []*station.Station {
-	// Create a waitgroup to wait for all the stations to be processed.
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(totalStations)
-
-	// Slice of processes stations to be returned.
-	stations := make([]*station.Station, totalStations)
+func (p *processor) ProcessWork() {
+	p.waitGroup.Add(1)
 
 	go func() {
-		streamBuffer := stream // Using a temp vartiable to control the flow of the stream.
-		streamClosed := false  // Flag to determine when the stream is closed.
-		busyWorkers := 0       // Tracks the number of worker routines that are busy.
-		completed := 0         // Tracks the number of stations completed.
+		streamBuffer := p.stream // Using a temp vartiable to control the flow of the stream.
+		streamClosed := false    // Flag to determine when the stream is closed.
+		busyWorkers := 0         // Tracks the number of worker routines that are busy.
 
 		for {
 			select {
+			case <-p.shutdown:
+				log.Println("Processor\t: Shutdown")
+				p.waitGroup.Done()
+				return
+
 			// Pull work off the stream.
 			case station, ok := <-streamBuffer:
 				if !ok {
@@ -131,17 +177,23 @@ func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, p
 				log.Printf("Stream\t: Posting\t: Name[%s] Count[%d]\n", station.Name, busyWorkers)
 
 				// Send the station to the work channel for processing.
-				work <- station
+				p.work <- station
 
 				// If all the work goroutines are busy, don't process any
 				// more stations from the stream. Let's get some work done.
-				if busyWorkers == totalWorkers {
+				if busyWorkers == p.totalWorkers {
 					log.Printf("Stream\t: Paused\t: Count[%d]\n", busyWorkers)
 					streamBuffer = nil
 				}
 
 			// Work that has been processed.
-			case station := <-processed:
+			case station := <-p.processed:
+				if station == nil {
+					log.Println("Process\t: Shutdown")
+					p.waitGroup.Done()
+					return
+				}
+
 				busyWorkers--
 				if station.Err != nil {
 					log.Printf("Work\t: ERROR\t: Name[%s] ERROR[%s] Count[%d]\n", station.Name, station.Err, busyWorkers)
@@ -149,26 +201,14 @@ func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, p
 					log.Printf("Work\t: Completed\t: Name[%s] TZ[%s] Count[%d]\n", station.Name, station.Timezone.TimezoneId, busyWorkers)
 				}
 
-				// Store the station in the final slice.
-				stations[completed] = station
-				completed++
-
-				// Report that work for this station is complete.
-				waitGroup.Done()
-
 			// Neither the stream nor the processed channel has work to do. Determine
 			// if we open the stream again.
 			default:
-				if streamBuffer == nil && (busyWorkers < totalWorkers) && !streamClosed {
+				if streamBuffer == nil && (busyWorkers < p.totalWorkers) && !streamClosed {
 					log.Printf("Stream\t: Opened\t: Count[%d]\n", busyWorkers)
-					streamBuffer = stream
+					streamBuffer = p.stream
 				}
 			}
 		}
 	}()
-
-	// Wait until all the stations have been processed.
-	waitGroup.Wait()
-
-	return stations
 }
