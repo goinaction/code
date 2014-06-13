@@ -129,6 +129,8 @@ func (p *processor) LaunchWorkRoutines() {
 						station.Location.Coordinates[0],
 						geoNamesUserName)
 
+					// Before we write to the channel, check to see if
+					// we are shutting down.
 					select {
 					case <-p.shutdown:
 						log.Println("Work\t: Shutdown")
