@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	buffer           = 10000
+	buffer           = 30
 	totalWorkers     = 10
 	geoNamesUserName = "ardanstudios"
 )
@@ -24,13 +24,13 @@ func main() {
 
 // FindTimezones use concurrency to retrieve timezones for a set of stations.
 func FindTimezones() {
-	// This channel buffers all the stations that need to be processed.
+	// This channel buffers all the work coming in off the stream.
 	stream := make(chan *station.Station, buffer)
 
-	// This channel buffers the current stations being processed.
+	// This channel contains the current work being processed.
 	work := make(chan *station.Station, totalWorkers)
 
-	// This channel is used to communicate stations that have been processed
+	// This channel is used to communicate work that has been processed
 	// back to the main processing routine.
 	processed := make(chan *station.Station, 1)
 
@@ -38,18 +38,21 @@ func FindTimezones() {
 	LaunchWorkRoutines(work, processed)
 	stations := ProcessWork(stream, work, processed, totalStations)
 
-	// Display the results for all the processed station.
+	// Shutdown the goroutines that perform the work
+	close(work)
+
+	// Display the results for all the processed work.
 	for _, station := range stations {
 		if station.Err != nil {
 			log.Printf("Station[%s]\tERROR[%s]\n", station.Name, station.Err)
 		} else {
 			log.Printf("Station[%s]\tTZ[%s]\n", station.Name, station.Timezone.TimezoneId)
 		}
-
 	}
 }
 
-// StartStream loads the stations into the stream channel so they can be process.
+// StartStream simulates the loading of work from a stream into the stream channel so
+// it can be processed.
 func StartStream(stream chan<- *station.Station) int {
 	// Retrieve the set of stations to process.
 	stations := station.LoadStations()
@@ -71,35 +74,34 @@ func StartStream(stream chan<- *station.Station) int {
 	return len(stations)
 }
 
-// LaunchWorkRoutines launch the goroutines call into the GeoNames api to retrieve
-// the timezone information for each station.
+// LaunchWorkRoutines launch the goroutines that perform the actual work. These goroutines
+// call into the GeoNames api to retrieve the timezone information for each station.
 func LaunchWorkRoutines(work <-chan *station.Station, processed chan<- *station.Station) {
 	for worker := 0; worker <= totalWorkers; worker++ {
 		// Launch a goroutine to process work.
 		go func() {
-			for {
-				select {
-				// Pull a station off the work channel.
-				case station := <-work:
-					log.Printf("Work\t: Processing\t: %s\n", station.Name)
+			// Pull a station off the work channel.
+			for station := range work {
+				log.Printf("Work\t: Processing\t: %s\n", station.Name)
 
-					// Call into the geonames api.
-					station.Timezone, station.Err = timezone.RetrieveGeoNamesTimezone(
-						station.Location.Coordinates[1],
-						station.Location.Coordinates[0],
-						geoNamesUserName)
+				// Call into the geonames api.
+				station.Timezone, station.Err = timezone.RetrieveGeoNamesTimezone(
+					station.Location.Coordinates[1],
+					station.Location.Coordinates[0],
+					geoNamesUserName)
 
-					// Push the station on the processed channel
-					// so it can be saved and returned.
-					processed <- station
-				}
+				// Push the station on the processed channel
+				// so it can be saved and returned.
+				processed <- station
 			}
+
+			log.Println("Work\t: Shutdown")
 		}()
 	}
 }
 
-// ProcessWork coordinates the work of retrieving timezone information for all the stations in the stream. It pushes
-// stations on the work channel and receives processed stations.
+// ProcessWork coordinates the work of retrieving timezone information for all the work in the stream. It move
+// work from the stream into the work channel and receives processed worked.
 func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, processed <-chan *station.Station, totalStations int) []*station.Station {
 	// Create a waitgroup to wait for all the stations to be processed.
 	var waitGroup sync.WaitGroup
@@ -116,7 +118,7 @@ func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, p
 
 		for {
 			select {
-			// Pull stations off the stream.
+			// Pull work off the stream.
 			case station, ok := <-streamBuffer:
 				if !ok {
 					log.Println("Stream\t: Closed\t:")
@@ -138,7 +140,7 @@ func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, p
 					streamBuffer = nil
 				}
 
-			// Stations that have been processed.
+			// Work that has been processed.
 			case station := <-processed:
 				busyWorkers--
 				if station.Err != nil {
