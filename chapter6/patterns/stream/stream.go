@@ -24,10 +24,10 @@ func main() {
 
 // FindTimezones use concurrency to retrieve timezones for a set of stations.
 func FindTimezones() {
-	// This channel contains all the stations that need to be processed.
+	// This channel buffers all the stations that need to be processed.
 	stream := make(chan *station.Station, buffer)
 
-	// This channel contains the current stations being processed.
+	// This channel buffers the current stations being processed.
 	work := make(chan *station.Station, totalWorkers)
 
 	// This channel is used to communicate stations that have been processed
