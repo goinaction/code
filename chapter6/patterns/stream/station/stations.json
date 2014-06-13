@@ -1,0 +1,1343 @@
+[
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.658, 
+            25.888
+        ]
+    },
+    "location_desc" : "180 nm South of Southwest Pass, LA",
+    "name" : "Station 42001 - Mid Gulf"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.666, 
+            25.79
+        ]
+    },
+    "location_desc" : "207 NM East of Brownsville, TX",
+    "name" : "Station 42002 - West Gulf"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -85.61199999999999, 
+            26.044
+        ]
+    },
+    "location_desc" : null,
+    "name" : "Station 42003"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -87.55500000000001, 
+            30.065
+        ]
+    },
+    "location_desc" : "44 NM SE of Mobile, AL",
+    "name" : "Station 42012 - Orange Beach"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -95.35299999999999, 
+            27.913
+        ]
+    },
+    "location_desc" : "60 NM South of Freeport, TX",
+    "name" : "Station 42019 - Freeport"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -96.694, 
+            26.968
+        ]
+    },
+    "location_desc" : "60NM SSE of Corpus Christi, TX",
+    "name" : "Station 42020 - Corpus Christi"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.413, 
+            29.232
+        ]
+    },
+    "location_desc" : "22 NM East of Galveston, TX",
+    "name" : "Station 42035 - Galveston"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.517, 
+            28.5
+        ]
+    },
+    "location_desc" : "112 NM WNW of Tampa, FL",
+    "name" : "Station 42036 - West Tampa"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -86.006, 
+            28.794
+        ]
+    },
+    "location_desc" : "115NM ESE of Pensacola, FL",
+    "name" : "Station 42039 - Pensacola"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.20699999999999, 
+            29.212
+        ]
+    },
+    "location_desc" : "64 NM South of Dauphin Island, AL",
+    "name" : "Station 42040 - Luke Offshore Test Platform"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94, 
+            22.203
+        ]
+    },
+    "location_desc" : "214 NM NE OF Veracruz, MX",
+    "name" : "Station 42055 - Bay of Campeche"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.245, 
+            27.34
+        ]
+    },
+    "location_desc" : "Offshore St. Petersburg, FL",
+    "name" : "Station 42099"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.45999999999999, 
+            26.7
+        ]
+    },
+    "location_desc" : "Walker Ridge 249",
+    "name" : "Station 42360 - BW Pioneer"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -92.48999999999999, 
+            27.55
+        ]
+    },
+    "location_desc" : "Garden Banks 426",
+    "name" : "Station 42361 - Auger"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.22, 
+            28.16
+        ]
+    },
+    "location_desc" : "Mississippi Canyon 807",
+    "name" : "Station 42363 - Mars"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.09, 
+            29.06
+        ]
+    },
+    "location_desc" : "Viosca Knoll 956",
+    "name" : "Station 42364 - Ram-Powell"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.12, 
+            28.2
+        ]
+    },
+    "location_desc" : "Mississippi Canyon 809",
+    "name" : "Station 42365 - Ursa"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.283, 
+            27.207
+        ]
+    },
+    "location_desc" : "Green Canyon 782",
+    "name" : "Station 42369 - Mad Dog"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.289, 
+            28.521
+        ]
+    },
+    "location_desc" : "Mississippi Canyon 474",
+    "name" : "Station 42375 - Na Kika"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.027, 
+            27.196
+        ]
+    },
+    "location_desc" : "Green Canyon",
+    "name" : "Station 42392 - Atlantis"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.496, 
+            28.191
+        ]
+    },
+    "location_desc" : "Mississippi Canyon 778",
+    "name" : "Station 42887 - Thunder Horse"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -91.33799999999999, 
+            29.45
+        ]
+    },
+    "location_desc" : "Amerada Pass, LA",
+    "name" : "Station AMRL1 - 8764227"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.982, 
+            29.727
+        ]
+    },
+    "location_desc" : "Apalachicola, FL",
+    "name" : "Station APCF1 - 8728690"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.883, 
+            29.791
+        ]
+    },
+    "location_desc" : "Apalachicola Reserve, FL",
+    "name" : "Station APXF1"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.667, 
+            28.433
+        ]
+    },
+    "location_desc" : "Aripeka, FL",
+    "name" : "Station ARPF1 - APK"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.416, 
+            27.301
+        ]
+    },
+    "location_desc" : "Baffin Bay; Point of Rocks, TX",
+    "name" : "Station BABT2 - 8776604"
+},
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.881, 
+            26.404
+        ]
+    },
+    "location_desc" : "Big Carlos Pass, FL",
+    "name" : "Station BGCF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.29600000000001, 
+            30.194
+        ]
+    },
+    "location_desc" : "Lake Charles Bulk Terminal, LA",
+    "name" : "Station BKTL1 - 8767961"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -87.82899999999999, 
+            30.329
+        ]
+    },
+    "location_desc" : "Bon Secour, AL",
+    "name" : "Station BSCA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.42, 
+            29.789
+        ]
+    },
+    "location_desc" : "Bayou Gauche, LA",
+    "name" : "Station BYGL1 - 8762482"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.649, 
+            27.765
+        ]
+    },
+    "location_desc" : "Campbell Park, FL",
+    "name" : "Station CAMF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.343, 
+            29.768
+        ]
+    },
+    "location_desc" : "Calcasieu Pass, LA",
+    "name" : "Station CAPL1 - 8768094"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.136, 
+            29.933
+        ]
+    },
+    "location_desc" : "Carrollton, LA",
+    "name" : "Station CARL1 - 8761955"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -83.029, 
+            29.136
+        ]
+    },
+    "location_desc" : "Cedar Key, FL",
+    "name" : "Station CDRF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.056, 
+            28.791
+        ]
+    },
+    "location_desc" : "Cognac",
+    "name" : "Station CGCL1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.18600000000001, 
+            25.7
+        ]
+    },
+    "location_desc" : "Cannon Bay, FL",
+    "name" : "Station CNBF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.02200000000001, 
+            28.118
+        ]
+    },
+    "location_desc" : "Copano Bay, TX",
+    "name" : "Station CPNT2 - 8774513"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.14, 
+            30.308
+        ]
+    },
+    "location_desc" : "Cedar Point, AL",
+    "name" : "Station CRTA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.01300000000001, 
+            25.295
+        ]
+    },
+    "location_desc" : "Clear Water Pass, FL",
+    "name" : "Station CWAF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.83199999999999, 
+            27.977
+        ]
+    },
+    "location_desc" : "Clearwater Beach, FL",
+    "name" : "Station CWBF1 - 8726724"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.56699999999999, 
+            30.355
+        ]
+    },
+    "location_desc" : "Dock C, Pascagoula, MS",
+    "name" : "Station DKCM6 - 8741501"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.07299999999999, 
+            30.248
+        ]
+    },
+    "location_desc" : "Dauphin Island, AL",
+    "name" : "Station DPIA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.76000000000001, 
+            27.601
+        ]
+    },
+    "location_desc" : "Egmont Key, FL",
+    "name" : "Station EGKF1 - EGK"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.91800000000001, 
+            29.48
+        ]
+    },
+    "location_desc" : "Eagle Point, TX",
+    "name" : "Station EPTT2 - 8771013"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -95.303, 
+            28.943
+        ]
+    },
+    "location_desc" : "USCG Freeport, TX",
+    "name" : "Station FCGT2 - 8772447"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.801, 
+            28.153
+        ]
+    },
+    "location_desc" : "Fred Howard Park, FL",
+    "name" : "Station FHPF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.02500000000001, 
+            30.228
+        ]
+    },
+    "location_desc" : "Fort Morgan, AL",
+    "name" : "Station FMOA1 - 8734673"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.872, 
+            26.647
+        ]
+    },
+    "location_desc" : "Fort Myers, FL",
+    "name" : "Station FMRF1 - 8725520"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.465, 
+            30.672
+        ]
+    },
+    "location_desc" : "Fernandina Beach, FL",
+    "name" : "Station FRDF1 - 8720030"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -92.30500000000001, 
+            29.555
+        ]
+    },
+    "location_desc" : "Fresh Water Canal Locks, LA",
+    "name" : "Station FRWL1 - 8766072"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.029, 
+            25.376
+        ]
+    },
+    "location_desc" : "Gunboat Island, FL",
+    "name" : "Station GBIF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.42, 
+            30.359
+        ]
+    },
+    "location_desc" : "Grand Bay Reserve, MS",
+    "name" : "Station GDXM6"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.95699999999999, 
+            29.263
+        ]
+    },
+    "location_desc" : "Grand Isle, LA",
+    "name" : "Station GISL1 - 8761724"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.723, 
+            29.357
+        ]
+    },
+    "location_desc" : "Galveston Bay (North Jetty), TX",
+    "name" : "Station GNJT2 - 8771341"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.79300000000001, 
+            29.31
+        ]
+    },
+    "location_desc" : "Galveston Pier 21, TX",
+    "name" : "Station GTOT2 - 8771450"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.22, 
+            29.658
+        ]
+    },
+    "location_desc" : "Guana Tolomato Matanzas Reserve, FL",
+    "name" : "Station GTXF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.21299999999999, 
+            30.258
+        ]
+    },
+    "location_desc" : "Katrina Cut, AL",
+    "name" : "Station KATA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -83.592, 
+            29.817
+        ]
+    },
+    "location_desc" : "Keaton Beach, FL",
+    "name" : "Station KTNF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.111, 
+            25.484
+        ]
+    },
+    "location_desc" : "Broad River Lower, FL",
+    "name" : "Station LBRF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.22199999999999, 
+            30.223
+        ]
+    },
+    "location_desc" : "Lake Charles, LA",
+    "name" : "Station LCLL1 - 8767816"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.169, 
+            25.554
+        ]
+    },
+    "location_desc" : "Lostmans River, FL",
+    "name" : "Station LMRF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.024, 
+            28.885
+        ]
+    },
+    "location_desc" : "Louisiana Offshore Oil Port, LA",
+    "name" : "Station LOPL1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.03400000000001, 
+            28.132
+        ]
+    },
+    "location_desc" : "Mission-Aransas Reserve, TX",
+    "name" : "Station MAXT2"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.012, 
+            30.437
+        ]
+    },
+    "location_desc" : "Middle Bay Light, AL",
+    "name" : "Station MBLA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.05800000000001, 
+            30.648
+        ]
+    },
+    "location_desc" : "Coast Guard Sector Mobile, AL",
+    "name" : "Station MCGA1 - 8736897"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.425, 
+            27.913
+        ]
+    },
+    "location_desc" : "McKay Bay Entrance, FL",
+    "name" : "Station MCYF1 - 8726667"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.985, 
+            29.682
+        ]
+    },
+    "location_desc" : "Morgans Point, TX",
+    "name" : "Station MGPT2 - 8770613"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -87.93600000000001, 
+            30.667
+        ]
+    },
+    "location_desc" : "Meaher Park, AL",
+    "name" : "Station MHPA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.217, 
+            27.58
+        ]
+    },
+    "location_desc" : "Malaquite Beach (Corpus Christi), TX",
+    "name" : "Station MQTT2 - 8775870"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -92.06100000000001, 
+            29.44
+        ]
+    },
+    "location_desc" : "Marsh Island, LA - CSI03",
+    "name" : "Station MRSL1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -95.26600000000001, 
+            29.726
+        ]
+    },
+    "location_desc" : "Manchester, TX",
+    "name" : "Station NCHT2 - 8770777"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.203, 
+            27.822
+        ]
+    },
+    "location_desc" : "Port Ingleside, TX",
+    "name" : "Station NGLT2 - 8775283"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.203, 
+            27.822
+        ]
+    },
+    "location_desc" : "Port Ingleside, TX",
+    "name" : "Station NGLT2 - 8775283"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.113, 
+            30.027
+        ]
+    },
+    "location_desc" : "New Canal, LA",
+    "name" : "Station NWCL1 - 8761927"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.04300000000001, 
+            30.708
+        ]
+    },
+    "location_desc" : "Mobile State Docks, AL",
+    "name" : "Station OBLA1 - 8737048"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.553, 
+            27.858
+        ]
+    },
+    "location_desc" : "Old Port Tampa, FL",
+    "name" : "Station OPTF1 - 8726607"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -85.667, 
+            30.152
+        ]
+    },
+    "location_desc" : "Panama City, FL",
+    "name" : "Station PACF1 - 8729108"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.23699999999999, 
+            27.633
+        ]
+    },
+    "location_desc" : "Packery Channel, TX",
+    "name" : "Station PACT2 - 8775792"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.17700000000001, 
+            26.077
+        ]
+    },
+    "location_desc" : "South Padre Island CGS, TX",
+    "name" : "Station PCGT2 - 8779748"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -96.38800000000001, 
+            28.452
+        ]
+    },
+    "location_desc" : "Matagorda Bay; Port O'Connor, TX",
+    "name" : "Station PCNT2 - 8773701"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.258, 
+            29.178
+        ]
+    },
+    "location_desc" : "Pilot Town, LA",
+    "name" : "Station PILL1 - 8760721"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.563, 
+            27.637
+        ]
+    },
+    "location_desc" : "Port Manatee, FL",
+    "name" : "Station PMAF1 - 8726384"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.56699999999999, 
+            30.358
+        ]
+    },
+    "location_desc" : "Pascagoula NOAA Lab, MS",
+    "name" : "Station PNLM6 - 8741533"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.93000000000001, 
+            29.867
+        ]
+    },
+    "location_desc" : "Port Arthur, TX",
+    "name" : "Station PORT2 - 8770475"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -87.556, 
+            30.279
+        ]
+    },
+    "location_desc" : "Perdido Pass, AL",
+    "name" : "Station PPTA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.407, 
+            28.932
+        ]
+    },
+    "location_desc" : "Pilot's Station East, SW Pass, LA",
+    "name" : "Station PSTL1 - 8760922"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.05, 
+            27.828
+        ]
+    },
+    "location_desc" : "Port Aransas, TX",
+    "name" : "Station PTAT2 - 8760922"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.5, 
+            30.213
+        ]
+    },
+    "location_desc" : "Petit Bois Island, MS",
+    "name" : "Station PTBM6 - 8741003"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.215, 
+            26.06
+        ]
+    },
+    "location_desc" : "Port Isabel, TX",
+    "name" : "Station PTIT2 - 8779770"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.512, 
+            30.343
+        ]
+    },
+    "location_desc" : "Range A rear, Pascagoula, MS",
+    "name" : "Station RARM6 - 8741094"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.047, 
+            28.022
+        ]
+    },
+    "location_desc" : "Rockport, TX",
+    "name" : "Station RCPT2 - 8774770"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.70099999999999, 
+            26.05
+        ]
+    },
+    "location_desc" : "Rookery Bay Reserve, FL",
+    "name" : "Station RKXF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.51300000000001, 
+            29.515
+        ]
+    },
+    "location_desc" : "Rollover Pass, TX",
+    "name" : "Station RLOT2 - 8770971"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.483, 
+            26.801
+        ]
+    },
+    "location_desc" : "Rincon del San Jose; Potrero Lopeno SW, TX",
+    "name" : "Station RSJT2 - 8777812"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.07299999999999, 
+            27.84
+        ]
+    },
+    "location_desc" : "Port Aransas, TX",
+    "name" : "Station RTAT2 - 8775237"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.627, 
+            27.76
+        ]
+    },
+    "location_desc" : "St. Petersburg, FL",
+    "name" : "Station SAPF1 - 8726520"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.44499999999999, 
+            27.923
+        ]
+    },
+    "location_desc" : "Seabulk, Tampa, FL",
+    "name" : "Station SBLF1 - 8726673"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.87, 
+            29.73
+        ]
+    },
+    "location_desc" : "Sabine Pass North, TX",
+    "name" : "Station SBPT2 - 8770570"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -96.712, 
+            28.407
+        ]
+    },
+    "location_desc" : "Seadrift, TX",
+    "name" : "Station SDRT2 - 8773037"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.863, 
+            29.407
+        ]
+    },
+    "location_desc" : "Tyndall AFB Tower C (N4), FL",
+    "name" : "Station SGOF1 - 8773037"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -89.673, 
+            29.868
+        ]
+    },
+    "location_desc" : "Shell Beach, LA",
+    "name" : "Station SHBL1 - 8761305"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -84.291, 
+            30.06
+        ]
+    },
+    "location_desc" : "Shell Point, FL",
+    "name" : "Station SHPF1 - SHP"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -90.483, 
+            28.867
+        ]
+    },
+    "location_desc" : "South Timbalier Block 52, LA",
+    "name" : "Station SPLL1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -94.033, 
+            29.683
+        ]
+    },
+    "location_desc" : "Sabine Pass, TX",
+    "name" : "Station SRST2"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -97.39, 
+            27.812
+        ]
+    },
+    "location_desc" : "Texas State Aquarium, TX",
+    "name" : "Station TAQT2 - 8775296"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -91.23699999999999, 
+            29.667
+        ]
+    },
+    "location_desc" : "Tesoro Marine Terminal - Berwick, LA",
+    "name" : "Station TESL1 - 8764044"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.43300000000001, 
+            27.933
+        ]
+    },
+    "location_desc" : "TPA Cruise Terminal 2, Tampa, FL",
+    "name" : "Station TPAF1 - 8726694"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -82.425, 
+            27.928
+        ]
+    },
+    "location_desc" : "East Bay Causeway, FL",
+    "name" : "Station TSHF1 - 8726679"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -93.842, 
+            29.689
+        ]
+    },
+    "location_desc" : "Texas Point, TX",
+    "name" : "Station TXPT2 - 8770822"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -88.505, 
+            30.348
+        ]
+    },
+    "location_desc" : "Dock E. Port of Pascagoula, MS",
+    "name" : "Station ULAM6 - 8741041"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -96.595, 
+            28.64
+        ]
+    },
+    "location_desc" : "Port Lavaca, TX",
+    "name" : "Station VCAT2 - 8773259"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.044, 
+            25.619
+        ]
+    },
+    "location_desc" : "Willy Willy, FL",
+    "name" : "Station WIWF1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -87.82899999999999, 
+            30.421
+        ]
+    },
+    "location_desc" : "Weeks Bay Reserve, AL",
+    "name" : "Station WKXA1"
+}
+,
+{
+    "location" : {
+        "type" : "Point",
+        "coordinates" : [ 
+            -81.248, 
+            25.708
+        ]
+    },
+    "location_desc" : "Watson Place, FL",
+    "name" : "Station WPLF1"
+}
+]
