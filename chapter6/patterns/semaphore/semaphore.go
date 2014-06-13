@@ -1,5 +1,3 @@
-// http://www.golangpatterns.info/concurrency/semaphores
-
 // Copyright Information.
 //
 // This sample program demonstrations how to implement a semaphore using
@@ -100,7 +98,7 @@ func main() {
 // goroutines to process the work, returning the created ReaderWriter value.
 func start(name string, maxReads int, maxReaders int) *readerWriter {
 	// Create a value of readerWriter and initialize.
-	rw := &readerWriter{
+	rw := readerWriter{
 		name:          name,
 		shutdown:      make(chan empty),
 		maxReads:      maxReads,
@@ -118,7 +116,7 @@ func start(name string, maxReads int, maxReaders int) *readerWriter {
 	rw.reportShutdown.Add(1)
 	go rw.writer()
 
-	return rw
+	return &rw
 }
 
 // stop signals to all goroutines to shutdown and reports back
@@ -250,7 +248,7 @@ func (rw *readerWriter) WriteUnlock() {
 // Acquire attempts to secure the specified number of buffers from the
 // semaphore channel.
 func (s semaphore) Acquire(buffers int) {
-	e := empty{}
+	var e empty
 
 	// Write data to secure each buffer.
 	for buffer := 0; buffer < buffers; buffer++ {

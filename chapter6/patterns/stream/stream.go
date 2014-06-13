@@ -8,8 +8,8 @@ import (
 	"log"
 	"sync"
 
-	"test/book/station"
-	"test/book/timezone"
+	"github.com/goinaction/code/chapter6/patterns/stream/station"
+	"github.com/goinaction/code/chapter6/patterns/stream/timezone"
 )
 
 const (
@@ -25,14 +25,14 @@ func main() {
 // FindTimezones use concurrency to retrieve timezones for a set of stations.
 func FindTimezones() {
 	// This channel contains all the stations that need to be processed.
-	stream := make(chan station.Station, buffer)
+	stream := make(chan *station.Station, buffer)
 
 	// This channel contains the current stations being processed.
-	work := make(chan station.Station, totalWorkers)
+	work := make(chan *station.Station, totalWorkers)
 
 	// This channel is used to communicate stations that have been processed
 	// back to the main processing routine.
-	processed := make(chan station.Station, 1)
+	processed := make(chan *station.Station, 1)
 
 	totalStations := StartStream(stream)
 	LaunchWorkRoutines(work, processed)
@@ -50,7 +50,7 @@ func FindTimezones() {
 }
 
 // StartStream loads the stations into the stream channel so they can be process.
-func StartStream(stream chan<- station.Station) int {
+func StartStream(stream chan<- *station.Station) int {
 	// Retrieve the set of stations to process.
 	stations := station.LoadStations()
 
@@ -73,7 +73,7 @@ func StartStream(stream chan<- station.Station) int {
 
 // LaunchWorkRoutines launch the goroutines call into the GeoNames api to retrieve
 // the timezone information for each station.
-func LaunchWorkRoutines(work <-chan station.Station, processed chan<- station.Station) {
+func LaunchWorkRoutines(work <-chan *station.Station, processed chan<- *station.Station) {
 	for worker := 0; worker <= totalWorkers; worker++ {
 		// Launch a goroutine to process work.
 		go func() {
@@ -100,13 +100,13 @@ func LaunchWorkRoutines(work <-chan station.Station, processed chan<- station.St
 
 // ProcessWork coordinates the work of retrieving timezone information for all the stations in the stream. It pushes
 // stations on the work channel and receives processed stations.
-func ProcessWork(stream <-chan station.Station, work chan<- station.Station, processed <-chan station.Station, totalStations int) []station.Station {
+func ProcessWork(stream <-chan *station.Station, work chan<- *station.Station, processed <-chan *station.Station, totalStations int) []*station.Station {
 	// Create a waitgroup to wait for all the stations to be processed.
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(totalStations)
 
 	// Slice of processes stations to be returned.
-	stations := make([]station.Station, totalStations)
+	stations := make([]*station.Station, totalStations)
 
 	go func() {
 		streamBuffer := stream // Using a temp vartiable to control the flow of the stream.

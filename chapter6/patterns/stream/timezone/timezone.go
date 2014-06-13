@@ -118,17 +118,15 @@ func RetrieveGoogleTimezone(latitude float64, longitude float64) (*GoogleTimezon
 		return nil, err
 	}
 
-	defer func() {
-		resp.Body.Close()
-	}()
+	defer resp.Body.Close()
 
 	rawDocument, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	var googleTimezone *GoogleTimezone
-	err = json.Unmarshal(rawDocument, &googleTimezone)
+	var googleTimezone GoogleTimezone
+	err = json.Unmarshal(rawDocument, googleTimezone)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +139,7 @@ func RetrieveGoogleTimezone(latitude float64, longitude float64) (*GoogleTimezon
 		return nil, fmt.Errorf("Error : No Timezone Id Provided")
 	}
 
-	return googleTimezone, err
+	return &googleTimezone, err
 }
 
 // RetrieveGeoNamesTimezone calls the GeoNames API to retrieve the timezone for the lat/lng.
@@ -154,26 +152,19 @@ func RetrieveGeoNamesTimezone(latitude float64, longitude float64, userName stri
 
 	// Make the web call to get the XML data
 	resp, err := http.Get(uri)
-
-	defer func() {
-		if resp != nil {
-			resp.Body.Close()
-		}
-	}()
-
 	if err != nil {
 		return nil, err
 	}
+
+	defer resp.Body.Close()
 
 	rawDocument, err := ioutil.ReadAll(resp.Body)
-
 	if err != nil {
 		return nil, err
 	}
 
-	var geoNamesTimezone *GeoNamesTimezone
+	var geoNamesTimezone GeoNamesTimezone
 	err = json.Unmarshal(rawDocument, &geoNamesTimezone)
-
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +173,7 @@ func RetrieveGeoNamesTimezone(latitude float64, longitude float64, userName stri
 		return nil, fmt.Errorf("Error : No Timezone Id Provided")
 	}
 
-	return geoNamesTimezone, err
+	return &geoNamesTimezone, err
 }
 
 // CatchPanic is used to catch any Panic

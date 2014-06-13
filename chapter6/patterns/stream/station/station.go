@@ -6,15 +6,12 @@ import (
 	"log"
 	"os"
 
-	"test/book/timezone"
+	"github.com/goinaction/code/chapter6/patterns/stream/timezone"
 )
 
-const (
-	fixture = "station/stations.json"
-)
+const fixture = "station/stations.json"
 
 type (
-
 	// StationLocation contains the buoys latitude and longitude location.
 	StationLocation struct {
 		Type        string    `bson:"type"`
@@ -32,7 +29,7 @@ type (
 )
 
 // LoadStations retrieves and unmarshals the data for the program.
-func LoadStations() []Station {
+func LoadStations() []*Station {
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Fatalln(err)
@@ -43,7 +40,7 @@ func LoadStations() []Station {
 		log.Fatalln(err)
 	}
 
-	var stations []Station
+	var stations []*Station
 	err = json.Unmarshal(data, &stations)
 	if err != nil {
 		log.Fatalln(err)
