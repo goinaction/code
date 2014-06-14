@@ -12,7 +12,8 @@ import (
 )
 
 type (
-	// item defines the fields associated with the item tag in the rss document.
+	// item defines the fields associated with the item tag
+	// in the rss document.
 	item struct {
 		XMLName     xml.Name `xml:"item"`
 		PubDate     string   `xml:"pubDate"`
@@ -23,7 +24,8 @@ type (
 		GeoRssPoint string   `xml:"georss:point"`
 	}
 
-	// image defines the fields associated with the image tag in the rss document.
+	// image defines the fields associated with the image tag
+	// in the rss document.
 	image struct {
 		XMLName xml.Name `xml:"image"`
 		URL     string   `xml:"url"`
@@ -31,7 +33,8 @@ type (
 		Link    string   `xml:"link"`
 	}
 
-	// channel defines the fields associated with the channel tag in the rss document.
+	// channel defines the fields associated with the channel tag
+	// in the rss document.
 	channel struct {
 		XMLName        xml.Name `xml:"channel"`
 		Title          string   `xml:"title"`
@@ -47,8 +50,8 @@ type (
 		Item           []item   `xml:"item"`
 	}
 
-	// document defines the fields associated with the rss document.
-	document struct {
+	// rssDocument defines the fields associated with the rss document.
+	rssDocument struct {
 		XMLName xml.Name `xml:"rss"`
 		Channel channel  `xml:"channel"`
 	}
@@ -57,14 +60,14 @@ type (
 // rssMatcher implements the Matcher interface.
 type rssMatcher struct{}
 
-// init registeres the matcher with the program.
+// init registers the matcher with the program.
 func init() {
-	var matcher *rssMatcher
+	var matcher rssMatcher
 	search.Register("rss", matcher)
 }
 
 // Search looks at the document for the specified search term.
-func (m *rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Result, error) {
+func (m rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Result, error) {
 	var results []*search.Result
 
 	log.Printf("Search Feed Type[%s] Site[%s] For Uri[%s]\n", feed.Type, feed.Name, feed.Uri)
@@ -109,7 +112,7 @@ func (m *rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Res
 }
 
 // retrieve performs a HTTP Get request for the rss feed and decodes the results.
-func (m *rssMatcher) retrieve(feed *search.Feed) (*document, error) {
+func (m rssMatcher) retrieve(feed *search.Feed) (*rssDocument, error) {
 	if feed.Uri == "" {
 		return nil, errors.New("No rss feed uri provided")
 	}
@@ -131,7 +134,7 @@ func (m *rssMatcher) retrieve(feed *search.Feed) (*document, error) {
 
 	// Decode the rss feed document into our struct type.
 	// We don't need to check for errors, the caller can do this.
-	var document document
+	var document rssDocument
 	err = xml.NewDecoder(resp.Body).Decode(&document)
 	return &document, err
 }
