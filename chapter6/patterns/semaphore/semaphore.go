@@ -81,14 +81,8 @@ func main() {
 	// Let the program run for 2 seconds.
 	time.Sleep(2 * time.Second)
 
-	// Shutdown the readerWriters
-	var waitShutdown sync.WaitGroup
-	waitShutdown.Add(2)
-
-	go first.stop(&waitShutdown)
-	go second.stop(&waitShutdown)
-
-	waitShutdown.Wait()
+	// Shutdown both of the readerWriter processes.
+	shutdown(first, second)
 
 	log.Println("Process Ended")
 	return
@@ -117,6 +111,21 @@ func start(name string, maxReads int, maxReaders int) *readerWriter {
 	go rw.writer()
 
 	return &rw
+}
+
+// shutdown stops all of the existing readerWriter processes concurrently.
+func shutdown(readerWriters ...*readerWriter) {
+	// Create a WaitGroup to track the shutdowns.
+	var waitShutdown sync.WaitGroup
+	waitShutdown.Add(2)
+
+	// Launch each call to the stop method as a goroutine.
+	for _, readerWriter := range readerWriters {
+		go readerWriter.stop(&waitShutdown)
+	}
+
+	// Wait for all the goroutines to report they are done.
+	waitShutdown.Wait()
 }
 
 // stop signals to all goroutines to shutdown and reports back
