@@ -11,7 +11,7 @@ import (
 const dataFile = "data/latest_obs.txt"
 
 // The list of field names in their file position.
-var fieldNames = [22]string{
+var fieldNames = [...]string{
 	"#STN", "LAT", "LON", "YYYY", "MM", "DD", "hh",
 	"mm", "WDIR", "WSPD", "GST", "WVHT", "DPD", "APD",
 	"MWD", "PRES", "PTDY", "ATMP", "WTMP", "DEWP",
