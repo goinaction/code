@@ -30,25 +30,22 @@ func main() {
 	defer file.Close()
 
 	// Contains all the field/value mappings for every line.
-	var allFieldValues []map[string]string
+	var fvMappings []map[string]string
 
 	// Create a reader for the file.
-	reader := bufio.NewReader(file)
+	r := bufio.NewReader(file)
 	for {
 		// Read all the bytes up to the end of line marker.
-		line, err := reader.ReadBytes('\n')
-		if err != nil {
-			if err != io.EOF {
-				fmt.Println(err)
-				return
-			}
-
-			// We are done processing the file.
+		line, err := r.ReadSlice('\n')
+		if err == io.EOF {
 			break
+		} else if err != nil {
+			fmt.Println(err)
+			return
 		}
 
 		// Capture the field/value mappings for this line.
-		fieldValues := make(map[string]string)
+		fv := make(map[string]string)
 
 		var start int
 		var field int
@@ -67,17 +64,17 @@ func main() {
 
 			// Slice the value from the line and add the value to the map
 			// for the specified field name.
-			fieldValues[fieldNames[field]] = string(line[start:index])
+			fv[fieldNames[field]] = string(line[start:index])
 			field++
 			start = index + 1
 		}
 
 		// Append the field/value map to the master collection.
-		allFieldValues = append(allFieldValues, fieldValues)
+		fvMappings = append(fvMappings, fv)
 	}
 
 	// Display all of the field/value maps.
-	for _, fieldValues := range allFieldValues {
-		fmt.Printf("%#v\n\n", fieldValues)
+	for _, fv := range fvMappings {
+		fmt.Printf("%#v\n\n", fv)
 	}
 }
