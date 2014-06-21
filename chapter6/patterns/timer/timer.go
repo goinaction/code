@@ -39,6 +39,7 @@ ControlLoop:
 	for {
 		select {
 		case <-sigChan:
+			// Interrupt event signaled by the operation system.
 			log.Println("OS INTERRUPT - Shutting Down Early")
 
 			// Set the flag to indicate the program should be shutdown early.
@@ -47,13 +48,12 @@ ControlLoop:
 			continue
 
 		case <-timeout:
-			log.Println("Timeout - Killing Program")
-
 			// We have taken too much time. Kill the app hard.
-			log.Println("Process Ended")
+			log.Println("Timeout - Killing Program")
 			os.Exit(1)
 
 		case err := <-complete:
+			// Everything complete within the time given.
 			log.Printf("Task Complete: Error[%s]", err)
 			break ControlLoop
 		}
