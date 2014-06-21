@@ -74,7 +74,7 @@ func isShutdown() bool {
 	return false
 }
 
-// processor instantiates the specified inventory processor and runs the job.
+// processor provides the main program logic for the program.
 func processor(complete chan<- error) {
 	log.Println("Processor - Starting")
 
