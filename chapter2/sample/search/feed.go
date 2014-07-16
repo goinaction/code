@@ -15,7 +15,7 @@ type Feed struct {
 }
 
 // RetrieveFeeds reads and unmarshals the feed data file.
-func RetrieveFeeds() ([]Feed, error) {
+func RetrieveFeeds() ([]*Feed, error) {
 	// Open the file.
 	file, err := os.Open(dataFile)
 	if err != nil {
@@ -28,7 +28,7 @@ func RetrieveFeeds() ([]Feed, error) {
 
 	// Decode the file into a slice of pointers
 	// to Feed values.
-	var feeds []Feed
+	var feeds []*Feed
 	err = json.NewDecoder(file).Decode(&feeds)
 
 	// We don't need to check for errors, the caller can do this.

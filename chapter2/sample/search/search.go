@@ -35,8 +35,8 @@ func Run(searchTerm string) {
 		}
 
 		// Launch the goroutine to perform the search.
-		go func(matcher Matcher, feed Feed) {
-			Match(matcher, &feed, searchTerm, results)
+		go func(matcher Matcher, feed *Feed) {
+			Match(matcher, feed, searchTerm, results)
 			waitGroup.Done()
 		}(matcher, feed)
 	}
