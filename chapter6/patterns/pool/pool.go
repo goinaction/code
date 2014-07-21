@@ -33,11 +33,17 @@ type (
 )
 
 // New creates a pool for managing resources.
-func New(factory Factory, capacity int) *Pool {
+func New(factory Factory, capacity int) (*Pool, error) {
+	// Check the capacity is greater than zero else
+	// we could create an unbuffered channel or panic.
+	if capacity <= 0 {
+		return nil, fmt.Errorf("Invalid Capacity Value: %d", capacity)
+	}
+
 	return &Pool{
 		factory:   factory,
 		resources: make(queue, capacity),
-	}
+	}, nil
 }
 
 // getQueue returns a safe copy of the resource queue.
@@ -52,9 +58,9 @@ func (p *Pool) getQueue() queue {
 	return resources
 }
 
-// Acquire retrieves a resource	 from the pool.
+// Acquire retrieves a resource	from the pool.
 func (p *Pool) Acquire() (Resource, error) {
-	// Get a safe copy of the resource queue and check
+	// Get a safe copy of the queue and check
 	// if the queue has been closed.
 	resources := p.getQueue()
 	if resources == nil {
