@@ -59,8 +59,8 @@ func main() {
 
 	//<start id="logicalnot"/>
 	verifiedPhone := false
-	if !verifiedEmail  {
-		fmt.Println("Display email verification reminder.")
+	if !verifiedPhone  {
+		fmt.Println("Display phone verification reminder.")
 	}
 	//<end id="logicalnot"/>
 
