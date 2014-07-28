@@ -44,21 +44,21 @@ func incCounter(id int) {
 		// Only allow one goroutine through this
 		// critical section at a time.
 		mutex.Lock()
+		{
+			// Capture the value of counter.
+			value := counter
 
-		// Capture the value of counter.
-		value := counter
+			// Yield the thread and be placed back in queue.
+			runtime.Gosched()
 
-		// Yield the thread and be placed back in queue.
-		runtime.Gosched()
+			// Increment our local value of counter.
+			value++
 
-		// Increment our local value of counter.
-		value++
-
-		// Store the value back into counter.
-		counter = value
-
+			// Store the value back into counter.
+			counter = value
+		}
+		mutex.Unlock()
 		// Release the lock and allow any
 		// waiting goroutine through.
-		mutex.Unlock()
 	}
 }
