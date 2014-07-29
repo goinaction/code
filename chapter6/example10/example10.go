@@ -52,6 +52,7 @@ func main() {
 // worker is launched as a goroutine to process work from
 // the buffered channel queue.
 func worker(tasks chan string, worker int) {
+	// Report that we just returned.
 	defer wg.Done()
 
 	for {
