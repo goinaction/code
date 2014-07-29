@@ -53,7 +53,7 @@ func player(name string, court chan int) {
 		// Pick a random number and see if we miss the ball.
 		n := rand.Intn(100)
 		if n%13 == 0 {
-			fmt.Printf("Player %s Misses\n", name)
+			fmt.Printf("Player %s Missed\n", name)
 
 			// Close the channel to signal we lost.
 			close(court)
