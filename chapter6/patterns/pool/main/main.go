@@ -64,7 +64,10 @@ func main() {
 
 	// Create the buffered channel to hold
 	// and manage the connections.
-	p := pool.New(createConnection, pooledResources)
+	p, err := pool.New(createConnection, pooledResources)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Perform queries using a connection from the pool.
 	for query := 0; query < maxGoroutines; query++ {
