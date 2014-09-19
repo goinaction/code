@@ -117,7 +117,7 @@ func start(name string, maxReads int, maxReaders int) *readerWriter {
 func shutdown(readerWriters ...*readerWriter) {
 	// Create a WaitGroup to track the shutdowns.
 	var waitShutdown sync.WaitGroup
-	waitShutdown.Add(2)
+	waitShutdown.Add(len(readerWriters))
 
 	// Launch each call to the stop method as a goroutine.
 	for _, readerWriter := range readerWriters {
