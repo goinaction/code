@@ -24,9 +24,6 @@ var (
 	// connectionID maintains a counter.
 	connectionID int32
 
-	// mutex provides safe increments of ids
-	mutex sync.Mutex
-
 	// wg is used to wait for the program to finish.
 	wg sync.WaitGroup
 )
@@ -46,12 +43,7 @@ func (dbConn *dbConnection) Close() {
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
 func createConnection() (pool.Resource, error) {
-	var id int32
-	mutex.Lock()
-	{
-		id = atomic.AddInt32(&connectionID, 1)
-	}
-	mutex.Unlock()
+	id := atomic.AddInt32(&connectionID, 1)
 
 	fmt.Println("Create: New Connection", id)
 	return &dbConnection{id}, nil
