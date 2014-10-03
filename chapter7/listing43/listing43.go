@@ -18,7 +18,7 @@ func main() {
 		return
 	}
 
-	// Create a file to store the response.
+	// Create a file to persist the response.
 	file, err := os.Create(os.Args[2])
 	if err != nil {
 		fmt.Println(err)
