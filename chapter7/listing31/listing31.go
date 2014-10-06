@@ -26,6 +26,7 @@ func main() {
 		return
 	}
 
+	// Marshal the map back into a JSON string.
 	data, err := json.MarshalIndent(c, "", "    ")
 	if err != nil {
 		log.Println("ERROR:", err)
