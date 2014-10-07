@@ -1,4 +1,4 @@
-// This sample program demonstrates how to decode a JSON string.
+// This sample program demonstrates how to marshal a JSON string.
 package main
 
 import (
@@ -7,26 +7,17 @@ import (
 	"log"
 )
 
-// JSON contains a sample string to unmarshal.
-var JSON = `{
-	"name": "Gopher",
-	"title": "programmer",
-	"contact": {
-		"home": "415.333.3333",
-		"cell": "415.555.5555"
-	}
-}`
-
 func main() {
-	// Unmarshal the JSON string into our map variable.
-	var c map[string]interface{}
-	err := json.Unmarshal([]byte(JSON), &c)
-	if err != nil {
-		log.Println("ERROR:", err)
-		return
+	// Create a map of key/value pairs.
+	c := make(map[string]interface{})
+	c["name"] = "Gopher"
+	c["title"] = "programmer"
+	c["contact"] = map[string]interface{}{
+		"home": "415.333.3333",
+		"cell": "415.555.5555",
 	}
 
-	// Marshal the map back into a JSON string.
+	// Marshal the map into a JSON string.
 	data, err := json.MarshalIndent(c, "", "    ")
 	if err != nil {
 		log.Println("ERROR:", err)

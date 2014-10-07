@@ -3,8 +3,8 @@
 package main
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
@@ -14,15 +14,13 @@ func main() {
 	// r here is a response, and r.Body is an io.Reader.
 	r, err := http.Get(os.Args[1])
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatalln(err)
 	}
 
 	// Create a file to persist the response.
 	file, err := os.Create(os.Args[2])
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatalln(err)
 	}
 	defer file.Close()
 
@@ -33,6 +31,6 @@ func main() {
 	// Read the response and write to both destinations.
 	io.Copy(dest, r.Body)
 	if err := r.Body.Close(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
