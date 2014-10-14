@@ -20,12 +20,8 @@ import (
 )
 
 type (
-	// empty type represents the message the semaphore channel uses to control access.
-	// This is a structure that requires no memory, it is truly empty.
-	empty struct{}
-
 	// semaphore type represents a channel that implements the semaphore pattern.
-	semaphore chan empty
+	semaphore chan struct{}
 )
 
 type (
@@ -43,7 +39,7 @@ type (
 		readerControl semaphore
 
 		// shutdown is used to signal to running goroutines to shutdown.
-		shutdown chan empty
+		shutdown chan struct{}
 
 		// reportShutdown is used by the goroutines to report they are shutdown.
 		reportShutdown sync.WaitGroup
@@ -94,7 +90,7 @@ func start(name string, maxReads int, maxReaders int) *readerWriter {
 	// Create a value of readerWriter and initialize.
 	rw := readerWriter{
 		name:          name,
-		shutdown:      make(chan empty),
+		shutdown:      make(chan struct{}),
 		maxReads:      maxReads,
 		maxReaders:    maxReaders,
 		readerControl: make(semaphore, maxReads),
@@ -257,7 +253,7 @@ func (rw *readerWriter) WriteUnlock() {
 // Acquire attempts to secure the specified number of buffers from the
 // semaphore channel.
 func (s semaphore) Acquire(buffers int) {
-	var e empty
+	var e struct{}
 
 	// Write data to secure each buffer.
 	for buffer := 0; buffer < buffers; buffer++ {
