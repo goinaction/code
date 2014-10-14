@@ -5,34 +5,38 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
-	"sync/atomic"
 	"time"
 )
 
-// Give the program 10 seconds to complete the work.
-const timeoutSeconds = 10 * time.Second
+// Give the program 5 seconds to complete the work.
+const timeoutSeconds = 5 * time.Second
 
-// Flag to indicate to running goroutines to shut
-// down the program immediately.
-var shutdown int32 = 0
+var (
+	// sigChan receives os signals.
+	sigChan = make(chan os.Signal, 1)
 
+	// timeout limits the amount of time the program has.
+	timeout = time.After(timeoutSeconds)
+
+	// complete is used to report processing is done.
+	complete = make(chan error)
+
+	// shutdown provides system wide notification.
+	shutdown = make(chan struct{})
+)
+
+// main is the entry point for all Go programs.
 func main() {
 	log.Println("Starting Process")
 
-	// Create a channel to talk with the OS.
-	sigChan := make(chan os.Signal, 1)
+	// We want to receive all interrupt based signals.
 	signal.Notify(sigChan, os.Interrupt)
 
-	// Set the timeout channel.
-	timeout := time.After(timeoutSeconds)
-
 	// Launch the process.
-	log.Println("Launching Processor")
-	complete := make(chan error)
+	log.Println("Launching Processors")
 	go processor(complete)
 
 ControlLoop:
@@ -41,11 +45,8 @@ ControlLoop:
 		case <-sigChan:
 			// Interrupt event signaled by the operation system.
 			log.Println("OS INTERRUPT - Shutting Down Early")
-
-			// Set the flag to indicate the program should be shutdown early.
-			// Try to shutdown cleanly.
-			atomic.StoreInt32(&shutdown, 1)
-			continue
+			close(shutdown)
+			sigChan = nil
 
 		case <-timeout:
 			// We have taken too much time. Kill the app hard.
@@ -62,16 +63,6 @@ ControlLoop:
 	// Program finished.
 	log.Println("Process Ended")
 	return
-}
-
-// isShutdown returns the value of the shutdown flag.
-func isShutdown() bool {
-	value := atomic.LoadInt32(&shutdown)
-	if value == 1 {
-		return true
-	}
-
-	return false
 }
 
 // processor provides the main program logic for the program.
@@ -91,15 +82,19 @@ func processor(complete chan<- error) {
 	}()
 
 	// Simulate some iterative work.
-	for {
+	for work := 0; work < 5; work++ {
 		log.Println("Processor - Doing Work")
-		time.Sleep(5 * time.Second)
+		time.Sleep(1 * time.Second)
 
-		// Check if we are being asked to shutdown before we
-		// complete our work.
-		if isShutdown() {
-			err = fmt.Errorf("Processor - Shutting Down")
+		select {
+		case <-shutdown:
+			log.Println("Processor - Shutdown Early")
+			// We have been asked to shutdown cleanly.
 			return
+
+		default:
+			// If the shutdown channel was not closed,
+			// presume with normal processing.
 		}
 	}
 }
