@@ -1,3 +1,5 @@
+// Copyright Information.
+//
 // Package pool manages a user defined set of resources.
 // Based on the work by Fatih Arslan with his pool package.
 // https://github.com/fatih/pool/tree/v1.0.0
