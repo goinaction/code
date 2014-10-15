@@ -1,6 +1,6 @@
 // Copyright Information.
 //
-// This sample program demonstrations how to implement a semaphore using
+// This sample program demonstrates how to implement a semaphore using
 // channels that can allow multiple reads but a single write.
 //
 // It uses the generator pattern to create channels and goroutines.
