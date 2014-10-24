@@ -82,10 +82,11 @@ func performQueries(query int, p pool.Interface) {
 		return
 	}
 
+	// Release the connection back to the pool.
+	defer p.Release(conn)
+
 	// Wait to simulate a query response.
 	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 	fmt.Printf("Query: QID[%d] CID[%d]\n", query, conn.(*dbConnection).ID)
 
-	// Release the connection back to the pool.
-	p.Release(conn)
 }
