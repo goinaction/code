@@ -98,13 +98,13 @@ func (p *pool) Release(r Resource) {
 
 // Close will shutdown the pool and close all existing resources.
 func (p *pool) Close() {
-	if p.closed {
-		return
-	}
-
 	// Secure this operation with the Release operation.
 	p.Lock()
 	defer p.Unlock()
+
+	if p.closed {
+		return
+	}
 
 	// Close the resources
 	for r := range p.resources {
