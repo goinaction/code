@@ -29,7 +29,7 @@ type Resource interface {
 	Close()
 }
 
-// Pool provides a set of resources that can be shared safely by multiple goroutines
+// Pool manages a set of resources that can be shared safely by multiple goroutines
 type pool struct {
 	sync.Mutex
 	resources chan Resource
