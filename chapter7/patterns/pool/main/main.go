@@ -25,7 +25,9 @@ var (
 )
 
 // dbConnection simulates a resource to share.
-type dbConnection struct{ ID int32 }
+type dbConnection struct {
+	ID int32
+}
 
 // Close implements the interface for the pool package.
 // Close performs any resource release management.
