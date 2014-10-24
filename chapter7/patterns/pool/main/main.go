@@ -57,10 +57,10 @@ func main() {
 
 	// Perform queries using a connection from the pool.
 	for q := 0; q < maxGoroutines; q++ {
-		go func() {
-			performQueries(q, p)
+		go func(query int, pool pool.Interface) {
+			performQueries(query, pool)
 			wg.Done()
-		}()
+		}(q, p)
 
 		time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 	}
