@@ -88,5 +88,4 @@ func performQueries(query int, p pool.Interface) {
 	// Wait to simulate a query response.
 	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
 	fmt.Printf("Query: QID[%d] CID[%d]\n", query, conn.(*dbConnection).ID)
-
 }

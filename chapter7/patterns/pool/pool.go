@@ -74,15 +74,15 @@ func (p *pool) Acquire() (Resource, error) {
 
 // Release places a new resource onto the pool
 func (p *pool) Release(r Resource) {
+	// Secure this operation with the Close operation.
+	p.Lock()
+	defer p.Unlock()
+
 	// If the pool is closed, discard the resource.
 	if p.closed {
 		r.Close()
 		return
 	}
-
-	// Secure this operation with the Close operation.
-	p.Lock()
-	defer p.Unlock()
 
 	select {
 	// Attempt to place the new resource on the queue.
