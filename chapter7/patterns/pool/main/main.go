@@ -19,10 +19,7 @@ const (
 	pooledResources = 2  // number of resources in the pool
 )
 
-var (
-	connectionID int32          // counter
-	wg           sync.WaitGroup // waits for program to finish
-)
+var connectionID int32 // counter
 
 // dbConnection simulates a resource to share.
 type dbConnection struct {
@@ -46,6 +43,7 @@ func createConnection() (pool.Resource, error) {
 
 // main is the entry point for all Go programs.
 func main() {
+	var wg sync.WaitGroup // waits for program to finish
 	wg.Add(maxGoroutines)
 
 	// Create the buffered channel to hold
