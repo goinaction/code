@@ -106,12 +106,16 @@ func (p *pool) Close() {
 		return
 	}
 
+	// TODO: Explain why flag needs to be off before calling CLose() on each
+	// resource
+
+	// Toggle the flag
+	p.closed = true
+	// Close the channel
+	close(p.resources)
+
 	// Close the resources
 	for r := range p.resources {
 		r.Close()
 	}
-	// Close the channel
-	close(p.resources)
-	// Toggle the flag
-	p.closed = true
 }
