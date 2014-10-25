@@ -30,12 +30,12 @@ func (dbConn *dbConnection) Close() {
 	fmt.Println("Close: Connection", dbConn.ID)
 }
 
-var counter int32
+var idCounter int32
 
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
 func createConnection() (pool.Resource, error) {
-	id := atomic.AddInt32(&counter, 1)
+	id := atomic.AddInt32(&idCounter, 1)
 	fmt.Println("Create: New Connection", id)
 
 	return &dbConnection{id}, nil
