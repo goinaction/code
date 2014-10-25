@@ -114,7 +114,7 @@ func (p *pool) Close() {
 	// resources. If we don't do this, we will have a deadlock.
 	close(p.resources)
 
-	// Close the resources
+	// Flush the remaining resources
 	for r := range p.resources {
 		r.Close()
 	}
