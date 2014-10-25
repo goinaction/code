@@ -1,9 +1,9 @@
 // Copyright Information.
-//
+
+// This example is provided with help by Gabriel Aszalos <gabriel.aszalos@gmail.com>
+
 // Package pool manages a user defined set of resources.
 // Based on the work by Fatih Arslan with his pool package.
-//
-// https://github.com/fatih/pool/tree/v1.0.0
 package pool
 
 import (
@@ -29,7 +29,7 @@ type Resource interface {
 	Close()
 }
 
-// Pool manages a set of resources that can be shared safely by multiple goroutines
+// Pool manages a set of resources that can be shared safely by multiple goroutines.
 type pool struct {
 	sync.Mutex
 	resources chan Resource
@@ -57,7 +57,7 @@ func New(fn func() (Resource, error), capacity uint) (Interface, error) {
 // Acquire retrieves a resource	from the pool.
 func (p *pool) Acquire() (Resource, error) {
 	select {
-	// Check for a free resource
+	// Check for a free resource.
 	case r, ok := <-p.resources:
 		fmt.Println("Acquire:", "Shared Resource")
 		if !ok {
@@ -65,14 +65,14 @@ func (p *pool) Acquire() (Resource, error) {
 		}
 		return r, nil
 
-	// Or provide a new one
+	// Provide a new resource since there are none available.
 	default:
 		fmt.Println("Acquire:", "New Resource")
 		return p.factory()
 	}
 }
 
-// Release places a new resource onto the pool
+// Release places a new resource onto the pool.
 func (p *pool) Release(r Resource) {
 	// Secure this operation with the Close operation.
 	p.Lock()
@@ -102,16 +102,16 @@ func (p *pool) Close() {
 	p.Lock()
 	defer p.Unlock()
 
+	// If the pool is already close, don't do anything.
 	if p.closed {
 		return
 	}
 
-	// TODO: Explain why flag needs to be off before calling CLose() on each
-	// resource
-
 	// Toggle the flag
 	p.closed = true
-	// Close the channel
+
+	// Close the channel before we drain the channel of its
+	// resources. If we don't do this, we will have a deadlock.
 	close(p.resources)
 
 	// Close the resources
