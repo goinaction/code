@@ -30,6 +30,8 @@ func (dbConn *dbConnection) Close() {
 	fmt.Println("Close: Connection", dbConn.ID)
 }
 
+// isCounter provides support for giving each
+// connection a unique id.
 var idCounter int32
 
 // createConnection is a factory method called by the pool
