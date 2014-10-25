@@ -19,11 +19,6 @@ const (
 	pooledResources = 2  // number of resources in the pool
 )
 
-var (
-	connectionID int32          // counter
-	wg           sync.WaitGroup // waits for program to finish
-)
-
 // dbConnection simulates a resource to share.
 type dbConnection struct {
 	ID int32
@@ -35,10 +30,12 @@ func (dbConn *dbConnection) Close() {
 	fmt.Println("Close: Connection", dbConn.ID)
 }
 
+var counter int32
+
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
 func createConnection() (pool.Resource, error) {
-	id := atomic.AddInt32(&connectionID, 1)
+	id := atomic.AddInt32(&counter, 1)
 	fmt.Println("Create: New Connection", id)
 
 	return &dbConnection{id}, nil
@@ -46,6 +43,7 @@ func createConnection() (pool.Resource, error) {
 
 // main is the entry point for all Go programs.
 func main() {
+	var wg sync.WaitGroup // waits for program to finish
 	wg.Add(maxGoroutines)
 
 	// Create the buffered channel to hold
@@ -58,10 +56,10 @@ func main() {
 	// Perform queries using a connection from the pool.
 	for q := 0; q < maxGoroutines; q++ {
 		// TODO: Explain about closures and why we are using params
-		go func(query int, pool pool.Interface) {
-			performQueries(query, pool)
+		go func(n int) {
+			performQueries(n, p)
 			wg.Done()
-		}(q, p)
+		}(q)
 
 		time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 	}

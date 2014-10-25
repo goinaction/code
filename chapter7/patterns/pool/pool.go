@@ -43,7 +43,7 @@ var ErrInvalidCapacity = errors.New("Capacity needs to be greater than zero.")
 
 // New creates a pool from a set of factory functions. A pool provides capacity
 // number of resources that can be shared safely by multiple goroutines.
-func New(fn func() (Resource, error), capacity uint) (*pool, error) {
+func New(fn func() (Resource, error), capacity uint) (Interface, error) {
 	if capacity == 0 {
 		return nil, ErrInvalidCapacity
 	}
