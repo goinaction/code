@@ -5,69 +5,65 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"time"
 )
 
-// Give the program 3 seconds to complete the work.
-const timeoutSeconds = 3 * time.Second
-
 var (
-	// sigChan receives os signals.
-	sigChan = make(chan os.Signal, 1)
-
-	// timeout limits the amount of time the program has.
-	timeout = time.After(timeoutSeconds)
+	flagSec = flag.Int("ttl", 3, "timeout in seconds")
 
 	// complete is used to report processing is done.
 	complete = make(chan error)
 
 	// shutdown provides system wide notification.
-	shutdown = make(chan struct{})
+	shutdown = make(chan bool)
 )
 
 // main is the entry point for all Go programs.
 func main() {
-	log.Println("Starting Process")
-
-	// We want to receive all interrupt based signals.
-	signal.Notify(sigChan, os.Interrupt)
+	flag.Parse()
 
 	// Launch the process.
 	log.Println("Launching Processors")
-	go processor(complete)
 
-ControlLoop:
+	go processor(complete)
+	controlLoop()
+
+	// Program finished.
+	log.Println("Process Ended")
+}
+
+func controlLoop() {
+	// We want to receive all interrupt based signals.
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt)
+
+	// Set the timeout in seconds based on the given flag
+	timeout := time.After(time.Duration(*flagSec) * time.Second)
 	for {
 		select {
+		// Interrupt event signaled by the operation system.
 		case <-sigChan:
-			// Interrupt event signaled by the operation system.
 			log.Println("OS INTERRUPT")
-
-			// Close the channel to signal to the processor
-			// it needs to shutdown.
-			close(shutdown)
-
-			// Set the channel to nil so we no longer process
-			// any more of these events.
+			// Signal shutdown
+			shutdown <- true
+			// By setting the channel to 'nil' we will discard all future sends.
 			sigChan = nil
 
+		// We have taken too much time. Kill the app.
 		case <-timeout:
-			// We have taken too much time. Kill the app hard.
 			log.Println("Timeout - Killing Program")
 			os.Exit(1)
 
 		case err := <-complete:
 			// Everything completed within the time given.
 			log.Printf("Task Completed: Error[%s]", err)
-			break ControlLoop
+			break
 		}
 	}
-
-	// Program finished.
-	log.Println("Process Ended")
 }
 
 // checkShutdown checks the shutdown flag to determine
@@ -91,24 +87,16 @@ func checkShutdown() bool {
 func processor(complete chan<- error) {
 	log.Println("Processor - Starting")
 
-	// Variable to store any error that occurs.
-	// Passed into the defer function via closures.
-	var err error
-
-	// Defer the send on the channel so it happens
-	// regardless of how this function terminates.
 	defer func() {
 		// Capture any potential panic.
 		if r := recover(); r != nil {
 			log.Println("Processor - Panic", r)
 		}
 
-		// Signal the goroutine we have shutdown.
-		complete <- err
 	}()
 
-	// Perform the work.
-	err = doWork()
+	// Perform the work and send the returned error back
+	complete <- doWork()
 
 	log.Println("Processor - Completed")
 }
