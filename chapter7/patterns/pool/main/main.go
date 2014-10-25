@@ -19,7 +19,7 @@ const (
 	pooledResources = 2  // number of resources in the pool
 )
 
-var connectionID int32 // counter
+var counter int32
 
 // dbConnection simulates a resource to share.
 type dbConnection struct {
@@ -35,7 +35,7 @@ func (dbConn *dbConnection) Close() {
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
 func createConnection() (pool.Resource, error) {
-	id := atomic.AddInt32(&connectionID, 1)
+	id := atomic.AddInt32(&counter, 1)
 	fmt.Println("Create: New Connection", id)
 
 	return &dbConnection{id}, nil
