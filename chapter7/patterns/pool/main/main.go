@@ -56,8 +56,8 @@ func main() {
 	// Perform queries using a connection from the pool.
 	for q := 0; q < maxGoroutines; q++ {
 		// TODO: Explain about closures and why we are using params
-		go func(query int, pool pool.Interface) {
-			performQueries(query, pool)
+		go func(qn int, pn pool.Interface) {
+			performQueries(qn, pn)
 			wg.Done()
 		}(q, p)
 
