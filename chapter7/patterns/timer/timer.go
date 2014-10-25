@@ -61,7 +61,7 @@ func controlLoop() {
 		case err := <-complete:
 			// Everything completed within the time given.
 			log.Printf("Task Completed: Error[%s]", err)
-			break
+			return
 		}
 	}
 }
