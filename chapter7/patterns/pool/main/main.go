@@ -56,12 +56,14 @@ func main() {
 	}
 
 	// Perform queries using a connection from the pool.
-	for q := 0; q < maxGoroutines; q++ {
-		// TODO: Explain about closures and why we are using params
-		go func(n int) {
-			performQueries(n, p)
+	for query := 0; query < maxGoroutines; query++ {
+		// Each goroutine needs its own copy of the query
+		// value else they will all be sharing the same query
+		// variable.
+		go func(query int) {
+			performQueries(query, p)
 			wg.Done()
-		}(q)
+		}(query)
 
 		time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 	}
