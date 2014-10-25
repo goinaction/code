@@ -19,8 +19,6 @@ const (
 	pooledResources = 2  // number of resources in the pool
 )
 
-var counter int32
-
 // dbConnection simulates a resource to share.
 type dbConnection struct {
 	ID int32
@@ -31,6 +29,8 @@ type dbConnection struct {
 func (dbConn *dbConnection) Close() {
 	fmt.Println("Close: Connection", dbConn.ID)
 }
+
+var counter int32
 
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
@@ -56,10 +56,10 @@ func main() {
 	// Perform queries using a connection from the pool.
 	for q := 0; q < maxGoroutines; q++ {
 		// TODO: Explain about closures and why we are using params
-		go func(q2 int, p2 pool.Interface) {
-			performQueries(q2, p2)
+		go func(n int) {
+			performQueries(n, p)
 			wg.Done()
-		}(q, p)
+		}(q)
 
 		time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
 	}
