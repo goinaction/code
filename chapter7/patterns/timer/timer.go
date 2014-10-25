@@ -49,7 +49,7 @@ func (t *timer) Add(workers ...func(int)) {
 func (t *timer) Start() {
 	// Run work async
 	go func() {
-		t.complete <- t.runGroup(t.workers...)
+		t.complete <- t.run(t.workers...)
 		log.Println("Finished work.")
 	}()
 
@@ -71,7 +71,7 @@ func (t *timer) Start() {
 }
 
 // doWork simulates task work.
-func (t *timer) runGroup(workers ...func(int)) error {
+func (t *timer) run(workers ...func(int)) error {
 	for id, wrk := range workers {
 		if !t.canContinue() {
 			return errors.New("Early Shutdown")
