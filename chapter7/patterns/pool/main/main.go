@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math/rand"
 	"sync"
 	"sync/atomic"
@@ -28,8 +29,9 @@ type dbConnection struct {
 
 // Close implements the interface for the pool package.
 // Close performs any resource release management.
-func (dbConn *dbConnection) Close() {
+func (dbConn *dbConnection) Close() error {
 	fmt.Println("Close: Connection", dbConn.ID)
+	return nil
 }
 
 // isCounter provides support for giving each
@@ -38,7 +40,7 @@ var idCounter int32
 
 // createConnection is a factory method called by the pool
 // framework when new connections are needed.
-func createConnection() (pool.Resource, error) {
+func createConnection() (io.Closer, error) {
 	id := atomic.AddInt32(&idCounter, 1)
 	fmt.Println("Create: New Connection", id)
 
@@ -79,7 +81,7 @@ func main() {
 }
 
 // performQueries tests the resource pool of connections.
-func performQueries(query int, p pool.AcquireReleaseCloser) {
+func performQueries(query int, p *pool.Pool) {
 	// Acquire a connection from the pool.
 	conn, err := p.Acquire()
 	if err != nil {

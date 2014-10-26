@@ -9,30 +9,15 @@ package pool
 import (
 	"errors"
 	"fmt"
+	"io"
 	"sync"
 )
 
-// AcquireReleaseCloser is behavior that need to be implemented
-// to use the pool package.
-type AcquireReleaseCloser interface {
-	Acquire() (Resource, error)
-	Release(Resource)
-	Close()
-}
-
-// An interface allows us to decouple the pool from its implementation, which is
-// a good practice for writing testable and maintainable software.
-
-// Resource must be implemented by types to use the pool.
-type Resource interface {
-	Close()
-}
-
 // Pool manages a set of resources that can be shared safely by multiple goroutines.
-type pool struct {
+type Pool struct {
 	sync.Mutex
-	resources chan Resource
-	factory   func() (Resource, error)
+	resources chan io.Closer
+	factory   func() (io.Closer, error)
 	closed    bool
 }
 
@@ -42,19 +27,19 @@ var ErrInvalidCapacity = errors.New("Capacity needs to be greater than zero.")
 
 // New creates a pool from a set of factory functions. A pool provides capacity
 // number of resources that can be shared safely by multiple goroutines.
-func New(fn func() (Resource, error), capacity uint) (AcquireReleaseCloser, error) {
+func New(fn func() (io.Closer, error), capacity uint) (*Pool, error) {
 	if capacity == 0 {
 		return nil, ErrInvalidCapacity
 	}
 
-	return &pool{
+	return &Pool{
 		factory:   fn,
-		resources: make(chan Resource, capacity),
+		resources: make(chan io.Closer, capacity),
 	}, nil
 }
 
 // Acquire retrieves a resource	from the pool.
-func (p *pool) Acquire() (Resource, error) {
+func (p *Pool) Acquire() (io.Closer, error) {
 	select {
 	// Check for a free resource.
 	case r, ok := <-p.resources:
@@ -72,7 +57,7 @@ func (p *pool) Acquire() (Resource, error) {
 }
 
 // Release places a new resource onto the pool.
-func (p *pool) Release(r Resource) {
+func (p *Pool) Release(r io.Closer) {
 	// Secure this operation with the Close operation.
 	p.Lock()
 	defer p.Unlock()
@@ -96,7 +81,7 @@ func (p *pool) Release(r Resource) {
 }
 
 // Close will shutdown the pool and close all existing resources.
-func (p *pool) Close() {
+func (p *Pool) Close() {
 	// Secure this operation with the Release operation.
 	p.Lock()
 	defer p.Unlock()
