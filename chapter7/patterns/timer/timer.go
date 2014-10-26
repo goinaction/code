@@ -12,21 +12,23 @@ import (
 	"time"
 )
 
-// flagSec is a command line flag to set the timeout in seconds
+// LET'S TALK ABOUT USING ENV VARIABLES INSTEAD
+
+// flagSec is a command line flag to set the timeout in seconds.
 var flagSec = flag.Int("ttl", 3, "timeout in seconds")
 
-// timer runs a set of tasks on a given timeout and shuts down on os.Interrupt
+// timer runs a set of tasks on a given timeout and shuts down on os.Interrupt.
 type timer struct {
-	// the interrupt channel will be used to signal the runner to shut down
+	// interrupt channel will be used to signal the runner to shut down.
 	interrupt chan os.Signal
 
-	// the complete channel will receive the outcome of the timer
+	// complete channel will receive the outcome of the timer.
 	complete chan error
 
-	// timeout will signal us after the TTL has run out
+	// timeout will signal us after the TTL has run out.
 	timeout <-chan time.Time
 
-	// tasks holds a set of worker functions that run based on a given ID
+	// tasks holds a set of worker functions that run based on a given ID.
 	tasks []func(int)
 }
 
@@ -36,8 +38,8 @@ func NewTimer(d time.Duration) *timer {
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
 		timeout:   time.After(d * time.Second),
-		tasks:     make([]func(int), 0),
 	}
+
 	// We want to receive all interrupt based signals.
 	signal.Notify(t.interrupt, os.Interrupt)
 	return &t
@@ -50,7 +52,7 @@ func (t *timer) Add(tasks ...func(int)) {
 
 // Run runs all tasks.
 func (t *timer) Start() {
-	// Run work async
+	// Run the different tasks.
 	go func() {
 		t.complete <- t.run(t.tasks...)
 		log.Println("Finished work.")
@@ -58,14 +60,14 @@ func (t *timer) Start() {
 
 	for {
 		select {
-		// Task completed
+		// Signaled when the tasks are complete.
 		case err := <-t.complete:
 			if err != nil {
 				log.Printf("Exiting with error: %s", err)
 			}
 			return
 
-		// We have taken too much time. Kill the app.
+		// Signaled when we run out of time.
 		case <-t.timeout:
 			log.Println("Timeout - Killing Program")
 			os.Exit(1)
@@ -73,7 +75,7 @@ func (t *timer) Start() {
 	}
 }
 
-// doWork simulates task work.
+// run executes each registered task.
 func (t *timer) run(tasks ...func(int)) error {
 	for id, task := range tasks {
 		if t.gotInterrupt() {
@@ -84,37 +86,43 @@ func (t *timer) run(tasks ...func(int)) error {
 	return nil
 }
 
-// gotInterrupt verifies if the interrupt signal has been sent
+// gotInterrupt verifies if the interrupt signal has been issued.
 func (t *timer) gotInterrupt() bool {
 	select {
-	// check if we are being signaled to shut down
+	// Signaled when an interrupt event is signaled.
 	case <-t.interrupt:
-		// stop receiving further signals
+		// Stop receiving any further signals.
 		signal.Stop(t.interrupt)
 		log.Println("Received interrupt.")
 		return true
-	// otherwise continue as normal
+
+	// Continue running as normal.
 	default:
 		return false
 	}
 }
 
-// sleeper returns a worker that sleeps for the given duration (in seconds)
-func sleeper(d time.Duration) func(int) {
-	return func(id int) {
-		log.Printf("Processor - Task #%d", id)
-		time.Sleep(d * time.Second)
-	}
-}
-
+// main is the entry point for the program.
 func main() {
 	// Parse all command line flags.
 	flag.Parse()
 	log.Println("Starting work.")
 
+	// Create a new timer value for this run.
 	timer := NewTimer(time.Duration(*flagSec))
+
+	// Add the tasks to be run and start running.
 	timer.Add(sleeper(1), sleeper(2), sleeper(1))
 	timer.Start()
-	// Program finished.
+
 	log.Println("Process Ended")
+}
+
+// sleeper returns an example task that sleeps for the given
+// duration (in seconds).
+func sleeper(d time.Duration) func(int) {
+	return func(id int) {
+		log.Printf("Processor - Task #%d", id)
+		time.Sleep(d * time.Second)
+	}
 }
