@@ -36,13 +36,11 @@ type runner struct {
 
 // NewRunner returns a new ready-to-use runner.
 func NewRunner(d time.Duration) *runner {
-	r := runner{
+	return &runner{
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
 		timeout:   time.After(d * time.Second),
 	}
-
-	return &r
 }
 
 // Add attaches tasks to the runner. A task is a function that takes an int ID.
