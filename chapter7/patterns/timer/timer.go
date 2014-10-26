@@ -15,16 +15,19 @@ import (
 // flagSec is a command line flag to set the timeout in seconds
 var flagSec = flag.Int("ttl", 3, "timeout in seconds")
 
-// timer runs a set of workers on a given timeout and shuts down on os.Interrupt
+// timer runs a set of tasks on a given timeout and shuts down on os.Interrupt
 type timer struct {
 	// the interrupt channel will be used to signal the runner to shut down
 	interrupt chan os.Signal
+
 	// the complete channel will receive the outcome of the timer
 	complete chan error
+
 	// timeout will signal us after the TTL has run out
 	timeout <-chan time.Time
-	// workers holds a set of worker functions that run based on a given ID
-	workers []func(int)
+
+	// tasks holds a set of worker functions that run based on a given ID
+	tasks []func(int)
 }
 
 // NewTimer returns a new ready-to-use timer.
@@ -33,23 +36,23 @@ func NewTimer(d time.Duration) *timer {
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
 		timeout:   time.After(d * time.Second),
-		workers:   make([]func(int), 0, 5),
+		tasks:     make([]func(int), 0),
 	}
 	// We want to receive all interrupt based signals.
 	signal.Notify(t.interrupt, os.Interrupt)
 	return t
 }
 
-// Add attaches workers to the timer. A worker is a function that takes an int ID.
-func (t *timer) Add(workers ...func(int)) {
-	t.workers = append(t.workers, workers...)
+// Add attaches tasks to the timer. A worker is a function that takes an int ID.
+func (t *timer) Add(tasks ...func(int)) {
+	t.tasks = append(t.tasks, tasks...)
 }
 
-// Run runs all workers.
+// Run runs all tasks.
 func (t *timer) Start() {
 	// Run work async
 	go func() {
-		t.complete <- t.run(t.workers...)
+		t.complete <- t.run(t.tasks...)
 		log.Println("Finished work.")
 	}()
 
@@ -71,8 +74,8 @@ func (t *timer) Start() {
 }
 
 // doWork simulates task work.
-func (t *timer) run(workers ...func(int)) error {
-	for id, wrk := range workers {
+func (t *timer) run(tasks ...func(int)) error {
+	for id, wrk := range tasks {
 		if t.gotInterrupt() {
 			return errors.New("Early Shutdown")
 		}
