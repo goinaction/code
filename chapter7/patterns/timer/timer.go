@@ -86,6 +86,8 @@ func (t *timer) gotInterrupt() bool {
 	select {
 	// check if we are being signaled to shut down
 	case <-t.interrupt:
+		// stop receiving further signals
+		signal.Stop(t.interrupt)
 		log.Println("Received interrupt.")
 		return true
 	// otherwise continue as normal
