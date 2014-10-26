@@ -75,11 +75,11 @@ func (t *timer) Start() {
 
 // doWork simulates task work.
 func (t *timer) run(tasks ...func(int)) error {
-	for id, wrk := range tasks {
+	for id, task := range tasks {
 		if t.gotInterrupt() {
 			return errors.New("Early Shutdown")
 		}
-		wrk(id)
+		task(id)
 	}
 	return nil
 }
