@@ -14,6 +14,7 @@ import (
 )
 
 // Pool manages a set of resources that can be shared safely by multiple goroutines.
+// The resource being managed must implement to io.Closer interface.
 type Pool struct {
 	sync.Mutex
 	resources chan io.Closer
@@ -25,8 +26,9 @@ type Pool struct {
 // unbuffered pool.
 var ErrInvalidCapacity = errors.New("Capacity needs to be greater than zero.")
 
-// New creates a pool from a set of factory functions. A pool provides capacity
-// number of resources that can be shared safely by multiple goroutines.
+// New creates a pool that manages resources. A pool requires a function
+// that can allocate a new resource and the number of resources that can
+// be allocated.
 func New(fn func() (io.Closer, error), capacity uint) (*Pool, error) {
 	if capacity == 0 {
 		return nil, ErrInvalidCapacity

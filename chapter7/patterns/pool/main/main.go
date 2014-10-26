@@ -27,19 +27,19 @@ type dbConnection struct {
 	ID int32
 }
 
-// Close implements the interface for the pool package.
-// Close performs any resource release management.
+// Close implements the io.Closer interface so dbConnection
+// can be managed by the pool. Close performs any resource
+// release management.
 func (dbConn *dbConnection) Close() error {
 	fmt.Println("Close: Connection", dbConn.ID)
 	return nil
 }
 
-// isCounter provides support for giving each
-// connection a unique id.
+// idCounter provides support for giving each connection a unique id.
 var idCounter int32
 
-// createConnection is a factory method called by the pool
-// framework when new connections are needed.
+// createConnection is a factory method that will be called by
+// the pool when a new connection is needed.
 func createConnection() (io.Closer, error) {
 	id := atomic.AddInt32(&idCounter, 1)
 	fmt.Println("Create: New Connection", id)
@@ -49,17 +49,16 @@ func createConnection() (io.Closer, error) {
 
 // main is the entry point for all Go programs.
 func main() {
-	var wg sync.WaitGroup // waits for program to finish
+	var wg sync.WaitGroup
 	wg.Add(maxGoroutines)
 
-	// Create the buffered channel to hold
-	// and manage the connections.
+	// Create the pool to manage our connections.
 	p, err := pool.New(createConnection, pooledResources)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	// Perform queries using a connection from the pool.
+	// Perform queries using connections from the pool.
 	for query := 0; query < maxGoroutines; query++ {
 		// Each goroutine needs its own copy of the query
 		// value else they will all be sharing the same query
