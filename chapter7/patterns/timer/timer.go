@@ -78,7 +78,6 @@ func (t *timer) run(workers ...func(int)) error {
 		}
 		wrk(id)
 	}
-
 	return nil
 }
 
@@ -106,13 +105,11 @@ func sleeper(d time.Duration) func(int) {
 func main() {
 	// Parse all command line flags.
 	flag.Parse()
-	// Launch the process.
 	log.Println("Starting work.")
 
 	timer := NewTimer(time.Duration(*flagSec))
 	timer.Add(sleeper(1), sleeper(2), sleeper(1))
 	timer.Start()
-
 	// Program finished.
 	log.Println("Process Ended")
 }
