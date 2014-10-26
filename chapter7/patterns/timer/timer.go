@@ -32,7 +32,7 @@ type timer struct {
 
 // NewTimer returns a new ready-to-use timer.
 func NewTimer(d time.Duration) *timer {
-	t := &timer{
+	t := timer{
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
 		timeout:   time.After(d * time.Second),
@@ -40,7 +40,7 @@ func NewTimer(d time.Duration) *timer {
 	}
 	// We want to receive all interrupt based signals.
 	signal.Notify(t.interrupt, os.Interrupt)
-	return t
+	return &t
 }
 
 // Add attaches tasks to the timer. A task is a function that takes an int ID.
