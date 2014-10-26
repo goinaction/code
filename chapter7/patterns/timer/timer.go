@@ -73,7 +73,7 @@ func (t *timer) Start() {
 // doWork simulates task work.
 func (t *timer) run(workers ...func(int)) error {
 	for id, wrk := range workers {
-		if !t.canContinue() {
+		if t.gotInterrupt() {
 			return errors.New("Early Shutdown")
 		}
 		wrk(id)
@@ -81,16 +81,16 @@ func (t *timer) run(workers ...func(int)) error {
 	return nil
 }
 
-// canContinue verifies if the interrupt signal has been sent
-func (t *timer) canContinue() bool {
+// gotInterrupt verifies if the interrupt signal has been sent
+func (t *timer) gotInterrupt() bool {
 	select {
 	// check if we are being signaled to shut down
 	case <-t.interrupt:
 		log.Println("Received interrupt.")
-		return false
+		return true
 	// otherwise continue as normal
 	default:
-		return true
+		return false
 	}
 }
 
