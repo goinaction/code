@@ -43,7 +43,7 @@ func NewTimer(d time.Duration) *timer {
 	return t
 }
 
-// Add attaches tasks to the timer. A worker is a function that takes an int ID.
+// Add attaches tasks to the timer. A task is a function that takes an int ID.
 func (t *timer) Add(tasks ...func(int)) {
 	t.tasks = append(t.tasks, tasks...)
 }
