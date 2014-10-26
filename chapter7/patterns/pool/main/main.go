@@ -79,7 +79,7 @@ func main() {
 }
 
 // performQueries tests the resource pool of connections.
-func performQueries(query int, p pool.Interface) {
+func performQueries(query int, p pool.AcquireReleaseCloser) {
 	// Acquire a connection from the pool.
 	conn, err := p.Acquire()
 	if err != nil {
