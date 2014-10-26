@@ -5,132 +5,116 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"time"
 )
 
-// Give the program 3 seconds to complete the work.
-const timeoutSeconds = 3 * time.Second
+// flagSec is a command line flag to set the timeout in seconds
+var flagSec = flag.Int("ttl", 3, "timeout in seconds")
 
-var (
-	// sigChan receives os signals.
-	sigChan = make(chan os.Signal, 1)
+// timer runs a set of tasks on a given timeout and shuts down on os.Interrupt
+type timer struct {
+	// the interrupt channel will be used to signal the runner to shut down
+	interrupt chan os.Signal
 
-	// timeout limits the amount of time the program has.
-	timeout = time.After(timeoutSeconds)
+	// the complete channel will receive the outcome of the timer
+	complete chan error
 
-	// complete is used to report processing is done.
-	complete = make(chan error)
+	// timeout will signal us after the TTL has run out
+	timeout <-chan time.Time
 
-	// shutdown provides system wide notification.
-	shutdown = make(chan struct{})
-)
+	// tasks holds a set of worker functions that run based on a given ID
+	tasks []func(int)
+}
 
-// main is the entry point for all Go programs.
-func main() {
-	log.Println("Starting Process")
-
+// NewTimer returns a new ready-to-use timer.
+func NewTimer(d time.Duration) *timer {
+	t := timer{
+		interrupt: make(chan os.Signal, 1),
+		complete:  make(chan error),
+		timeout:   time.After(d * time.Second),
+		tasks:     make([]func(int), 0),
+	}
 	// We want to receive all interrupt based signals.
-	signal.Notify(sigChan, os.Interrupt)
-
-	// Launch the process.
-	log.Println("Launching Processors")
-	go processor(complete)
-
-ControlLoop:
-	for {
-		select {
-		case <-sigChan:
-			// Interrupt event signaled by the operation system.
-			log.Println("OS INTERRUPT")
-
-			// Close the channel to signal to the processor
-			// it needs to shutdown.
-			close(shutdown)
-
-			// Set the channel to nil so we no longer process
-			// any more of these events.
-			sigChan = nil
-
-		case <-timeout:
-			// We have taken too much time. Kill the app hard.
-			log.Println("Timeout - Killing Program")
-			os.Exit(1)
-
-		case err := <-complete:
-			// Everything completed within the time given.
-			log.Printf("Task Completed: Error[%s]", err)
-			break ControlLoop
-		}
-	}
-
-	// Program finished.
-	log.Println("Process Ended")
+	signal.Notify(t.interrupt, os.Interrupt)
+	return &t
 }
 
-// checkShutdown checks the shutdown flag to determine
-// if we have been asked to interrupt processing.
-func checkShutdown() bool {
-	select {
-	case <-shutdown:
-		// We have been asked to shutdown cleanly.
-		log.Println("checkShutdown - Shutdown Early")
-		return true
-
-	default:
-		// If the shutdown channel was not closed,
-		// presume with normal processing.
-	}
-
-	return false
+// Add attaches tasks to the timer. A task is a function that takes an int ID.
+func (t *timer) Add(tasks ...func(int)) {
+	t.tasks = append(t.tasks, tasks...)
 }
 
-// processor provides the main program logic for the program.
-func processor(complete chan<- error) {
-	log.Println("Processor - Starting")
-
-	// Variable to store any error that occurs.
-	// Passed into the defer function via closures.
-	var err error
-
-	// Defer the send on the channel so it happens
-	// regardless of how this function terminates.
-	defer func() {
-		// Capture any potential panic.
-		if r := recover(); r != nil {
-			log.Println("Processor - Panic", r)
-		}
-
-		// Signal the goroutine we have shutdown.
-		complete <- err
+// Run runs all tasks.
+func (t *timer) Start() {
+	// Run work async
+	go func() {
+		t.complete <- t.run(t.tasks...)
+		log.Println("Finished work.")
 	}()
 
-	// Perform the work.
-	err = doWork()
+	for {
+		select {
+		// Task completed
+		case err := <-t.complete:
+			if err != nil {
+				log.Printf("Exiting with error: %s", err)
+			}
+			return
 
-	log.Println("Processor - Completed")
+		// We have taken too much time. Kill the app.
+		case <-t.timeout:
+			log.Println("Timeout - Killing Program")
+			os.Exit(1)
+		}
+	}
 }
 
 // doWork simulates task work.
-func doWork() error {
-	log.Println("Processor - Task 1")
-	time.Sleep(2 * time.Second)
-
-	if checkShutdown() {
-		return errors.New("Early Shutdown")
+func (t *timer) run(tasks ...func(int)) error {
+	for id, task := range tasks {
+		if t.gotInterrupt() {
+			return errors.New("Early Shutdown")
+		}
+		task(id)
 	}
-
-	log.Println("Processor - Task 2")
-	time.Sleep(1 * time.Second)
-
-	if checkShutdown() {
-		return errors.New("Early Shutdown")
-	}
-
-	log.Println("Processor - Task 3")
-	time.Sleep(1 * time.Second)
-
 	return nil
+}
+
+// gotInterrupt verifies if the interrupt signal has been sent
+func (t *timer) gotInterrupt() bool {
+	select {
+	// check if we are being signaled to shut down
+	case <-t.interrupt:
+		// stop receiving further signals
+		signal.Stop(t.interrupt)
+		log.Println("Received interrupt.")
+		return true
+	// otherwise continue as normal
+	default:
+		return false
+	}
+}
+
+// sleeper returns a worker that sleeps for the given duration (in seconds)
+func sleeper(d time.Duration) func(int) {
+	return func(id int) {
+		log.Printf("Processor - Task #%d", id)
+		time.Sleep(d * time.Second)
+	}
+}
+
+func main() {
+	// Parse all command line flags.
+	flag.Parse()
+	log.Println("Starting work.")
+
+	timer := NewTimer(time.Duration(*flagSec))
+	timer.Add(sleeper(1), sleeper(2), sleeper(1))
+	timer.Start()
+	// Program finished.
+	log.Println("Process Ended")
 }
