@@ -1,3 +1,7 @@
+// Copyright Information.
+
+// This example is provided with help by Gabriel Aszalos.
+
 // This sample program demonstrates how to use a channel to
 // monitor the amount of time the program is running and terminate
 // the program if it runs too long.
@@ -11,8 +15,6 @@ import (
 	"os/signal"
 	"time"
 )
-
-// LET'S TALK ABOUT USING ENV VARIABLES INSTEAD
 
 // flagSec is a command line flag to set the timeout in seconds.
 var flagSec = flag.Int("ttl", 3, "timeout in seconds")
@@ -78,11 +80,15 @@ func (t *timer) Start() {
 // run executes each registered task.
 func (t *timer) run(tasks ...func(int)) error {
 	for id, task := range tasks {
+		// Check for an interrupt signal for the OS.
 		if t.gotInterrupt() {
 			return errors.New("Early Shutdown")
 		}
+
+		// Execute the registered task.
 		task(id)
 	}
+
 	return nil
 }
 
