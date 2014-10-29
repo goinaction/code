@@ -3,7 +3,7 @@
 // This example is provided with help by Gabriel Aszalos.
 
 // Package runner manages the running and lifetime of
-// the process.
+// a process.
 package runner
 
 import (
@@ -14,18 +14,21 @@ import (
 	"time"
 )
 
-// runner runs a set of tasks on a given timeout and shuts down on os.Interrupt.
+// runner runs a set of tasks within a given timeout and can be
+// shut down on an operating system interrupt.
 type runner struct {
-	// interrupt channel will be used to signal the runner to shut down.
+	// interrupt channel reports a signal from the
+	// operating system.
 	interrupt chan os.Signal
 
-	// complete channel will receive the outcome of the timer.
+	// complete channel reports that processing is done.
 	complete chan error
 
-	// timeout will signal us after the TTL has run out.
+	// timeout reports that time has run out.
 	timeout <-chan time.Time
 
-	// tasks holds a set of runner functions that run based on a given ID.
+	// tasks holds a set of functions that are executed
+	// synchronously in index order.
 	tasks []func(int)
 }
 
@@ -38,17 +41,18 @@ func New(d time.Duration) *runner {
 	}
 }
 
-// Add attaches tasks to the runner. A task is a function that takes an int ID.
+// Add attaches tasks to the runner. A task is a function that
+// takes an int ID.
 func (r *runner) Add(tasks ...func(int)) {
 	r.tasks = append(r.tasks, tasks...)
 }
 
-// Run runs all tasks.
+// Start runs all tasks and monitors channel events.
 func (r *runner) Start() {
 	// We want to receive all interrupt based signals.
 	signal.Notify(r.interrupt, os.Interrupt)
 
-	// Run the different tasks.
+	// Run the different tasks on a different goroutine.
 	go func() {
 		r.complete <- r.run(r.tasks...)
 		log.Println("Finished work.")
@@ -56,7 +60,7 @@ func (r *runner) Start() {
 
 	for {
 		select {
-		// Signaled when the tasks are complete.
+		// Signaled when processing is done.
 		case err := <-r.complete:
 			if err != nil {
 				log.Printf("Exiting with error: %s", err)
@@ -74,7 +78,7 @@ func (r *runner) Start() {
 // run executes each registered task.
 func (r *runner) run(tasks ...func(int)) error {
 	for id, task := range tasks {
-		// Check for an interrupt signal for the OS.
+		// Check for an interrupt signal from the OS.
 		if r.gotInterrupt() {
 			return errors.New("Early Shutdown")
 		}
@@ -89,7 +93,7 @@ func (r *runner) run(tasks ...func(int)) error {
 // gotInterrupt verifies if the interrupt signal has been issued.
 func (r *runner) gotInterrupt() bool {
 	select {
-	// Signaled when an interrupt event is signaled.
+	// Signaled when an interrupt event is sent.
 	case <-r.interrupt:
 		// Stop receiving any further signals.
 		signal.Stop(r.interrupt)
