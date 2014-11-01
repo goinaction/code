@@ -16,16 +16,16 @@ func init() {
 }
 
 // Google provides support for Google searches.
-type Google struct{}
+type google struct{}
 
 // NewGoogle returns a Google Searcher value.
-func NewGoogle() Google {
-	return Google{}
+func NewGoogle() google {
+	return google{}
 }
 
 // Search implements the Searcher interface. It performs a search
 // against Google.
-func (g Google) Search(searchTerm string, searchResults chan<- []Result) {
+func (g google) Search(searchTerm string, searchResults chan<- []Result) {
 	log.Printf("Google : Search : Started : searchTerm[%s]\n", searchTerm)
 
 	// Slice for the results.
@@ -52,16 +52,16 @@ func (g Google) Search(searchTerm string, searchResults chan<- []Result) {
 }
 
 // Bing provides support for Bing searches.
-type Bing struct{}
+type bing struct{}
 
 // NewBing returns a Bing Searcher value.
-func NewBing() Bing {
-	return Bing{}
+func NewBing() bing {
+	return bing{}
 }
 
 // Search implements the Searcher interface. It performs a search
 // against Bing.
-func (b Bing) Search(searchTerm string, searchResults chan<- []Result) {
+func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
 	log.Printf("Bing : Search : Started : searchTerm[%s]\n", searchTerm)
 
 	// Slice for the results.
@@ -88,16 +88,16 @@ func (b Bing) Search(searchTerm string, searchResults chan<- []Result) {
 }
 
 // Yahoo provides support for Yahoo searches.
-type Yahoo struct{}
+type yahoo struct{}
 
 // NewYahoo returns a Yahoo Searcher value.
-func NewYahoo() Yahoo {
-	return Yahoo{}
+func NewYahoo() yahoo {
+	return yahoo{}
 }
 
 // Search implements the Searcher interface. It performs a search
 // against Yahoo.
-func (y Yahoo) Search(searchTerm string, searchResults chan<- []Result) {
+func (y yahoo) Search(searchTerm string, searchResults chan<- []Result) {
 	log.Printf("Yahoo : Search : Started : searchTerm[%s]\n", searchTerm)
 
 	// Slice for the results.

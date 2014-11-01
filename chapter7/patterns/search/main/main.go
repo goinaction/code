@@ -13,24 +13,27 @@ import (
 
 // main is the entry point for all Go programs.
 func main() {
-	// Define the options we want for this search.
-	options := search.Options{
-		SearchTerm: "golang",
-		Google:     true,
-		Bing:       true,
-		Yahoo:      true,
-		First:      true,
-	}
-
 	// Submit the search and display the results.
-	results := search.Submit(&options)
+	results := search.Submit(
+		"golang",
+		search.First,
+		search.Google,
+		search.Bing,
+		search.Yahoo,
+	)
+
 	for _, result := range results {
 		log.Printf("main : Results : Info : %+v\n", result)
 	}
 
 	// This time we want to wait for all the results.
-	options.First = false
-	results = search.Submit(&options)
+	results = search.Submit(
+		"golang",
+		search.Google,
+		search.Bing,
+		search.Yahoo,
+	)
+
 	for _, result := range results {
 		log.Printf("main : Results : Info : %+v\n", result)
 	}
