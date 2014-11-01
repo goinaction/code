@@ -31,12 +31,6 @@ func (g google) Search(searchTerm string, searchResults chan<- []Result) {
 	// Slice for the results.
 	var results []Result
 
-	// On return send the results we have.
-	defer func() {
-		log.Println("Google : Search : Info : Sending Results")
-		searchResults <- results
-	}()
-
 	// Simulate an amount of time for the search.
 	time.Sleep(time.Millisecond * time.Duration(rand.Int63n(900)))
 
@@ -49,6 +43,7 @@ func (g google) Search(searchTerm string, searchResults chan<- []Result) {
 	})
 
 	log.Printf("Google : Search : Completed : Found[%d]\n", len(results))
+	searchResults <- results
 }
 
 // Bing provides support for Bing searches.
@@ -67,12 +62,6 @@ func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
 	// Slice for the results.
 	var results []Result
 
-	// On return send the results we have.
-	defer func() {
-		log.Println("Bing : Search : Info : Sending Results")
-		searchResults <- results
-	}()
-
 	// Simulate an amount of time for the search.
 	time.Sleep(time.Millisecond * time.Duration(rand.Int63n(900)))
 
@@ -85,6 +74,7 @@ func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
 	})
 
 	log.Printf("Bing : Search : Completed : Found[%d]\n", len(results))
+	searchResults <- results
 }
 
 // Yahoo provides support for Yahoo searches.
@@ -103,12 +93,6 @@ func (y yahoo) Search(searchTerm string, searchResults chan<- []Result) {
 	// Slice for the results.
 	var results []Result
 
-	// On return send the results we have.
-	defer func() {
-		log.Println("Yahoo : Search : Info : Sending Results")
-		searchResults <- results
-	}()
-
 	// Simulate an amount of time for the search.
 	time.Sleep(time.Millisecond * time.Duration(rand.Int63n(900)))
 
@@ -121,4 +105,5 @@ func (y yahoo) Search(searchTerm string, searchResults chan<- []Result) {
 	})
 
 	log.Printf("Yahoo : Search : Completed : Found[%d]\n", len(results))
+	searchResults <- results
 }
