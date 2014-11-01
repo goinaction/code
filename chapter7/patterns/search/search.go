@@ -53,13 +53,13 @@ func Submit(query string, options ...func(*searchSession)) []Result {
 		opt(&session)
 	}
 
-	var result []Result
-
 	// Perform the searches concurrently. Using a map because
 	// it returns the searchers in a random order every time.
 	for _, s := range session.searchers {
 		go s.Search(query, session.resultChan)
 	}
+
+	var results []Result
 
 	// Wait for the results to come back.
 	for search := 0; search < len(session.searchers); search++ {
@@ -68,20 +68,20 @@ func Submit(query string, options ...func(*searchSession)) []Result {
 		// Failing to do so will leave the Searchers blocked forever.
 		if session.first && search > 0 {
 			go func() {
-				result = append(result, <-session.resultChan...)
-				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(result))
+				results = append(results, <-session.resultChan...)
+				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(results))
 			}()
 			continue
 		}
 
 		// Wait to recieve results.
 		log.Println("search : Submit : Info : Waiting For Results...")
-		result = append(result, <-session.resultChan...)
+		results = append(results, <-session.resultChan...)
 
 		// Save the results to the final slice.
-		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(result))
+		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(results))
 	}
 
-	log.Printf("search : Submit : Completed : Found [%d] Results\n", len(result))
-	return result
+	log.Printf("search : Submit : Completed : Found [%d] Results\n", len(results))
+	return results
 }
