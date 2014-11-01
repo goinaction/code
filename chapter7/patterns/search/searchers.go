@@ -19,7 +19,7 @@ func init() {
 type Google struct{}
 
 // NewGoogle returns a Google Searcher value.
-func NewGoogle() Searcher {
+func NewGoogle() Google {
 	return Google{}
 }
 
@@ -55,7 +55,7 @@ func (g Google) Search(searchTerm string, searchResults chan<- []Result) {
 type Bing struct{}
 
 // NewBing returns a Bing Searcher value.
-func NewBing() Searcher {
+func NewBing() Bing {
 	return Bing{}
 }
 
@@ -91,7 +91,7 @@ func (b Bing) Search(searchTerm string, searchResults chan<- []Result) {
 type Yahoo struct{}
 
 // NewYahoo returns a Yahoo Searcher value.
-func NewYahoo() Searcher {
+func NewYahoo() Yahoo {
 	return Yahoo{}
 }
 
