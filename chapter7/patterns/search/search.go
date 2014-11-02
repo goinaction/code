@@ -67,19 +67,17 @@ func Submit(query string, options ...func(*searchSession)) []Result {
 		// concurrently discarding the remaining searchResults.
 		// Failing to do so will leave the Searchers blocked forever.
 		if session.first && search > 0 {
-			go func() {
-				results = append(results, <-session.resultChan...)
-				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(results))
-			}()
+			go log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(<-session.resultChan))
 			continue
 		}
 
 		// Wait to recieve results.
 		log.Println("search : Submit : Info : Waiting For Results...")
-		results = append(results, <-session.resultChan...)
+		result := <-session.resultChan
 
 		// Save the results to the final slice.
-		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(results))
+		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(result))
+		results = append(results, result...)
 	}
 
 	log.Printf("search : Submit : Completed : Found [%d] Results\n", len(results))
