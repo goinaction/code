@@ -40,7 +40,7 @@ func Yahoo(s *searchSession) {
 	s.searchers["yahoo"] = NewYahoo()
 }
 
-func First(s *searchSession) { s.first = true }
+func OnlyFirst(s *searchSession) { s.first = true }
 
 // Submit uses goroutines and channels to perform a search against the three
 // leading search engines concurrently.
@@ -67,7 +67,10 @@ func Submit(query string, options ...func(*searchSession)) []Result {
 		// concurrently discarding the remaining searchResults.
 		// Failing to do so will leave the Searchers blocked forever.
 		if session.first && search > 0 {
-			go log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(<-session.resultChan))
+			go func() {
+				r := <-session.resultChan
+				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(r))
+			}()
 			continue
 		}
 

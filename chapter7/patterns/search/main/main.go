@@ -16,7 +16,7 @@ func main() {
 	// Submit the search and display the results.
 	results := search.Submit(
 		"golang",
-		search.First,
+		search.OnlyFirst,
 		search.Google,
 		search.Bing,
 		search.Yahoo,
