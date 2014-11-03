@@ -3,18 +3,7 @@
 // Package search : search.go manages the searching of results against Google, Yahoo and Bing.
 package search
 
-import (
-	"log"
-)
-
-// Options provides the search options for performing searches.
-type Options struct {
-	SearchTerm string
-	Google     bool
-	Bing       bool
-	Yahoo      bool
-	First      bool
-}
+import "log"
 
 // Result represents a search result that was found.
 type Result struct {
@@ -30,61 +19,70 @@ type Searcher interface {
 	Search(searchTerm string, searchResults chan<- []Result)
 }
 
+type searchSession struct {
+	searchers  map[string]Searcher
+	first      bool
+	resultChan chan []Result
+}
+
+func Google(s *searchSession) {
+	log.Println("search : Submit : Info : Adding Google")
+	s.searchers["google"] = NewGoogle()
+}
+
+func Bing(s *searchSession) {
+	log.Println("search : Submit : Info : Adding Bing")
+	s.searchers["bing"] = NewBing()
+}
+
+func Yahoo(s *searchSession) {
+	log.Println("search : Submit : Info : Adding Yahoo")
+	s.searchers["yahoo"] = NewYahoo()
+}
+
+func OnlyFirst(s *searchSession) { s.first = true }
+
 // Submit uses goroutines and channels to perform a search against the three
 // leading search engines concurrently.
-func Submit(options *Options) []Result {
-	log.Printf("search : Submit : Started : %#v\n", options)
+func Submit(query string, options ...func(*searchSession)) []Result {
+	var session searchSession
+	session.searchers = make(map[string]Searcher)
+	session.resultChan = make(chan []Result)
 
-	var final []Result
-	searchers := make(map[string]Searcher)
-	searchResults := make(chan []Result)
-
-	// Create a Google Searcher if checked.
-	if options.Google {
-		log.Println("search : Submit : Info : Adding Google")
-		searchers["google"] = NewGoogle()
-	}
-
-	// Create a Bing Searcher if checked.
-	if options.Bing {
-		log.Println("search : Submit : Info : Adding Bing")
-		searchers["bing"] = NewBing()
-	}
-
-	// Create a Yahoo Searcher if checked.
-	if options.Yahoo {
-		log.Println("search : Submit : Info : Adding Yahoo")
-		searchers["yahoo"] = NewYahoo()
+	for _, opt := range options {
+		opt(&session)
 	}
 
 	// Perform the searches concurrently. Using a map because
 	// it returns the searchers in a random order every time.
-	for _, searcher := range searchers {
-		go searcher.Search(options.SearchTerm, searchResults)
+	for _, s := range session.searchers {
+		go s.Search(query, session.resultChan)
 	}
 
+	var results []Result
+
 	// Wait for the results to come back.
-	for search := 0; search < len(searchers); search++ {
+	for search := 0; search < len(session.searchers); search++ {
 		// If we just want the first result, don't wait any longer by
 		// concurrently discarding the remaining searchResults.
 		// Failing to do so will leave the Searchers blocked forever.
-		if options.First && search > 0 {
+		if session.first && search > 0 {
 			go func() {
-				results := <-searchResults
-				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(results))
+				r := <-session.resultChan
+				log.Printf("search : Submit : Info : Results Discarded : Results[%d]\n", len(r))
 			}()
 			continue
 		}
 
 		// Wait to recieve results.
 		log.Println("search : Submit : Info : Waiting For Results...")
-		results := <-searchResults
+		result := <-session.resultChan
 
 		// Save the results to the final slice.
-		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(results))
-		final = append(final, results...)
+		log.Printf("search : Submit : Info : Results Used : Results[%d]\n", len(result))
+		results = append(results, result...)
 	}
 
-	log.Printf("search : Submit : Completed : Found [%d] Results\n", len(final))
-	return final
+	log.Printf("search : Submit : Completed : Found [%d] Results\n", len(results))
+	return results
 }
