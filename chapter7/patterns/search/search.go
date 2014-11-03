@@ -27,17 +27,17 @@ type searchSession struct {
 
 func Google(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Google")
-	s.searchers["google"] = NewGoogle()
+	s.searchers["google"] = google{}
 }
 
 func Bing(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Bing")
-	s.searchers["bing"] = NewBing()
+	s.searchers["bing"] = bing{}
 }
 
 func Yahoo(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Yahoo")
-	s.searchers["yahoo"] = NewYahoo()
+	s.searchers["yahoo"] = yahoo{}
 }
 
 func OnlyFirst(s *searchSession) { s.first = true }

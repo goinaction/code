@@ -18,11 +18,6 @@ func init() {
 // Google provides support for Google searches.
 type google struct{}
 
-// NewGoogle returns a Google Searcher value.
-func NewGoogle() google {
-	return google{}
-}
-
 // Search implements the Searcher interface. It performs a search
 // against Google.
 func (g google) Search(searchTerm string, searchResults chan<- []Result) {
@@ -49,11 +44,6 @@ func (g google) Search(searchTerm string, searchResults chan<- []Result) {
 // Bing provides support for Bing searches.
 type bing struct{}
 
-// NewBing returns a Bing Searcher value.
-func NewBing() bing {
-	return bing{}
-}
-
 // Search implements the Searcher interface. It performs a search
 // against Bing.
 func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
@@ -79,11 +69,6 @@ func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
 
 // Yahoo provides support for Yahoo searches.
 type yahoo struct{}
-
-// NewYahoo returns a Yahoo Searcher value.
-func NewYahoo() yahoo {
-	return yahoo{}
-}
 
 // Search implements the Searcher interface. It performs a search
 // against Yahoo.
