@@ -19,27 +19,38 @@ type Searcher interface {
 	Search(searchTerm string, searchResults chan<- []Result)
 }
 
+// searchSession holds information about the current search submission.
+// It contains options, searchers and a channel down which we will receive
+// results.
 type searchSession struct {
 	searchers  map[string]Searcher
 	first      bool
 	resultChan chan []Result
 }
 
+// Google search will be added to the search session if this option
+// is provided.
 func Google(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Google")
 	s.searchers["google"] = google{}
 }
 
+// Bing search will be added to this search session if this option
+// is provided.
 func Bing(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Bing")
 	s.searchers["bing"] = bing{}
 }
 
+// Yahoo search will be enabled if this option is provided as an argument
+// to Submit.
 func Yahoo(s *searchSession) {
 	log.Println("search : Submit : Info : Adding Yahoo")
 	s.searchers["yahoo"] = yahoo{}
 }
 
+// OnlyFirst is an option that will restrict the search session to just the
+// first result.
 func OnlyFirst(s *searchSession) { s.first = true }
 
 // Submit uses goroutines and channels to perform a search against the three

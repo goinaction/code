@@ -20,8 +20,8 @@ type google struct{}
 
 // Search implements the Searcher interface. It performs a search
 // against Google.
-func (g google) Search(searchTerm string, searchResults chan<- []Result) {
-	log.Printf("Google : Search : Started : searchTerm[%s]\n", searchTerm)
+func (g google) Search(term string, resChan chan<- []Result) {
+	log.Printf("Google : Search : Started : search term[%s]\n", term)
 
 	// Slice for the results.
 	var results []Result
@@ -38,7 +38,7 @@ func (g google) Search(searchTerm string, searchResults chan<- []Result) {
 	})
 
 	log.Printf("Google : Search : Completed : Found[%d]\n", len(results))
-	searchResults <- results
+	resChan <- results
 }
 
 // Bing provides support for Bing searches.
@@ -46,8 +46,8 @@ type bing struct{}
 
 // Search implements the Searcher interface. It performs a search
 // against Bing.
-func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
-	log.Printf("Bing : Search : Started : searchTerm[%s]\n", searchTerm)
+func (b bing) Search(term string, resChan chan<- []Result) {
+	log.Printf("Bing : Search : Started : search term [%s]\n", term)
 
 	// Slice for the results.
 	var results []Result
@@ -64,7 +64,7 @@ func (b bing) Search(searchTerm string, searchResults chan<- []Result) {
 	})
 
 	log.Printf("Bing : Search : Completed : Found[%d]\n", len(results))
-	searchResults <- results
+	resChan <- results
 }
 
 // Yahoo provides support for Yahoo searches.
@@ -72,23 +72,23 @@ type yahoo struct{}
 
 // Search implements the Searcher interface. It performs a search
 // against Yahoo.
-func (y yahoo) Search(searchTerm string, searchResults chan<- []Result) {
-	log.Printf("Yahoo : Search : Started : searchTerm[%s]\n", searchTerm)
+func (y yahoo) Search(term string, results chan<- []Result) {
+	log.Printf("Yahoo : Search : Started : search term [%s]\n", term)
 
 	// Slice for the results.
-	var results []Result
+	var r []Result
 
 	// Simulate an amount of time for the search.
 	time.Sleep(time.Millisecond * time.Duration(rand.Int63n(900)))
 
 	// Simulate a result for the search.
-	results = append(results, Result{
+	r = append(r, Result{
 		Engine:      "Yahoo",
 		Title:       "Go Playground",
 		Description: "The Go Playground is a web service that runs on golang.org's servers",
 		Link:        "http://play.golang.org/",
 	})
 
-	log.Printf("Yahoo : Search : Completed : Found[%d]\n", len(results))
-	searchResults <- results
+	log.Printf("Yahoo : Search : Completed : Found[%d]\n", len(r))
+	results <- r
 }
