@@ -54,7 +54,7 @@ func (r *runner) Start() {
 
 	// Run the different tasks on a different goroutine.
 	go func() {
-		r.complete <- r.run(r.tasks...)
+		r.complete <- r.run()
 		log.Println("Finished work.")
 	}()
 
@@ -76,8 +76,8 @@ func (r *runner) Start() {
 }
 
 // run executes each registered task.
-func (r *runner) run(tasks ...func(int)) error {
-	for id, task := range tasks {
+func (r *runner) run() error {
+	for id, task := range r.tasks {
 		// Check for an interrupt signal from the OS.
 		if r.gotInterrupt() {
 			return errors.New("Early Shutdown")
