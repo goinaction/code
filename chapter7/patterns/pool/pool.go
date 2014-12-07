@@ -13,8 +13,9 @@ import (
 	"sync"
 )
 
-// Pool manages a set of resources that can be shared safely by multiple goroutines.
-// The resource being managed must implement to io.Closer interface.
+// Pool manages a set of resources that can be shared safely by
+// multiple goroutines. The resource being managed must implement
+// the io.Closer interface.
 type Pool struct {
 	sync.Mutex
 	resources chan io.Closer
@@ -22,21 +23,21 @@ type Pool struct {
 	closed    bool
 }
 
-// ErrInvalidCapacity is returned when there has been an attempt to create an
-// unbuffered pool.
-var ErrInvalidCapacity = errors.New("Capacity needs to be greater than zero.")
+// ErrInvalidCapacity is returned when there has been an attempt
+// to create an unbuffered pool.
+var ErrInvalidCapacity = errors.New("Capacity value too small.")
 
-// New creates a pool that manages resources. A pool requires a function
-// that can allocate a new resource and the number of resources that can
-// be allocated.
-func New(fn func() (io.Closer, error), capacity uint) (*Pool, error) {
-	if capacity == 0 {
+// New creates a pool that manages resources. A pool requires a
+// function that can allocate a new resource and the number of
+// resources that can be allocated.
+func New(fn func() (io.Closer, error), cap uint) (*Pool, error) {
+	if cap == 0 {
 		return nil, ErrInvalidCapacity
 	}
 
 	return &Pool{
 		factory:   fn,
-		resources: make(chan io.Closer, capacity),
+		resources: make(chan io.Closer, cap),
 	}, nil
 }
 
@@ -75,7 +76,7 @@ func (p *Pool) Release(r io.Closer) {
 	case p.resources <- r:
 		fmt.Println("Release:", "In Queue")
 
-	// If the queue is already at capacity we close the resource.
+	// If the queue is already at cap we close the resource.
 	default:
 		fmt.Println("Release:", "Closing")
 		r.Close()
