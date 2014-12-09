@@ -3,7 +3,7 @@
 // This example is provided with help by Gabriel Aszalos.
 
 // Package pool manages a user defined set of resources.
-// Based on the work by Fatih Arslan with his pool package.
+// Example provided thanks to Fatih Arslan and Gabriel Aszalos.
 package pool
 
 import (
