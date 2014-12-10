@@ -1,9 +1,7 @@
 // Copyright Information.
 
-// This example is provided with help by Gabriel Aszalos.
-
 // Package pool manages a user defined set of resources.
-// Example provided thanks to Fatih Arslan and Gabriel Aszalos.
+// Example provided with help from Fatih Arslan and Gabriel Aszalos.
 package pool
 
 import (
