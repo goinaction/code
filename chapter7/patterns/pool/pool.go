@@ -29,7 +29,7 @@ var ErrInvalidCapacity = errors.New("Capacity value too small.")
 // function that can allocate a new resource and the number of
 // resources that can be allocated.
 func New(fn func() (io.Closer, error), cap uint) (*Pool, error) {
-	if cap == 0 {
+	if cap <= 0 {
 		return nil, ErrInvalidCapacity
 	}
 
@@ -59,12 +59,16 @@ func (p *Pool) Acquire() (io.Closer, error) {
 
 // Release places a new resource onto the pool.
 func (p *Pool) Release(r io.Closer) {
-	// Secure this operation with the Close operation.
+	// Secure reading the closed flag.
+	var isClosed bool
 	p.Lock()
-	defer p.Unlock()
+	{
+		isClosed = p.closed
+	}
+	p.Unlock()
 
 	// If the pool is closed, discard the resource.
-	if p.closed {
+	if isClosed {
 		r.Close()
 		return
 	}
