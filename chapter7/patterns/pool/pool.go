@@ -59,16 +59,12 @@ func (p *Pool) Acquire() (io.Closer, error) {
 
 // Release places a new resource onto the pool.
 func (p *Pool) Release(r io.Closer) {
-	// Secure reading the closed flag.
-	var isClosed bool
+	// Secure this operation with the Close operation.
 	p.Lock()
-	{
-		isClosed = p.closed
-	}
-	p.Unlock()
+	defer p.Unlock()
 
 	// If the pool is closed, discard the resource.
-	if isClosed {
+	if p.closed {
 		r.Close()
 		return
 	}
