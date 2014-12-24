@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/goinaction/code/chapter7/patterns/work"
@@ -38,18 +39,28 @@ func main() {
 	// Create a work value with 2 goroutines.
 	w := work.New(2)
 
-	// Iterate over the slice of names.
-	for _, name := range names {
-		// Create a namePrinter and provide the
-		// specfic name.
-		np := namePrinter{
-			name: name,
-		}
+	var wg sync.WaitGroup
+	wg.Add(10 * len(names))
 
-		// Submit the task to be worked on. When RunTask
-		// returns we know it is being handled.
-		w.RunTask(&np)
+	for i := 0; i < 10; i++ {
+		// Iterate over the slice of names.
+		for _, name := range names {
+			// Create a namePrinter and provide the
+			// specfic name.
+			np := namePrinter{
+				name: name,
+			}
+
+			go func() {
+				// Submit the task to be worked on. When RunTask
+				// returns we know it is being handled.
+				w.RunTask(&np)
+				wg.Done()
+			}()
+		}
 	}
+
+	wg.Wait()
 
 	// Shutdown the work and wait for all existing work
 	// to be completed.

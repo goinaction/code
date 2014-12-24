@@ -73,7 +73,7 @@ func main() {
 	wg.Wait()
 
 	// Close the pool.
-	fmt.Println("*****> Shutdown Program.")
+	fmt.Println("Shutdown Program.")
 	p.Close()
 }
 
