@@ -8,6 +8,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -34,10 +35,16 @@ func (m *namePrinter) Work(id int) {
 	time.Sleep(time.Second)
 }
 
+// logger is called by the work pool when
+// it has things to log.
+func logger(message string) {
+	log.Println(message)
+}
+
 // main is the entry point for all Go programs.
 func main() {
 	// Create a work value with 2 goroutines.
-	w, _ := work.New(2, time.Minute)
+	w, _ := work.New(2, time.Second, logger)
 
 	var wg sync.WaitGroup
 	wg.Add(100 * len(names))

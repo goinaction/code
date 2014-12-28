@@ -6,7 +6,6 @@ package work
 import (
 	"errors"
 	"fmt"
-	"log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -43,10 +42,12 @@ type Work struct {
 	routines    int64          // Number of routines
 	active      int64          // Active number of routines in the work pool.
 	pending     int64          // Pending number of routines waiting to submit work.
+
+	logFunc func(message string) // Function called to providing logging support
 }
 
 // New creates a new Worker.
-func New(minRoutines int, statTime time.Duration) (*Work, error) {
+func New(minRoutines int, statTime time.Duration, logFunc func(message string)) (*Work, error) {
 	if minRoutines <= 0 {
 		return nil, ErrorInvalidMinRoutines
 	}
@@ -62,6 +63,7 @@ func New(minRoutines int, statTime time.Duration) (*Work, error) {
 		control:     make(chan int),
 		kill:        make(chan struct{}),
 		shutdown:    make(chan struct{}),
+		logFunc:     logFunc,
 	}
 
 	// Start the manager.
@@ -113,7 +115,7 @@ done:
 	atomic.AddInt64(&w.routines, -1)
 	w.wg.Done()
 
-	log.Println("Work : gr : Info : Shutdown")
+	w.log("Worker : Shutting Down")
 }
 
 // Run wait for the goroutine pool to take the work
@@ -138,7 +140,7 @@ func (w *Work) manager() {
 	w.wg.Add(1)
 
 	go func() {
-		log.Println("Work : manager : Started")
+		w.log("Work Manager : Started")
 
 		// Create a timer to run stats.
 		timer := time.NewTimer(w.statTime)
@@ -161,7 +163,7 @@ func (w *Work) manager() {
 			case c := <-w.control:
 				switch c {
 				case addRoutine:
-					log.Println("Work : manager : Info : Add Routine")
+					w.log("Work Manager : Add Routine")
 
 					// Capture a unique id.
 					w.counter++
@@ -174,14 +176,14 @@ func (w *Work) manager() {
 					go w.work(w.counter)
 
 				case rmvRoutine:
-					log.Println("Work : manager : Info : Remove Routine")
+					w.log("Work Manager : Remove Routine")
 
 					// Capture the number of routines.
 					routines := int(atomic.LoadInt64(&w.routines))
 
 					// Are there routines to remove.
 					if routines <= w.minRoutines {
-						log.Println("Work : manager : Info : Remove Routine Cancelled")
+						w.log("Work Manager : Reached Minimum Can't Remove")
 						break
 					}
 
@@ -196,11 +198,18 @@ func (w *Work) manager() {
 				active := atomic.LoadInt64(&w.active)
 
 				// Display the stats.
-				fmt.Printf("Work : manager : Stats : G[%d] P[%d] A[%d]\n", routines, pending, active)
+				w.log(fmt.Sprintf("Work Manager : Stats : G[%d] P[%d] A[%d]", routines, pending, active))
 
 				// Reset the clock.
 				timer.Reset(w.statTime)
 			}
 		}
 	}()
+}
+
+// log sending logging messages back to the client.
+func (w *Work) log(message string) {
+	if w.logFunc != nil {
+		w.logFunc(message)
+	}
 }
