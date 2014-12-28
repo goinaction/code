@@ -29,7 +29,7 @@ type namePrinter struct {
 }
 
 // Work implements the Worker interface.
-func (m *namePrinter) Work() {
+func (m *namePrinter) Work(id int) {
 	fmt.Println(m.name)
 	time.Sleep(time.Second)
 }
@@ -37,12 +37,12 @@ func (m *namePrinter) Work() {
 // main is the entry point for all Go programs.
 func main() {
 	// Create a work value with 2 goroutines.
-	w := work.New(2)
+	w, _ := work.New(2, time.Minute)
 
 	var wg sync.WaitGroup
-	wg.Add(10 * len(names))
+	wg.Add(100 * len(names))
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		// Iterate over the slice of names.
 		for _, name := range names {
 			// Create a namePrinter and provide the
@@ -54,10 +54,22 @@ func main() {
 			go func() {
 				// Submit the task to be worked on. When RunTask
 				// returns we know it is being handled.
-				w.RunTask(&np)
+				w.Run(&np)
 				wg.Done()
 			}()
 		}
+	}
+
+	for {
+		// Enter a number and hit enter to change the size
+		// of the work pool.
+		var c int
+		fmt.Scanf("%d", &c)
+		if c == 0 {
+			break
+		}
+
+		w.Add(c)
 	}
 
 	wg.Wait()
