@@ -1,5 +1,7 @@
 // Copyright Information.
 
+// Example provided with help from Gabriel Aszalos.
+
 // This sample program demonstrates how to implement a pattern for
 // concurrent requesting results from different systems and either
 // wait for all the results to return or just the first one.

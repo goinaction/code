@@ -1,7 +1,7 @@
 // Copyright Information.
 
+// Example is provided with help by Gabriel Aszalos.
 // Package runner manages the running and lifetime of a process.
-// Example provided with help from Gabriel Aszalos.
 package runner
 
 import (

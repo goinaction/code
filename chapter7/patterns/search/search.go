@@ -1,8 +1,8 @@
 // Copyright Information.
 
+// Example provided with help from Gabriel Aszalos.
 // Package search : search.go manages the searching of results
 // against Google, Yahoo and Bing.
-// Example provided with help from Gabriel Aszalos.
 package search
 
 import "log"

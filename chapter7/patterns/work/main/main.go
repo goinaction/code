@@ -1,6 +1,6 @@
 // Copyright Information.
 
-// This example is provided with help by Jason Waldrip.
+// Example is provided with help by Jason Waldrip.
 
 // This sample program demostrates how to use the work package
 // to use a pool of goroutines to get work done.
@@ -8,7 +8,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -30,21 +29,15 @@ type namePrinter struct {
 }
 
 // Work implements the Worker interface.
-func (m *namePrinter) Work(id int) {
+func (m *namePrinter) Work() {
 	fmt.Println(m.name)
 	time.Sleep(time.Second)
-}
-
-// logger is called by the work pool when
-// it has things to log.
-func logger(message string) {
-	log.Println(message)
 }
 
 // main is the entry point for all Go programs.
 func main() {
 	// Create a work value with 2 goroutines.
-	w, _ := work.New(2, time.Second, logger)
+	w := work.New(2)
 
 	var wg sync.WaitGroup
 	wg.Add(100 * len(names))
@@ -61,22 +54,10 @@ func main() {
 			go func() {
 				// Submit the task to be worked on. When RunTask
 				// returns we know it is being handled.
-				w.Run(&np)
+				w.RunTask(&np)
 				wg.Done()
 			}()
 		}
-	}
-
-	for {
-		// Enter a number and hit enter to change the size
-		// of the work pool.
-		var c int
-		fmt.Scanf("%d", &c)
-		if c == 0 {
-			break
-		}
-
-		w.Add(c)
 	}
 
 	wg.Wait()
