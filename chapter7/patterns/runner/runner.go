@@ -12,9 +12,9 @@ import (
 	"time"
 )
 
-// runner runs a set of tasks within a given timeout and can be
+// Runner runs a set of tasks within a given timeout and can be
 // shut down on an operating system interrupt.
-type runner struct {
+type Runner struct {
 	// interrupt channel reports a signal from the
 	// operating system.
 	interrupt chan os.Signal
@@ -31,8 +31,8 @@ type runner struct {
 }
 
 // New returns a new ready-to-use runner.
-func New(d time.Duration) *runner {
-	return &runner{
+func New(d time.Duration) *Runner {
+	return &Runner{
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
 		timeout:   time.After(d * time.Second),
@@ -41,12 +41,12 @@ func New(d time.Duration) *runner {
 
 // Add attaches tasks to the runner. A task is a function that
 // takes an int ID.
-func (r *runner) Add(tasks ...func(int)) {
+func (r *Runner) Add(tasks ...func(int)) {
 	r.tasks = append(r.tasks, tasks...)
 }
 
 // Start runs all tasks and monitors channel events.
-func (r *runner) Start() {
+func (r *Runner) Start() {
 	// We want to receive all interrupt based signals.
 	signal.Notify(r.interrupt, os.Interrupt)
 
@@ -74,7 +74,7 @@ func (r *runner) Start() {
 }
 
 // run executes each registered task.
-func (r *runner) run() error {
+func (r *Runner) run() error {
 	for id, task := range r.tasks {
 		// Check for an interrupt signal from the OS.
 		if r.gotInterrupt() {
@@ -89,7 +89,7 @@ func (r *runner) run() error {
 }
 
 // gotInterrupt verifies if the interrupt signal has been issued.
-func (r *runner) gotInterrupt() bool {
+func (r *Runner) gotInterrupt() bool {
 	select {
 	// Signaled when an interrupt event is sent.
 	case <-r.interrupt:
