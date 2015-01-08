@@ -38,12 +38,12 @@ func New(goroutines int) *Work {
 	return &w
 }
 
-// RunTask to the worker queue
-func (w *Work) RunTask(task Worker) {
+// Run submits work to the pool.
+func (w *Work) Run(task Worker) {
 	w.tasks <- task
 }
 
-// Shutdown waits for all the workers to finish
+// Shutdown waits for all the goroutines to shutdown.
 func (w *Work) Shutdown() {
 	close(w.tasks)
 	w.wg.Wait()

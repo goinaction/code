@@ -2,7 +2,7 @@
 
 // Example is provided with help by Jason Waldrip.
 
-// This sample program demostrates how to use the work package
+// This sample program demonstrates how to use the work package
 // to use a pool of goroutines to get work done.
 package main
 
@@ -46,7 +46,7 @@ func main() {
 		// Iterate over the slice of names.
 		for _, name := range names {
 			// Create a namePrinter and provide the
-			// specfic name.
+			// specific name.
 			np := namePrinter{
 				name: name,
 			}
@@ -54,7 +54,7 @@ func main() {
 			go func() {
 				// Submit the task to be worked on. When RunTask
 				// returns we know it is being handled.
-				w.RunTask(&np)
+				w.Run(&np)
 				wg.Done()
 			}()
 		}
