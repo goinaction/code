@@ -30,7 +30,7 @@ type Runner struct {
 	tasks []func(int)
 }
 
-// New returns a new ready-to-use runner.
+// New returns a new ready-to-use Runner.
 func New(d time.Duration) *Runner {
 	return &Runner{
 		interrupt: make(chan os.Signal, 1),
@@ -39,7 +39,7 @@ func New(d time.Duration) *Runner {
 	}
 }
 
-// Add attaches tasks to the runner. A task is a function that
+// Add attaches tasks to the Runner. A task is a function that
 // takes an int ID.
 func (r *Runner) Add(tasks ...func(int)) {
 	r.tasks = append(r.tasks, tasks...)
