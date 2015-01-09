@@ -9,6 +9,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/goinaction/code/chapter7/patterns/runner"
@@ -25,15 +26,17 @@ func main() {
 	r := runner.New(timeout)
 
 	// Add the tasks to be run.
-	r.Add(createTask(1), createTask(2), createTask(1))
+	r.Add(createTask(), createTask(), createTask())
 
 	// Run the tasks and handle the result.
 	if err := r.Start(); err != nil {
 		switch err {
 		case runner.ErrTimeout:
 			log.Println("Terminating Due To Timeout.")
+			os.Exit(1)
 		case runner.ErrInterrupt:
 			log.Println("Terminating Due To Interrupt.")
+			os.Exit(2)
 		}
 	}
 
@@ -41,10 +44,10 @@ func main() {
 }
 
 // createTask returns an example task that sleeps for the specified
-// number of seconds.
-func createTask(seconds int) func(int) {
+// number of seconds based on the id.
+func createTask() func(int) {
 	return func(id int) {
 		log.Printf("Processor - Task #%d", id)
-		time.Sleep(time.Duration(seconds) * time.Second)
+		time.Sleep(time.Duration(id) * time.Second)
 	}
 }
