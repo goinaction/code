@@ -6,7 +6,6 @@ package runner
 
 import (
 	"errors"
-	"log"
 	"os"
 	"os/signal"
 	"time"
@@ -30,6 +29,12 @@ type Runner struct {
 	tasks []func(int)
 }
 
+// ErrTimeout is returned when a value is received on the timeout channel.
+var ErrTimeout = errors.New("Received timeout.")
+
+// ErrInterrupt is returned when an event from the OS is received.
+var ErrInterrupt = errors.New("Received interrupt.")
+
 // New returns a new ready-to-use Runner.
 func New(d time.Duration) *Runner {
 	return &Runner{
@@ -46,28 +51,23 @@ func (r *Runner) Add(tasks ...func(int)) {
 }
 
 // Start runs all tasks and monitors channel events.
-func (r *Runner) Start() {
+func (r *Runner) Start() error {
 	// We want to receive all interrupt based signals.
 	signal.Notify(r.interrupt, os.Interrupt)
 
 	// Run the different tasks on a different goroutine.
 	go func() {
 		r.complete <- r.run()
-		log.Println("Finished work.")
 	}()
 
 	select {
 	// Signaled when processing is done.
 	case err := <-r.complete:
-		if err != nil {
-			log.Printf("Exiting with error: %s", err)
-		}
-		return
+		return err
 
 	// Signaled when we run out of time.
 	case <-r.timeout:
-		log.Println("Timeout - Killing Program")
-		os.Exit(1)
+		return ErrTimeout
 	}
 }
 
@@ -76,7 +76,7 @@ func (r *Runner) run() error {
 	for id, task := range r.tasks {
 		// Check for an interrupt signal from the OS.
 		if r.gotInterrupt() {
-			return errors.New("Interrupt - Shutdown Program")
+			return ErrInterrupt
 		}
 
 		// Execute the registered task.
@@ -93,7 +93,6 @@ func (r *Runner) gotInterrupt() bool {
 	case <-r.interrupt:
 		// Stop receiving any further signals.
 		signal.Stop(r.interrupt)
-		log.Println("Received interrupt.")
 		return true
 
 	// Continue running as normal.
