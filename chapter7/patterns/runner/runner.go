@@ -56,20 +56,18 @@ func (r *Runner) Start() {
 		log.Println("Finished work.")
 	}()
 
-	for {
-		select {
-		// Signaled when processing is done.
-		case err := <-r.complete:
-			if err != nil {
-				log.Printf("Exiting with error: %s", err)
-			}
-			return
-
-		// Signaled when we run out of time.
-		case <-r.timeout:
-			log.Println("Timeout - Killing Program")
-			os.Exit(1)
+	select {
+	// Signaled when processing is done.
+	case err := <-r.complete:
+		if err != nil {
+			log.Printf("Exiting with error: %s", err)
 		}
+		return
+
+	// Signaled when we run out of time.
+	case <-r.timeout:
+		log.Println("Timeout - Killing Program")
+		os.Exit(1)
 	}
 }
 
