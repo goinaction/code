@@ -20,13 +20,13 @@ type Pool struct {
 }
 
 // New creates a new work pool.
-func New(goroutines int) *Pool {
+func New(maxGoroutines int) *Pool {
 	p := Pool{
 		work: make(chan Worker),
 	}
 
-	p.wg.Add(goroutines)
-	for i := 0; i < goroutines; i++ {
+	p.wg.Add(maxGoroutines)
+	for i := 0; i < maxGoroutines; i++ {
 		go func() {
 			for w := range p.work {
 				w.Task()

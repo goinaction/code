@@ -92,7 +92,7 @@ func (p *Pool) Close() {
 		return
 	}
 
-	// Toggle the flag
+	// Set the pool as closed.
 	p.closed = true
 
 	// Close the channel before we drain the channel of its
