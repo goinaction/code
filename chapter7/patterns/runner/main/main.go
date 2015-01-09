@@ -24,10 +24,11 @@ func main() {
 	// Create a new timer value for this run.
 	r := runner.New(timeout)
 
-	// Add the tasks to be run and start running.
+	// Add the tasks to be run.
 	r.Add(createTask(1), createTask(2), createTask(1))
-	err := r.Start()
-	if err != nil {
+
+	// Run the tasks and handle the result.
+	if err := r.Start(); err != nil {
 		switch err {
 		case runner.ErrTimeout:
 			log.Println("Terminating Due To Timeout.")

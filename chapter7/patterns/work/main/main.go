@@ -7,7 +7,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -30,7 +30,7 @@ type namePrinter struct {
 
 // Task implements the Worker interface.
 func (m *namePrinter) Task() {
-	fmt.Println(m.name)
+	log.Println(m.name)
 	time.Sleep(time.Second)
 }
 

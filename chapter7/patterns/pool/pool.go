@@ -6,8 +6,8 @@ package pool
 
 import (
 	"errors"
-	"fmt"
 	"io"
+	"log"
 	"sync"
 )
 
@@ -44,7 +44,7 @@ func (p *Pool) Acquire() (io.Closer, error) {
 	select {
 	// Check for a free resource.
 	case r, ok := <-p.resources:
-		fmt.Println("Acquire:", "Shared Resource")
+		log.Println("Acquire:", "Shared Resource")
 		if !ok {
 			return nil, ErrPoolClosed
 		}
@@ -52,7 +52,7 @@ func (p *Pool) Acquire() (io.Closer, error) {
 
 	// Provide a new resource since there are none available.
 	default:
-		fmt.Println("Acquire:", "New Resource")
+		log.Println("Acquire:", "New Resource")
 		return p.factory()
 	}
 }
@@ -72,11 +72,11 @@ func (p *Pool) Release(r io.Closer) {
 	select {
 	// Attempt to place the new resource on the queue.
 	case p.resources <- r:
-		fmt.Println("Release:", "In Queue")
+		log.Println("Release:", "In Queue")
 
 	// If the queue is already at cap we close the resource.
 	default:
-		fmt.Println("Release:", "Closing")
+		log.Println("Release:", "Closing")
 		r.Close()
 	}
 }
