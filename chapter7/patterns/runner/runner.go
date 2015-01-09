@@ -35,7 +35,7 @@ func New(d time.Duration) *Runner {
 	return &Runner{
 		interrupt: make(chan os.Signal, 1),
 		complete:  make(chan error),
-		timeout:   time.After(d * time.Second),
+		timeout:   time.After(d),
 	}
 }
 
@@ -76,7 +76,7 @@ func (r *Runner) run() error {
 	for id, task := range r.tasks {
 		// Check for an interrupt signal from the OS.
 		if r.gotInterrupt() {
-			return errors.New("Early Shutdown")
+			return errors.New("Interrupt - Shutdown Program")
 		}
 
 		// Execute the registered task.

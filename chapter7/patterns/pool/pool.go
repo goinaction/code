@@ -26,16 +26,16 @@ type Pool struct {
 var ErrPoolClosed = errors.New("Pool has been closed.")
 
 // New creates a pool that manages resources. A pool requires a
-// function that can allocate a new resource and the number of
-// resources that can be allocated.
-func New(fn func() (io.Closer, error), cap uint) (*Pool, error) {
-	if cap <= 0 {
-		return nil, errors.New("Capacity value too small.")
+// function that can allocate a new resource and the size of
+// the pool.
+func New(fn func() (io.Closer, error), size uint) (*Pool, error) {
+	if size <= 0 {
+		return nil, errors.New("Size value too small.")
 	}
 
 	return &Pool{
 		factory:   fn,
-		resources: make(chan io.Closer, cap),
+		resources: make(chan io.Closer, size),
 	}, nil
 }
 

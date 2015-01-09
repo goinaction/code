@@ -7,44 +7,44 @@ package work
 import "sync"
 
 // Worker must be implemented by types that want to use
-// this worker processes.
+// the work pool.
 type Worker interface {
-	Work()
+	Task()
 }
 
-// Work provides a pool of goroutines that can execute any Worker
+// Pool provides a pool of goroutines that can execute any Worker
 // tasks that are submitted.
-type Work struct {
-	tasks chan Worker
-	wg    sync.WaitGroup
+type Pool struct {
+	work chan Worker
+	wg   sync.WaitGroup
 }
 
-// New creates a new Worker.
-func New(goroutines int) *Work {
-	w := Work{
-		tasks: make(chan Worker),
+// New creates a new work pool.
+func New(goroutines int) *Pool {
+	p := Pool{
+		work: make(chan Worker),
 	}
 
-	w.wg.Add(goroutines)
+	p.wg.Add(goroutines)
 	for i := 0; i < goroutines; i++ {
 		go func() {
-			for task := range w.tasks {
-				task.Work()
+			for w := range p.work {
+				w.Task()
 			}
-			w.wg.Done()
+			p.wg.Done()
 		}()
 	}
 
-	return &w
+	return &p
 }
 
 // Run submits work to the pool.
-func (w *Work) Run(task Worker) {
-	w.tasks <- task
+func (p *Pool) Run(w Worker) {
+	p.work <- w
 }
 
 // Shutdown waits for all the goroutines to shutdown.
-func (w *Work) Shutdown() {
-	close(w.tasks)
-	w.wg.Wait()
+func (p *Pool) Shutdown() {
+	close(p.work)
+	p.wg.Wait()
 }

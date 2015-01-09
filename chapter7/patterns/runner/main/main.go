@@ -8,24 +8,21 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"time"
 
 	"github.com/goinaction/code/chapter7/patterns/runner"
 )
 
-// flagSec is a command line flag to set the timeout in seconds.
-var flagSec = flag.Int("ttl", 3, "timeout in seconds")
+// timeout is the number of second the program has to finish.
+const timeout = 3 * time.Second
 
 // main is the entry point for the program.
 func main() {
-	// Parse all command line flags.
-	flag.Parse()
 	log.Println("Starting work.")
 
 	// Create a new timer value for this run.
-	r := runner.New(time.Duration(*flagSec))
+	r := runner.New(timeout)
 
 	// Add the tasks to be run and start running.
 	r.Add(createTask(1), createTask(2), createTask(1))
