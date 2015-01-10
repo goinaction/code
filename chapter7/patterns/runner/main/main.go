@@ -32,22 +32,22 @@ func main() {
 	if err := r.Start(); err != nil {
 		switch err {
 		case runner.ErrTimeout:
-			log.Println("Terminating Due To Timeout.")
+			log.Println("Terminating due to timeout.")
 			os.Exit(1)
 		case runner.ErrInterrupt:
-			log.Println("Terminating Due To Interrupt.")
+			log.Println("Terminating due to interrupt.")
 			os.Exit(2)
 		}
 	}
 
-	log.Println("Process Ended")
+	log.Println("Process ended.")
 }
 
 // createTask returns an example task that sleeps for the specified
 // number of seconds based on the id.
 func createTask() func(int) {
 	return func(id int) {
-		log.Printf("Processor - Task #%d", id)
+		log.Printf("Processor - Task #%d.", id)
 		time.Sleep(time.Duration(id) * time.Second)
 	}
 }
