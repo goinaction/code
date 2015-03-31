@@ -29,12 +29,7 @@ func main() {
 	// Create a value of type User and send a notification.
 	u := user{"Bill", "bill@email.com"}
 
-	sendNotification(u)
-
-	// ./listing02.go:32: cannot use u (type user) as type
-	//                     notifier in argument to sendNotification:
-	//   user does not implement notifier
-	//                          (notify method has pointer receiver)
+	sendNotification(&u)
 }
 
 // sendNotification accepts values that implement the notifier
