@@ -19,7 +19,7 @@ type user struct {
 
 // notify implements a method with a pointer receiver.
 func (u *user) notify() {
-	fmt.Printf("User: Sending User Email To %s<%s>\n",
+	fmt.Printf("Sending User Email To %s<%s>\n",
 		u.name,
 		u.email)
 }
