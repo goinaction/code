@@ -17,17 +17,17 @@ type user struct {
 	email string
 }
 
-// admin defines a admin in the program.
-type admin struct {
-	name  string
-	email string
-}
-
 // notify implements the notifier interface with a pointer receiver.
 func (u *user) notify() {
 	fmt.Printf("Sending user Email To %s<%s>\n",
 		u.name,
 		u.email)
+}
+
+// admin defines a admin in the program.
+type admin struct {
+	name  string
+	email string
 }
 
 // notify implements the notifier interface with a pointer receiver.
@@ -50,6 +50,6 @@ func main() {
 
 // sendNotification accepts values that implement the notifier
 // interface and sends notifications.
-func sendNotification(notify notifier) {
-	notify.notify()
+func sendNotification(n notifier) {
+	n.notify()
 }

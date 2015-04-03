@@ -31,7 +31,7 @@ func main() {
 
 	sendNotification(u)
 
-	// ./listing02.go:32: cannot use u (type user) as type
+	// ./listing34.go:32: cannot use u (type user) as type
 	//                     notifier in argument to sendNotification:
 	//   user does not implement notifier
 	//                          (notify method has pointer receiver)
@@ -39,6 +39,6 @@ func main() {
 
 // sendNotification accepts values that implement the notifier
 // interface and sends notifications.
-func sendNotification(notify notifier) {
-	notify.notify()
+func sendNotification(n notifier) {
+	n.notify()
 }
