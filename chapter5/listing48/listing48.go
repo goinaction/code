@@ -1,10 +1,15 @@
-// Sample program to show how to embed a type into another type and
-// the relationship between the inner and outer type.
+// Sample program to show how polymorphic behavior with interfaces.
 package main
 
 import (
 	"fmt"
 )
+
+// notifier is an interface that defines notification
+// type behavior.
+type notifier interface {
+	notify()
+}
 
 // user defines a user in the program.
 type user struct {
@@ -12,34 +17,39 @@ type user struct {
 	email string
 }
 
-// notify implements a method that can be called via
-// a value of type user.
+// notify implements the notifier interface with a pointer receiver.
 func (u *user) notify() {
-	fmt.Printf("Sending user email To %s<%s>\n",
+	fmt.Printf("Sending user Email To %s<%s>\n",
 		u.name,
 		u.email)
 }
 
-// admin represents an admin user with privileges.
+// admin defines a admin in the program.
 type admin struct {
-	user  // Embedded Type
-	level string
+	name  string
+	email string
+}
+
+// notify implements the notifier interface with a pointer receiver.
+func (a *admin) notify() {
+	fmt.Printf("Sending admin Email To %s<%s>\n",
+		a.name,
+		a.email)
 }
 
 // main is the entry point for the application.
 func main() {
-	// Create an admin user.
-	ad := admin{
-		user: user{
-			name:  "john smith",
-			email: "john@yahoo.com",
-		},
-		level: "super",
-	}
+	// Create a user value and pass it to sendNotification.
+	bill := user{"Bill", "bill@email.com"}
+	sendNotification(&bill)
 
-	// We can access the inner type's method directly.
-	ad.user.notify()
+	// Create an admin value and pass it to sendNotification.
+	jill := admin{"Jill", "jill@email.com"}
+	sendNotification(&jill)
+}
 
-	// The inner type's method is promoted.
-	ad.notify()
+// sendNotification accepts values that implement the notifier
+// interface and sends notifications.
+func sendNotification(n notifier) {
+	n.notify()
 }

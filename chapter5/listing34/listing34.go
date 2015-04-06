@@ -1,44 +1,34 @@
-// Sample program to show how to use an interface in Go.
+// Sample program to show how to write a simple version of curl using
+// the io.Reader and io.Writer interface support.
 package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 )
 
-// notifier is an interface that defined notification
-// type behavior.
-type notifier interface {
-	notify()
-}
-
-// user defines a user in the program.
-type user struct {
-	name  string
-	email string
-}
-
-// notify implements a method with a pointer receiver.
-func (u *user) notify() {
-	fmt.Printf("Sending User Email To %s<%s>\n",
-		u.name,
-		u.email)
+// init is called before main.
+func init() {
+	if len(os.Args) != 2 {
+		fmt.Println("Usage: ./example2 <url>")
+		os.Exit(-1)
+	}
 }
 
 // main is the entry point for the application.
 func main() {
-	// Create a value of type User and send a notification.
-	u := user{"Bill", "bill@email.com"}
+	// Get a response from the web server.
+	r, err := http.Get(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	sendNotification(u)
-
-	// ./listing34.go:32: cannot use u (type user) as type
-	//                     notifier in argument to sendNotification:
-	//   user does not implement notifier
-	//                          (notify method has pointer receiver)
-}
-
-// sendNotification accepts values that implement the notifier
-// interface and sends notifications.
-func sendNotification(n notifier) {
-	n.notify()
+	// Copies from the Body to Stdout.
+	io.Copy(os.Stdout, r.Body)
+	if err := r.Body.Close(); err != nil {
+		fmt.Println(err)
+	}
 }

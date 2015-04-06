@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/goinaction/code/chapter5/listing69/entities"
+	"github.com/goinaction/code/chapter5/listing71/entities"
 )
 
 // main is the entry point for the application.
@@ -16,7 +16,7 @@ func main() {
 		email: "bill@email.com",
 	}
 
-	// ./example69.go:16: unknown entities.User field 'email' in
+	// ./example71.go:16: unknown entities.User field 'email' in
 	//                    struct literal
 
 	fmt.Printf("User: %v\n", u)
