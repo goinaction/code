@@ -39,7 +39,7 @@ next:
 				continue next
 			}
 		}
-		fmt.Printf("%s:%d\\n", prefix, outer)
+		fmt.Printf("%s:%d\n", prefix, outer)
 	}
 	fmt.Println("Completed", prefix)
 }

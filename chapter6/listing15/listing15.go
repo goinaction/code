@@ -45,12 +45,12 @@ func doWork(name string) {
 	defer wg.Done()
 
 	for {
-		fmt.Printf("Doing %s Work\\n", name)
+		fmt.Printf("Doing %s Work\n", name)
 		time.Sleep(250 * time.Millisecond)
 
 		// Do we need to shutdown.
 		if atomic.LoadInt64(&shutdown) == 1 {
-			fmt.Printf("Shutting %s Down\\n", name)
+			fmt.Printf("Shutting %s Down\n", name)
 			break
 		}
 	}

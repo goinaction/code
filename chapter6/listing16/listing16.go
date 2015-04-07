@@ -31,7 +31,7 @@ func main() {
 
 	// Wait for the goroutines to finish.
 	wg.Wait()
-	fmt.Printf("Final Counter: %d\\n", counter)
+	fmt.Printf("Final Counter: %d\n", counter)
 }
 
 // incCounter increments the package level Counter variable
