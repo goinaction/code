@@ -44,8 +44,8 @@ func main() {
 	sendNotification(&bill)
 
 	// Create an admin value and pass it to sendNotification.
-	jill := admin{"Jill", "jill@email.com"}
-	sendNotification(&jill)
+	lisa := admin{"Lisa", "lisa@email.com"}
+	sendNotification(&lisa)
 }
 
 // sendNotification accepts values that implement the notifier
