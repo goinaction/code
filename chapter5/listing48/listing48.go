@@ -19,7 +19,7 @@ type user struct {
 
 // notify implements the notifier interface with a pointer receiver.
 func (u *user) notify() {
-	fmt.Printf("Sending user Email To %s<%s>\n",
+	fmt.Printf("Sending user email to %s<%s>\n",
 		u.name,
 		u.email)
 }
@@ -32,7 +32,7 @@ type admin struct {
 
 // notify implements the notifier interface with a pointer receiver.
 func (a *admin) notify() {
-	fmt.Printf("Sending admin Email To %s<%s>\n",
+	fmt.Printf("Sending admin email to %s<%s>\n",
 		a.name,
 		a.email)
 }
