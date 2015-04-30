@@ -71,11 +71,11 @@ func TestDownload(t *testing.T) {
 				failed, err)
 		}
 
-		if len(d.Channel.Items) == 1 {
-			t.Log("\tShould have \"1\" item in the feed.",
+		if len(d.Channel.Items) == 25 {
+			t.Log("\tShould have \"25\" item in the feed.",
 				succeed)
 		} else {
-			t.Fatal("\tShould have \"1\" item in the feed.",
+			t.Fatal("\tShould have \"25\" item in the feed.",
 				failed, len(d.Channel.Items))
 		}
 	}
