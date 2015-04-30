@@ -1,7 +1,7 @@
 // go test -run=XXX -bench=.
 
 // This sample test demonstrates how to write a benchmark test.
-package listing04
+package listing05
 
 import "testing"
 

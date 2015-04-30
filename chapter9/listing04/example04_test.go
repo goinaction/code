@@ -7,14 +7,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	ex3 "github.com/ArdanStudios/gotraining/09-testing/01-testing/example3"
+	ex "github.com/goinaction/code/chapter9/listing04"
 )
 
 const succeed = "\u2713"
 const failed = "\u2717"
 
 func init() {
-	ex3.Routes()
+	ex.Routes()
 }
 
 // TestDownload tests if download web content is working.

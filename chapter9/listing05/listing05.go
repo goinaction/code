@@ -1,5 +1,6 @@
-// Package listing04 implements two functions that traverse a matrix in different ways.
-package listing04
+// Package listing05 implements two functions that traverse a
+// matrix in different ways.
+package listing05
 
 const rows = 64
 
