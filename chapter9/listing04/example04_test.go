@@ -1,4 +1,4 @@
-// Sample unit test for testing an internal endpoint.
+// Sample test to show how to test the execution of an internal endpoint.
 package main_test
 
 import (
@@ -17,7 +17,7 @@ func init() {
 	ex.Routes()
 }
 
-// TestDownload tests if download web content is working.
+// TestSendJSON testing the sendjson internal endpoint.
 func TestSendJSON(t *testing.T) {
 	t.Log("Given the need to test the SendJSON endpoint.")
 	{

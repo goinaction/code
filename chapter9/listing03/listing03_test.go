@@ -1,3 +1,4 @@
+// Sample test to show how to mock an HTTP GET call internally.
 package listing03
 
 import (

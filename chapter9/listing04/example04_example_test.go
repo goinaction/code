@@ -1,4 +1,4 @@
-// Sample example test for the LogResponse function.
+// Sample test to show how to write a basic example test.
 package main_test
 
 import (

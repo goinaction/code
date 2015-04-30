@@ -1,4 +1,4 @@
-// This sample code implement a web service.
+// This sample code implement a simple web service.
 package main
 
 import (
