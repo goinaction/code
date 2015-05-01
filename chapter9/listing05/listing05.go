@@ -2,6 +2,8 @@
 // matrix in different ways.
 package listing05
 
+import "fmt"
+
 const rows = 64
 
 // Set the size of each row to 64k
@@ -22,7 +24,7 @@ func init() {
 			}
 		}
 	}
-	println(ctr, "Elements set out of", cols*rows)
+	fmt.Println(ctr, "Elements set out of", cols*rows)
 }
 
 // rowTraverse traverses the matrix linearly by each column for each row.
