@@ -7,12 +7,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	ex2 "github.com/ArdanStudios/gotraining/09-testing/01-testing/example2"
 )
 
-const succeed = "\u2713"
-const failed = "\u2717"
+const checkMark = "\u2713"
+const ballotX = "\u2717"
 
 // feed is mocking the XML document we except to receive.
 var feed = `<?xml version="1.0" encoding="UTF-8"?>
@@ -84,36 +82,36 @@ func TestDownload(t *testing.T) {
 			resp, err := http.Get(server.URL)
 			if err != nil {
 				t.Fatal("\t\tShould be able to make the Get call.",
-					failed, err)
+					ballotX, err)
 			}
 			t.Log("\t\tShould be able to make the Get call.",
-				succeed)
+				checkMark)
 
 			defer resp.Body.Close()
 
 			if resp.StatusCode == statusCode {
 				t.Logf("\t\tShould receive a \"%d\" status code. %v",
-					statusCode, succeed)
+					statusCode, checkMark)
 			} else {
 				t.Errorf("\t\tShould receive a \"%d\" status code. %v %v",
-					statusCode, failed, resp.StatusCode)
+					statusCode, ballotX, resp.StatusCode)
 			}
 
-			var d ex2.Document
+			var d Document
 			if err := xml.NewDecoder(resp.Body).Decode(&d); err == nil {
 				t.Log("\t\tShould be able to unmarshal the response.",
-					succeed)
+					checkMark)
 			} else {
 				t.Fatal("\t\tShould be able to unmarshal the response.",
-					failed, err)
+					ballotX, err)
 			}
 
 			if len(d.Channel.Items) == 1 {
 				t.Log("\t\tShould have \"1\" item in the feed.",
-					succeed)
+					checkMark)
 			} else {
 				t.Fatal("\t\tShould have \"1\" item in the feed.",
-					failed, len(d.Channel.Items))
+					ballotX, len(d.Channel.Items))
 			}
 		}
 	}

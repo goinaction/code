@@ -1,4 +1,4 @@
-// go test -run=XXX -bench=.
+// go test -run=none -bench=.
 
 // Sample test to show how to write benchmark tests.
 package listing05

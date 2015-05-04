@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-const succeed = "\u2713"
-const failed = "\u2717"
+const checkMark = "\u2713"
+const ballotX = "\u2717"
 
 // TestDownload validates the http Get function can download content.
 func TestDownload(t *testing.T) {
@@ -22,19 +22,19 @@ func TestDownload(t *testing.T) {
 			resp, err := http.Get(url)
 			if err != nil {
 				t.Fatal("\t\tShould be able to make the Get call.",
-					failed, err)
+					ballotX, err)
 			}
 			t.Log("\t\tShould be able to make the Get call.",
-				succeed)
+				checkMark)
 
 			defer resp.Body.Close()
 
 			if resp.StatusCode == statusCode {
 				t.Logf("\t\tShould receive a \"%d\" status code. %v",
-					statusCode, succeed)
+					statusCode, checkMark)
 			} else {
 				t.Errorf("\t\tShould receive a \"%d\" status code. %v %v",
-					statusCode, failed, resp.StatusCode)
+					statusCode, ballotX, resp.StatusCode)
 			}
 		}
 	}
