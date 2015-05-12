@@ -30,10 +30,10 @@ func TestDownload(t *testing.T) {
 			defer resp.Body.Close()
 
 			if resp.StatusCode == statusCode {
-				t.Logf("\t\tShould receive a \"%d\" status code. %v",
+				t.Logf("\t\tShould receive a \"%d\" status. %v",
 					statusCode, checkMark)
 			} else {
-				t.Errorf("\t\tShould receive a \"%d\" status code. %v %v",
+				t.Errorf("\t\tShould receive a \"%d\" status. %v %v",
 					statusCode, ballotX, resp.StatusCode)
 			}
 		}

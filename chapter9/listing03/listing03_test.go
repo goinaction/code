@@ -1,4 +1,5 @@
 // Sample test to show how to mock an HTTP GET call internally.
+// Differs slightly from the book to show more.
 package listing03
 
 import (
@@ -28,6 +29,17 @@ var feed = `<?xml version="1.0" encoding="UTF-8"?>
 </channel>
 </rss>`
 
+// mockServer returns a pointer to a server to handle the get call.
+func mockServer() *httptest.Server {
+	f := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "application/xml")
+		fmt.Fprintln(w, feed)
+	}
+
+	return httptest.NewServer(http.HandlerFunc(f))
+}
+
 // Item defines the fields associated with the item tag in
 // the buoy RSS document.
 type Item struct {
@@ -55,21 +67,10 @@ type Document struct {
 	URI     string
 }
 
-// mockServer returns a pointer to a server to handle the mock get call.
-func mockServer() *httptest.Server {
-	f := func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
-		w.Header().Set("Content-Type", "application/xml")
-		fmt.Fprintln(w, feed)
-	}
-
-	return httptest.NewServer(http.HandlerFunc(f))
-}
-
-// TestDownload validates the http Get function can download content and
-// the content can be unmarshaled and clean.
+// TestDownload validates the http Get function can download content
+// and the content can be unmarshaled and clean.
 func TestDownload(t *testing.T) {
-	statusCode := 200
+	statusCode := http.StatusOK
 
 	server := mockServer()
 	defer server.Close()
@@ -90,10 +91,10 @@ func TestDownload(t *testing.T) {
 			defer resp.Body.Close()
 
 			if resp.StatusCode != statusCode {
-				t.Fatalf("\t\tShould receive a \"%d\" status code. %v %v",
+				t.Fatalf("\t\tShould receive a \"%d\" status. %v %v",
 					statusCode, ballotX, resp.StatusCode)
 			}
-			t.Logf("\t\tShould receive a \"%d\" status code. %v",
+			t.Logf("\t\tShould receive a \"%d\" status. %v",
 				statusCode, checkMark)
 
 			var d Document

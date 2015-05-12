@@ -1,5 +1,4 @@
-// This sample code implement a simple web service.
-package main
+package handlers
 
 import (
 	"encoding/json"
@@ -8,19 +7,6 @@ import (
 	"net/http"
 	"strconv"
 )
-
-// main is the entry point for the application.
-func main() {
-	Routes()
-
-	log.Println("listener : Started : Listening on: http://localhost:4000")
-	http.ListenAndServe(":4000", nil)
-}
-
-// Routes sets the routes for the web service.
-func Routes() {
-	http.HandleFunc("/sendjson", SendJSON)
-}
 
 // SendJSON returns a simple JSON document.
 func SendJSON(rw http.ResponseWriter, r *http.Request) {
@@ -34,9 +20,10 @@ func SendJSON(rw http.ResponseWriter, r *http.Request) {
 
 	data, err := json.Marshal(&u)
 	if err != nil {
-		// We want this error condition to panic so we get a stack trace. This should
-		// never happen. The http package will catch the panic and provide logging
-		// and return a 500 back to the caller.
+		// We want this error condition to panic so we get a stack
+		// trace. This should never happen. The http package will
+		// catch the panic and provide logging and return a 500 back
+		// to the caller.
 		log.Panic("Unable to unmarshal response", err)
 	}
 

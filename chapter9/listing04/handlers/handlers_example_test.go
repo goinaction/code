@@ -1,5 +1,5 @@
 // Sample test to show how to write a basic example test.
-package main_test
+package handlers_test
 
 import (
 	"encoding/json"
@@ -7,14 +7,10 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 )
 
 // ExampleSendJSON provides a basic example test example.
 func ExampleSendJSON() {
-	log.SetFlags(0)
-	log.SetOutput(os.Stdout)
-
 	r, _ := http.NewRequest("GET", "/sendjson", nil)
 	w := httptest.NewRecorder()
 	http.DefaultServeMux.ServeHTTP(w, r)
@@ -28,7 +24,6 @@ func ExampleSendJSON() {
 		log.Println("ERROR:", err)
 	}
 
-	// Use fmt to write to stdout to check the output.
 	fmt.Println(u)
 	// Output:
 	// {Bill bill@ardanstudios.com}
