@@ -1,3 +1,4 @@
+// Package handlers provides the endpoints for the web service.
 package handlers
 
 import (
@@ -25,8 +26,9 @@ func SendJSON(rw http.ResponseWriter, r *http.Request) {
 
 	data, err := json.Marshal(&u)
 	if err != nil {
-		// We want this error condition to panic so we get a stack trace. This should
-		// never happen. The http package will catch the panic and provide logging
+		// We want this error condition to panic so we get a
+		// stack trace. This should never happen. The http
+		// package will catch the panic and provide logging
 		// and return a 500 back to the caller.
 		log.Panic("Unable to unmarshal response", err)
 	}
