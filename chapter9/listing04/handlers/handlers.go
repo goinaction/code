@@ -8,6 +8,11 @@ import (
 	"strconv"
 )
 
+// Routes sets the routes for the web service.
+func Routes() {
+	http.HandleFunc("/sendjson", SendJSON)
+}
+
 // SendJSON returns a simple JSON document.
 func SendJSON(rw http.ResponseWriter, r *http.Request) {
 	u := struct {
@@ -20,10 +25,9 @@ func SendJSON(rw http.ResponseWriter, r *http.Request) {
 
 	data, err := json.Marshal(&u)
 	if err != nil {
-		// We want this error condition to panic so we get a stack
-		// trace. This should never happen. The http package will
-		// catch the panic and provide logging and return a 500 back
-		// to the caller.
+		// We want this error condition to panic so we get a stack trace. This should
+		// never happen. The http package will catch the panic and provide logging
+		// and return a 500 back to the caller.
 		log.Panic("Unable to unmarshal response", err)
 	}
 

@@ -8,14 +8,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	ex "github.com/goinaction/code/chapter9/listing04"
+	"github.com/goinaction/code/chapter9/listing04/handlers"
 )
 
 const checkMark = "\u2713"
 const ballotX = "\u2717"
 
 func init() {
-	ex.Routes()
+	handlers.Routes()
 }
 
 // TestSendJSON testing the sendjson internal endpoint.
