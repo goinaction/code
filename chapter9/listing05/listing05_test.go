@@ -1,22 +1,46 @@
-// go test -run=none -bench=.
+// Benchmark tests contains three benchmark tests for converting
+// an integer into a string. First using the fmt.Sprintf function,
+// then the strconv.FormatInt function and then strconv.Itoa.
+package listing05_test
 
-// Sample test to show how to write benchmark tests.
-package listing05
+import (
+	"fmt"
+	"strconv"
+	"testing"
+)
 
-import "testing"
+// BenchmarkSprintf provides performance numbers for the
+// fmt.Sprintf function.
+func BenchmarkSprintf(b *testing.B) {
+	number := 10
 
-// BenchmarkRowTraverse capture the time it takes to perform
-// a row traversal.
-func BenchmarkRowTraverse(b *testing.B) {
+	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
-		rowTraverse()
+		fmt.Sprintf("%d", number)
 	}
 }
 
-// BenchmarkColTraverse capture the time it takes to perform
-// a column traversal.
-func BenchmarkColTraverse(b *testing.B) {
+// BenchmarkFormat provides performance numbers for the
+// strconv.FormatInt function.
+func BenchmarkFormat(b *testing.B) {
+	number := int64(10)
+
+	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
-		colTraverse()
+		strconv.FormatInt(number, 10)
+	}
+}
+
+// BenchmarkItoa provides performance numbers for the
+// strconv.Itoa function.
+func BenchmarkItoa(b *testing.B) {
+	number := 10
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		strconv.Itoa(number)
 	}
 }
