@@ -22,7 +22,7 @@ func init() {
 func TestSendJSON(t *testing.T) {
 	t.Log("Given the need to test the SendJSON endpoint.")
 	{
-		r, err := http.NewRequest("GET", "/sendjson", nil)
+		req, err := http.NewRequest("GET", "/sendjson", nil)
 		if err != nil {
 			t.Fatal("\tShould be able to create a request.",
 				ballotX, err)
@@ -30,11 +30,11 @@ func TestSendJSON(t *testing.T) {
 		t.Log("\tShould be able to create a request.",
 			checkMark)
 
-		w := httptest.NewRecorder()
-		http.DefaultServeMux.ServeHTTP(w, r)
+		rw := httptest.NewRecorder()
+		http.DefaultServeMux.ServeHTTP(rw, req)
 
-		if w.Code != 200 {
-			t.Fatal("\tShould receive \"200\"", ballotX, w.Code)
+		if rw.Code != 200 {
+			t.Fatal("\tShould receive \"200\"", ballotX, rw.Code)
 		}
 		t.Log("\tShould receive \"200\"", checkMark)
 
@@ -43,7 +43,7 @@ func TestSendJSON(t *testing.T) {
 			Email string
 		}{}
 
-		if err := json.NewDecoder(w.Body).Decode(&u); err != nil {
+		if err := json.NewDecoder(rw.Body).Decode(&u); err != nil {
 			t.Fatal("\tShould decode the response.", ballotX)
 		}
 		t.Log("\tShould decode the response.", checkMark)

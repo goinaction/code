@@ -40,33 +40,6 @@ func mockServer() *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(f))
 }
 
-// Item defines the fields associated with the item tag in
-// the buoy RSS document.
-type Item struct {
-	XMLName     xml.Name `xml:"item"`
-	Title       string   `xml:"title"`
-	Description string   `xml:"description"`
-	Link        string   `xml:"link"`
-}
-
-// Channel defines the fields associated with the channel tag in
-// the buoy RSS document.
-type Channel struct {
-	XMLName     xml.Name `xml:"channel"`
-	Title       string   `xml:"title"`
-	Description string   `xml:"description"`
-	Link        string   `xml:"link"`
-	PubDate     string   `xml:"pubDate"`
-	Items       []Item   `xml:"item"`
-}
-
-// Document defines the fields associated with the buoy RSS document.
-type Document struct {
-	XMLName xml.Name `xml:"rss"`
-	Channel Channel  `xml:"channel"`
-	URI     string
-}
-
 // TestDownload validates the http Get function can download content
 // and the content can be unmarshaled and clean.
 func TestDownload(t *testing.T) {
@@ -114,4 +87,31 @@ func TestDownload(t *testing.T) {
 			}
 		}
 	}
+}
+
+// Item defines the fields associated with the item tag in
+// the buoy RSS document.
+type Item struct {
+	XMLName     xml.Name `xml:"item"`
+	Title       string   `xml:"title"`
+	Description string   `xml:"description"`
+	Link        string   `xml:"link"`
+}
+
+// Channel defines the fields associated with the channel tag in
+// the buoy RSS document.
+type Channel struct {
+	XMLName     xml.Name `xml:"channel"`
+	Title       string   `xml:"title"`
+	Description string   `xml:"description"`
+	Link        string   `xml:"link"`
+	PubDate     string   `xml:"pubDate"`
+	Items       []Item   `xml:"item"`
+}
+
+// Document defines the fields associated with the buoy RSS document.
+type Document struct {
+	XMLName xml.Name `xml:"rss"`
+	Channel Channel  `xml:"channel"`
+	URI     string
 }
