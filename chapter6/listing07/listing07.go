@@ -1,5 +1,5 @@
 // This sample program demonstrates how to create goroutines and
-// how the goroutine scheduler behaves with two contexts.
+// how the goroutine scheduler behaves with two logical processor.
 package main
 
 import (
@@ -15,7 +15,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(2)
 
-	// Allocate two contexts for the scheduler to use.
+	// Allocate two logical processors for the scheduler to use.
 	runtime.GOMAXPROCS(2)
 
 	fmt.Println("Start Goroutines")
