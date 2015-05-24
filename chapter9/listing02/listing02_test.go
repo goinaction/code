@@ -21,7 +21,7 @@ func TestDownload(t *testing.T) {
 			http.StatusOK,
 		},
 		{
-			"http://rss.cnn.com/rss/cnn_topstorie.rss",
+			"http://rss.cnn.com/rss/cnn_topstbadurl.rss",
 			http.StatusNotFound,
 		},
 	}

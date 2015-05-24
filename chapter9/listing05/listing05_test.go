@@ -1,4 +1,4 @@
-// Benchmark tests contains three benchmark tests for converting
+// Sample benchmarks to test which function is better for converting
 // an integer into a string. First using the fmt.Sprintf function,
 // then the strconv.FormatInt function and then strconv.Itoa.
 package listing05_test
