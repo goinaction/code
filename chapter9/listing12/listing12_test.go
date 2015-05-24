@@ -1,6 +1,6 @@
 // Sample test to show how to mock an HTTP GET call internally.
 // Differs slightly from the book to show more.
-package listing03
+package listing12
 
 import (
 	"encoding/xml"
