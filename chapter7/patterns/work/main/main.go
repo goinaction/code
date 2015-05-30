@@ -1,7 +1,3 @@
-// Copyright Information.
-
-// Example is provided with help by Jason Waldrip.
-
 // This sample program demonstrates how to use the work package
 // to use a pool of goroutines to get work done.
 package main

@@ -1,5 +1,3 @@
-// Copyright Information.
-
 // Package search : seachers.go contains all the different implementations
 // for the existing searchers.
 package search

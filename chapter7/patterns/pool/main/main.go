@@ -1,7 +1,3 @@
-// Copyright Information.
-
-// Example is provided with help by Gabriel Aszalos.
-
 // This sample program demonstrates how to use the pool package
 // to share a simulated set of database connections.
 package main

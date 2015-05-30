@@ -1,5 +1,3 @@
-// Copyright Information.
-//
 // This sample program demonstrates how to implement a semaphore using
 // channels that can allow multiple reads but a single write.
 //

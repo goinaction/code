@@ -1,5 +1,3 @@
-// Copyright Information.
-
 // Example is provided with help by Gabriel Aszalos.
 // Package runner manages the running and lifetime of a process.
 package runner

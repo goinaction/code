@@ -1,5 +1,3 @@
-// Copyright Information.
-
 // Example provided with help from Jason Waldrip.
 // Package work manages a pool of goroutines to perform work.
 package work
