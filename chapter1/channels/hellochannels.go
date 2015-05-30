@@ -1,29 +1,29 @@
 package main
 
 import (
-    "fmt"
-    "sync"
+	"fmt"
+	"sync"
 )
 
-var wg sync.WaitGroup //<co id="createwg" />
+var wg sync.WaitGroup
 
 func printer(ch chan int) {
-    for i := range ch {
-        fmt.Printf("Received %d ", i) //<co id="receivevalue" />
-    }
-    wg.Done()
+	for i := range ch {
+		fmt.Printf("Received %d ", i)
+	}
+	wg.Done()
 }
 
 func main() {
-    c := make(chan int) //<co id="createchan" />
-    go printer(c)       //<co id="goroutine" />
-    wg.Add(1)           //<co id="addwg" />
+	c := make(chan int)
+	go printer(c)
+	wg.Add(1)
 
-    //Send 10 integers on the channel.
-    for i := 1; i <= 10; i++ {
-        c <- i //<co id="sendonchan" />
-    }
+	// Send 10 integers on the channel.
+	for i := 1; i <= 10; i++ {
+		c <- i
+	}
 
-    close(c)  //<co id="closechan" />
-    wg.Wait() //<co id="wgwait" />
+	close(c)
+	wg.Wait()
 }
