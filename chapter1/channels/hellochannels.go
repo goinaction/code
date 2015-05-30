@@ -14,6 +14,7 @@ func printer(ch chan int) {
 	wg.Done()
 }
 
+// main is the entry point for the program.
 func main() {
 	c := make(chan int)
 	go printer(c)
