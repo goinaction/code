@@ -15,7 +15,7 @@ import (
 
 const (
 	maxGoroutines   = 25 // the number of routines to use.
-	pooledResources = 2  // number of resources in the pool
+	pooledResources = 3  // number of resources in the pool
 )
 
 // dbConnection simulates a resource to share.
@@ -62,30 +62,38 @@ func main() {
 		go func(q int) {
 			performQueries(q, p)
 			wg.Done()
-		}(query)
+		}(query+1)
+
+		time.Sleep(time.Duration(rand.Intn(400)) * time.Millisecond)
 	}
 
 	// Wait for the goroutines to finish.
 	wg.Wait()
 
 	// Close the pool.
-	log.Println("Shutdown Program.")
+	log.Println("Goroutines/work done: now close pool and exit program!")
 	p.Close()
 }
 
 // performQueries tests the resource pool of connections.
 func performQueries(query int, p *pool.Pool) {
 	// Acquire a connection from the pool.
+	log.Printf("query %d: attempt to Acquire():\n", query)
 	conn, err := p.Acquire()
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
+	log.Printf("query %d got connection %d\n", query, conn.(*dbConnection).ID)
+
 	// Release the connection back to the pool.
-	defer p.Release(conn)
+	defer func() {
+		log.Printf("query %d releasing connection %d back to the pool:\n", query, conn.(*dbConnection).ID)
+		p.Release(conn)
+	}()
 
 	// Wait to simulate a query response.
 	time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
-	log.Printf("Query: QID[%d] CID[%d]\n", query, conn.(*dbConnection).ID)
+	log.Printf("Query: QID[%d] against CID[%d]\n", query, conn.(*dbConnection).ID)
 }
