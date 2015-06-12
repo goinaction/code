@@ -4,11 +4,15 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 )
 
 // main is the entry point for all Go programs.
 func main() {
+	// Allocate 1 logical processor for the scheduler to use.
+	runtime.GOMAXPROCS(1)
+
 	// wg is used to wait for the program to finish.
 	// Add a count of two, one for each goroutine.
 	var wg sync.WaitGroup

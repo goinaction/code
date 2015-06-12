@@ -10,13 +10,13 @@ import (
 
 // main is the entry point for all Go programs.
 func main() {
+	// Allocate two logical processors for the scheduler to use.
+	runtime.GOMAXPROCS(2)
+
 	// wg is used to wait for the program to finish.
 	// Add a count of two, one for each goroutine.
 	var wg sync.WaitGroup
 	wg.Add(2)
-
-	// Allocate two logical processors for the scheduler to use.
-	runtime.GOMAXPROCS(2)
 
 	fmt.Println("Start Goroutines")
 

@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 )
 
@@ -12,6 +13,9 @@ var wg sync.WaitGroup
 
 // main is the entry point for all Go programs.
 func main() {
+	// Allocate 1 logical processors for the scheduler to use.
+	runtime.GOMAXPROCS(1)
+
 	// Add a count of two, one for each goroutine.
 	wg.Add(2)
 
