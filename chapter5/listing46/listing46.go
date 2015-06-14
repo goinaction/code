@@ -4,7 +4,7 @@ package main
 
 import "fmt"
 
-// duration is a named type with a base type of int.
+// duration is a type with a base type of int.
 type duration int
 
 // format pretty-prints the duration value.
