@@ -4,8 +4,8 @@ import (
     "log"
     "os"
 
-    _ "github.com/webgenie/go-in-action/code/chapter2/sample/matchers"
-    "github.com/webgenie/go-in-action/code/chapter2/sample/search"
+    _ "github.com/webgenie/go-in-action/chapter2/sample/matchers"
+    "github.com/webgenie/go-in-action/chapter2/sample/search"
 )
 
 // init 함수는 main 함수보다 먼저 호출된다.

@@ -1,14 +1,14 @@
-// Sample program to show how to show you how to briefly work
-// with the sql package.
+// sql 패키지와의 연동을 간단히 보여주기 위한
+// 예제 프로그램
 package main
 
 import (
 	"database/sql"
 
-	_ "github.com/goinaction/code/chapter3/dbdriver/postgres"
+	_ "github.com/webgenie/go-in-action/chapter3/dbdriver/postgres"
 )
 
-// main is the entry point for the application.
+// 애플리케이션 진입점
 func main() {
 	sql.Open("postgres", "mydb")
 }

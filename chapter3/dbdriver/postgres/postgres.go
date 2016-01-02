@@ -6,18 +6,18 @@ import (
 	"errors"
 )
 
-// PostgresDriver provides our implementation for the
-// sql package.
+// sql 패키지에 등록될
+// PostgresDriver 타입
 type PostgresDriver struct{}
 
-// Open provides a connection to the database.
+// 데이터베이스에 대한 연결을 수행하는 Open 함수.
 func (dr PostgresDriver) Open(string) (driver.Conn, error) {
 	return nil, errors.New("Unimplemented")
 }
 
 var d *PostgresDriver
 
-// init is called prior to main.
+// main 함수에 앞서 호출될 init 함수
 func init() {
 	d = new(PostgresDriver)
 	sql.Register("postgres", d)

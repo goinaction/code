@@ -1,4 +1,4 @@
-// Sample program to show how to show you how to briefly work with io.
+// io 패키지의 활용법을 간략히 소개하기 위한 샘플 프로그램
 package main
 
 import (
@@ -6,21 +6,21 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/goinaction/code/chapter3/words"
+	"github.com/webgenie/go-in-action/chapter3/words"
 )
 
-// main is the entry point for the application.
+// 애플리케이션 진입점
 func main() {
 	filename := os.Args[1]
 
 	contents, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println("There was an error opening the file:", err)
+		fmt.Println("파일을 열 때 오류가 발생했습니다.", err)
 		return
 	}
 
 	text := string(contents)
 
 	count := words.CountWords(text)
-	fmt.Printf("There are %d words in your text. \n", count)
+	fmt.Printf("총 %d 개의 단어를 발견했습니다. \n", count)
 }
