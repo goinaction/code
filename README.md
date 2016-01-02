@@ -1,4 +1,4 @@
-code
+Go in Action
 ====
 
-Source Code for Go In Action examples
+Source Code for Go In Action Korean edition examples

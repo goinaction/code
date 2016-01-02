@@ -1,21 +1,21 @@
 package main
 
 import (
-	"log"
-	"os"
+    "log"
+    "os"
 
-	_ "github.com/goinaction/code/chapter2/sample/matchers"
-	"github.com/goinaction/code/chapter2/sample/search"
+    _ "github.com/webgenie/go-in-action/code/chapter2/sample/matchers"
+    "github.com/webgenie/go-in-action/code/chapter2/sample/search"
 )
 
-// init is called prior to main.
+// init 함수는 main 함수보다 먼저 호출된다.
 func init() {
-	// Change the device for logging to stdout.
-	log.SetOutput(os.Stdout)
+    // 표준 출력으로 로그를 출력하도록 변경한다.
+    log.SetOutput(os.Stdout)
 }
 
-// main is the entry point for the program.
+// main 함수는 프로그램의 진입점이다.
 func main() {
-	// Perform the search for the specified term.
-	search.Run("president")
+    // 지정된 검색어로 검색을 수행한다.
+    search.Run("Sherlock Holmes")
 }

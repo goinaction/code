@@ -12,8 +12,8 @@ import (
 )
 
 type (
-	// item defines the fields associated with the item tag
-	// in the rss document.
+	// item 구조체는 RSS 문서 내의 item 태그에
+	// 정의된 필드들에 대응하는 필드들을 선언한다.
 	item struct {
 		XMLName     xml.Name `xml:"item"`
 		PubDate     string   `xml:"pubDate"`
@@ -24,8 +24,8 @@ type (
 		GeoRssPoint string   `xml:"georss:point"`
 	}
 
-	// image defines the fields associated with the image tag
-	// in the rss document.
+	// image 구조체는 RSS 문서 내의 image 태그에
+	// 정의된 필드들에 대응하는 필드들을 선언한다.
 	image struct {
 		XMLName xml.Name `xml:"image"`
 		URL     string   `xml:"url"`
@@ -33,8 +33,8 @@ type (
 		Link    string   `xml:"link"`
 	}
 
-	// channel defines the fields associated with the channel tag
-	// in the rss document.
+	// channel 구조체는 RSS 문서 내의 channel 태그에
+	// 정의된 필드들에 대응하는 필드들을 선언한다.
 	channel struct {
 		XMLName        xml.Name `xml:"channel"`
 		Title          string   `xml:"title"`
@@ -50,42 +50,42 @@ type (
 		Item           []item   `xml:"item"`
 	}
 
-	// rssDocument defines the fields associated with the rss document.
+	// rssDocument 구조체는 RSS 문서에 정의된 필드들에 대응하는 필드들을 정의한다.
 	rssDocument struct {
 		XMLName xml.Name `xml:"rss"`
 		Channel channel  `xml:"channel"`
 	}
 )
 
-// rssMatcher implements the Matcher interface.
+// Matcher 인터페이스를 구현하는 rssMatcher 타입을 선언한다.
 type rssMatcher struct{}
 
-// init registers the matcher with the program.
+// init 함수를 통해 프로그램에 검색기를 등록한다.
 func init() {
 	var matcher rssMatcher
 	search.Register("rss", matcher)
 }
 
-// Search looks at the document for the specified search term.
+// Search 함수는 지정된 문서에서 검색어를 검색한다.
 func (m rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Result, error) {
 	var results []*search.Result
 
-	log.Printf("Search Feed Type[%s] Site[%s] For URI[%s]\n", feed.Type, feed.Name, feed.URI)
+	log.Printf("피드 종류[%s] 사이트[%s] 주소[%s]에서 검색을 수행합니다.\n", feed.Type, feed.Name, feed.URI)
 
-	// Retrieve the data to search.
+	// 검색할 데이터를 조회한다.
 	document, err := m.retrieve(feed)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, channelItem := range document.Channel.Item {
-		// Check the title for the search term.
+		// 제목에서 검색어를 검색한다.
 		matched, err := regexp.MatchString(searchTerm, channelItem.Title)
 		if err != nil {
 			return nil, err
 		}
 
-		// If we found a match save the result.
+		// 검색어가 발견되면 결과에 저장한다.
 		if matched {
 			results = append(results, &search.Result{
 				Field:   "Title",
@@ -93,13 +93,13 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Resu
 			})
 		}
 
-		// Check the description for the search term.
+		// 상세 내용에서 검색어를 검색한다.
 		matched, err = regexp.MatchString(searchTerm, channelItem.Description)
 		if err != nil {
 			return nil, err
 		}
 
-		// If we found a match save the result.
+		// 검색어가 발견되면 결과에 저장한다.
 		if matched {
 			results = append(results, &search.Result{
 				Field:   "Description",
@@ -111,29 +111,29 @@ func (m rssMatcher) Search(feed *search.Feed, searchTerm string) ([]*search.Resu
 	return results, nil
 }
 
-// retrieve performs a HTTP Get request for the rss feed and decodes the results.
+// HTTP Get 요청을 수행해서 RSS 피드를 요청한 후 결과를 디코딩한다.
 func (m rssMatcher) retrieve(feed *search.Feed) (*rssDocument, error) {
 	if feed.URI == "" {
-		return nil, errors.New("No rss feed uri provided")
+		return nil, errors.New("검색할 RSS 피드가 정의되지 않았습니다.")
 	}
 
-	// Retrieve the rss feed document from the web.
+	// 웹에서 RSS 문서를 조회한다.
 	resp, err := http.Get(feed.URI)
 	if err != nil {
 		return nil, err
 	}
 
-	// Close the response once we return from the function.
+	// 함수가 리턴될 때 응답 스트림을 닫는다.
 	defer resp.Body.Close()
 
-	// Check the status code for a 200 so we know we have received a
-	// proper response.
+	// 상태 코드가 200인지를 검사해서
+	// 올바른 응답을 수신했는지를 확인한다.
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("HTTP Response Error %d\n", resp.StatusCode)
+		return nil, fmt.Errorf("HTTP 응답 오류: %d\n", resp.StatusCode)
 	}
 
-	// Decode the rss feed document into our struct type.
-	// We don't need to check for errors, the caller can do this.
+	// RSS 피드 문서를 구조체 타입으로 디코드한다.
+	// 호출 함수가 에러를 판단할 것이기 때문에 이 함수에서는 에러를 처리하지 않는다.
 	var document rssDocument
 	err = xml.NewDecoder(resp.Body).Decode(&document)
 	return &document, err
