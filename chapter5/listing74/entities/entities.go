@@ -1,15 +1,15 @@
-// Package entities contains support for types of
-// people in the system.
+// 시스템에 정의된 사용자를 표현하는
+// 타입을 선언하는 패키지
 package entities
 
-// user defines a user in the program.
+// 사용자를 표현하는 User 타입을 선언한다.
 type user struct {
 	Name  string
 	Email string
 }
 
-// Admin defines an admin in the program.
+// 관리자를 표현하는 Admin 타입을 선언한다.
 type Admin struct {
-	user   // The embedded type is unexported.
+	user   // 포함된 타입을 비노출 타입으로 선언한다.
 	Rights int
 }

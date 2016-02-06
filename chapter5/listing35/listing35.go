@@ -1,5 +1,5 @@
-// Sample program to show how a bytes.Buffer can also be used
-// with the io.Copy function.
+// io.Copy 함수에 bytes.Buffer 타입을 사용하는
+// 예제 프로그램
 package main
 
 import (
@@ -9,16 +9,16 @@ import (
 	"os"
 )
 
-// main is the entry point for the application.
+// 애플리케이션 진입점
 func main() {
 	var b bytes.Buffer
 
-	// Write a string to the buffer.
-	b.Write([]byte("Hello"))
+	// 버퍼에 문자열을 기록한다.
+	b.Write([]byte("안녕하세요"))
 
-	// Use Fprintf to concatenate a string to the Buffer.
-	fmt.Fprintf(&b, "World!")
+	// Fprintf 함수를 이용하여 버퍼에 문자열을 덧붙인다.
+	fmt.Fprintf(&b, "Go 인 액션!")
 
-	// Write the content of the Buffer to stdout.
+	// 버퍼의 콘텐츠를 표준 출력 장치에 출력한다.
 	io.Copy(os.Stdout, &b)
 }

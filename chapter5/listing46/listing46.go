@@ -1,18 +1,18 @@
-// Sample program to show how you can't always get the
-// address of a value.
+// 값의 주소를 알아낼 수 없는 경우를
+// 설명하기 위한 예제 프로그램
 package main
 
 import "fmt"
 
-// duration is a type with a base type of int.
+// int 타입을 기반 타입으로 duration 타입을 선언한다.
 type duration int
 
-// format pretty-prints the duration value.
+// duration 값을 예쁘게 출력하는 함수
 func (d *duration) pretty() string {
-	return fmt.Sprintf("Duration: %d", *d)
+	return fmt.Sprintf("기간: %d", *d)
 }
 
-// main is the entry point for the application.
+// 애플리케이션 진입점
 func main() {
 	duration(42).pretty()
 

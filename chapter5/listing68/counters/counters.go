@@ -1,12 +1,12 @@
-// Package counters provides alert counter support.
+// counters 패키지를 정의한다.
 package counters
 
-// alertCounter is an unexported type that
-// contains an integer counter for alerts.
+// 알림 횟수를 저장하기 위한 정수 값을 저장하는
+// alertCounter 타입을 비노출 타입으로 선언한다.
 type alertCounter int
 
-// New creates and returns values of the unexported
-// type alertCounter.
+// 비노출 타입인 alertCounter 타입의
+// 값을 생성하여 리턴하는 New 함수를 정의한다.
 func New(value int) alertCounter {
 	return alertCounter(value)
 }
