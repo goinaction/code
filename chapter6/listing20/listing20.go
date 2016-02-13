@@ -1,5 +1,5 @@
-// This sample program demonstrates how to use an unbuffered
-// channel to simulate a game of tennis between two goroutines.
+// 두 개의 고루틴을 이용해
+// 테니스 경기를 모방하는 예제
 package main
 
 import (
@@ -9,61 +9,61 @@ import (
 	"time"
 )
 
-// wg is used to wait for the program to finish.
+// 프로그램이 종료될 때까지 대기할 WaitGroup
 var wg sync.WaitGroup
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Create an unbuffered channel.
+	// 버퍼가 없는 채널을 생성한다.
 	court := make(chan int)
 
-	// Add a count of two, one for each goroutine.
+	// 고루틴 당 하나씩, 총 두 개의 카운터를 추가한다.
 	wg.Add(2)
 
-	// Launch two players.
-	go player("Nadal", court)
-	go player("Djokovic", court)
+	// 두 명의 선수가 등장!
+	go player("나달", court)
+	go player("죠코비치", court)
 
-	// Start the set.
+	// 경기를 시작한다.
 	court <- 1
 
-	// Wait for the game to finish.
+	// 경기가 끝날때까지 기다린다.
 	wg.Wait()
 }
 
-// player simulates a person playing the game of tennis.
+// 테니스 선수의 행동을 모방하는 player 함수
 func player(name string, court chan int) {
-	// Schedule the call to Done to tell main we are done.
+	// 함수의 실행이 종료될 때 Done 함수를 호출하도록 예약한다.
 	defer wg.Done()
 
 	for {
-		// Wait for the ball to be hit back to us.
+		// 공이 되돌아올 때까지 기다린다.
 		ball, ok := <-court
 		if !ok {
-			// If the channel was closed we won.
-			fmt.Printf("Player %s Won\n", name)
+			// 채널이 닫혔으면 승리한 것으로 간주한다.
+			fmt.Printf("%s 선수가 승리했습니다.\n", name)
 			return
 		}
 
-		// Pick a random number and see if we miss the ball.
+		// 랜덤 값을 이용해 공을 받아치지 못했는지 확인한다.
 		n := rand.Intn(100)
 		if n%13 == 0 {
-			fmt.Printf("Player %s Missed\n", name)
+			fmt.Printf("%s 선수가 공을 받아치지 못했습니다.\n", name)
 
-			// Close the channel to signal we lost.
+			// 채널을 닫아 현재 선수가 패배했음을 알린다.
 			close(court)
 			return
 		}
 
-		// Display and then increment the hit count by one.
-		fmt.Printf("Player %s Hit %d\n", name, ball)
+		// 선수가 공을 받아 친 횟수를 출력하고 그 값을 증가시킨다. 
+		fmt.Printf("%s 선수가 %d 번째 공을 받아쳤습니다.\n", name, ball)
 		ball++
 
-		// Hit the ball back to the opposing player.
+		// 공을 상대 선수에게 보낸다.
 		court <- ball
 	}
 }

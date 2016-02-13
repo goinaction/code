@@ -1,5 +1,5 @@
-// This sample program demonstrates how to use the atomic
-// package to provide safe access to numeric types.
+// atomic 패키지의 함수들을 이용하여
+// 숫자 타입에 안전하게 접근하는 예제
 package main
 
 import (
@@ -10,39 +10,39 @@ import (
 )
 
 var (
-	// counter is a variable incremented by all goroutines.
+	// 공유 자원으로 활용될 변수
 	counter int64
 
-	// wg is used to wait for the program to finish.
+	// 프로그램이 종료될 때까지 대기할 WaitGroup
 	wg sync.WaitGroup
 )
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Add a count of two, one for each goroutine.
+	// 고루틴 당 하나씩, 총 두 개의 카운터를 추가한다.
 	wg.Add(2)
 
-	// Create two goroutines.
+	// 두 개의 고루틴을 생성한다.
 	go incCounter(1)
 	go incCounter(2)
 
-	// Wait for the goroutines to finish.
+	// 고루틴의 실행이 종료될 때까지 대기한다.
 	wg.Wait()
 
-	// Display the final value.
-	fmt.Println("Final Counter:", counter)
+	// 최종 결과를 출력한다.
+	fmt.Println("최종 결과:", counter)
 }
 
-// incCounter increments the package level counter variable.
+// 패키지 수준에 정의된 counter 변수의 값을 증가시키는 함수
 func incCounter(id int) {
-	// Schedule the call to Done to tell main we are done.
+	// 함수 실행이 종료되면 main 함수에 알리기 위해 Done 함수 호출을 에약한다.
 	defer wg.Done()
 
 	for count := 0; count < 2; count++ {
-		// Safely Add One To Counter.
+		// counter 변수에 안전하게 1을 더한다.
 		atomic.AddInt64(&counter, 1)
 
-		// Yield the thread and be placed back in queue.
+		// 스레드를 양보하고 실행 큐로 되돌아간다.
 		runtime.Gosched()
 	}
 }

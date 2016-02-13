@@ -1,6 +1,6 @@
-// This sample program demonstrates how to use a buffered
-// channel to work on multiple tasks with a predefined number
-// of goroutines.
+// 버퍼가 있는 채널을 이용해
+// 미리 정해진 고루틴의 갯수만큼
+// 다중 작업을 수행하는 예제
 package main
 
 import (
@@ -11,67 +11,67 @@ import (
 )
 
 const (
-	numberGoroutines = 4  // Number of goroutines to use.
-	taskLoad         = 10 // Amount of work to process.
+	numberGoroutines = 4  // 실행할 고루틴의 갯수
+	taskLoad         = 10 // 처리할 작업의 갯수
 )
 
-// wg is used to wait for the program to finish.
+// 프로그램이 종료될 때까지 대기할 WaitGroup
 var wg sync.WaitGroup
 
-// init is called to initialize the package by the
-// Go runtime prior to any other code being executed.
+// Go 런타임이 다른 코드를 실행하기에 앞서
+// 패키지의 초기화를 위해 호출하는 함수
 func init() {
-	// Seed the random number generator.
+	// 랜덤 값 생성기를 초기화한다.
 	rand.Seed(time.Now().Unix())
 }
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Create a buffered channel to manage the task load.
+	// 작업 부하를 관리하기 위한 버퍼가 있는 채널을 생성한다.
 	tasks := make(chan string, taskLoad)
 
-	// Launch goroutines to handle the work.
+	// 작업을 처리할 고루틴을 실행한다.
 	wg.Add(numberGoroutines)
 	for gr := 1; gr <= numberGoroutines; gr++ {
 		go worker(tasks, gr)
 	}
 
-	// Add a bunch of work to get done.
+	// 실행할 작업을 추가한다.
 	for post := 1; post <= taskLoad; post++ {
-		tasks <- fmt.Sprintf("Task : %d", post)
+		tasks <- fmt.Sprintf("작업: %d", post)
 	}
 
-	// Close the channel so the goroutines will quit
-	// when all the work is done.
+	// 작업을 모두 처리하면
+	// 채널을 닫는다.
 	close(tasks)
 
-	// Wait for all the work to get done.
+	// 모든 작업이 처리될 때까지 대기한다.
 	wg.Wait()
 }
 
-// worker is launched as a goroutine to process work from
-// the buffered channel.
+// 버퍼가 있는 채널에서 수행할 작업을
+// 가져가는 고루틴
 func worker(tasks chan string, worker int) {
-	// Report that we just returned.
+	// 함수가 리턴될 때 Done 함수를 호출하도록 예약한다.
 	defer wg.Done()
 
 	for {
-		// Wait for work to be assigned.
+		// 작업이 할당될 때까지 대기한다.
 		task, ok := <-tasks
 		if !ok {
-			// This means the channel is empty and closed.
-			fmt.Printf("Worker: %d : Shutting Down\n", worker)
+			// 채널이 닫힌 경우
+			fmt.Printf("작업자: %d : 종료합니다.\n", worker)
 			return
 		}
 
-		// Display we are starting the work.
-		fmt.Printf("Worker: %d : Started %s\n", worker, task)
+		// 작업을 시작하는 메시지를 출력한다.
+		fmt.Printf("작업자: %d : 작업 시작: %s\n", worker, task)
 
-		// Randomly wait to simulate work time.
+		// 작업을 처리하는 것을 흉내내기 위해 임의의 시간동안 대기한다.
 		sleep := rand.Int63n(100)
 		time.Sleep(time.Duration(sleep) * time.Millisecond)
 
-		// Display we finished the work.
-		fmt.Printf("Worker: %d : Completed %s\n", worker, task)
+		// 작업이 완료되었다는 메시지를 출력한다.
+		fmt.Printf("작업자: %d : 작업 완료: %s\n", worker, task)
 	}
 }

@@ -1,6 +1,6 @@
-// This sample program demonstrates how to use a mutex
-// to define critical sections of code that need synchronous
-// access.
+// 접근 동기화가 필요한 코드에
+// 뮤텍스를 이용해 임계 지역을 생성해서
+// 경합 상태를 해결하는 예제
 package main
 
 import (
@@ -10,55 +10,55 @@ import (
 )
 
 var (
-	// counter is a variable incremented by all goroutines.
+	// 공유 자원으로 활용될 변수
 	counter int
 
-	// wg is used to wait for the program to finish.
+	// 프로그램이 종료될 때까지 대기할 WaitGroup
 	wg sync.WaitGroup
 
-	// mutex is used to define a critical section of code.
+	// 코드의 임계 지역을 설졍할 때 사용할 뮤텍스
 	mutex sync.Mutex
 )
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Add a count of two, one for each goroutine.
+	// 고루틴 당 하나씩, 총 두 개의 카운터를 추가한다.
 	wg.Add(2)
 
-	// Create two goroutines.
+	// 두 개의 고루틴을 생성한다.
 	go incCounter(1)
 	go incCounter(2)
 
-	// Wait for the goroutines to finish.
+	// 고루틴의 실행이 종료될 때까지 대기한다.
 	wg.Wait()
-	fmt.Printf("Final Counter: %d\n", counter)
+	fmt.Printf("최종 결과: %d\n", counter)
 }
 
-// incCounter increments the package level Counter variable
-// using the Mutex to synchronize and provide safe access.
+// 패키지 수준에 정의된 counter 변수의 값을 
+// 뮤텍스를 이용해 안전하게 증가시키는 함수
 func incCounter(id int) {
-	// Schedule the call to Done to tell main we are done.
+	// 함수 실행이 종료되면 main 함수에 알리기 위해 Done 함수 호출을 에약한다.
 	defer wg.Done()
 
 	for count := 0; count < 2; count++ {
-		// Only allow one goroutine through this
-		// critical section at a time.
+		// 이 임계 지역에는 한 번에 하나의
+		// 고루틴만이 접근할 수 있다.
 		mutex.Lock()
 		{
-			// Capture the value of counter.
+			// counter 변수의 값을 읽는다.
 			value := counter
 
-			// Yield the thread and be placed back in queue.
+			// 스레드를 양보하여 큐로 돌아가도록 한다.
 			runtime.Gosched()
 
-			// Increment our local value of counter.
+			// 현재 카운터 값을 증가시킨다.
 			value++
 
-			// Store the value back into counter.
+			// 원래 변수에 증가된 값을 다시 저장한다.
 			counter = value
 		}
 		mutex.Unlock()
-		// Release the lock and allow any
-		// waiting goroutine through.
+		// 대기 중인 다른 고루틴이 접근할 수 있도록
+		// 잠금을 해제한다.
 	}
 }

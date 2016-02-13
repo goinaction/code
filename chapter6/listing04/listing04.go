@@ -1,5 +1,5 @@
-// This sample program demonstrates how the goroutine scheduler
-// will time slice goroutines on a single thread.
+// 단일 스레드 환경에서 고루틴이 스케줄러에 의해
+// 본할 실행되는 것을 보여주기 위한 예제
 package main
 
 import (
@@ -8,32 +8,32 @@ import (
 	"sync"
 )
 
-// wg is used to wait for the program to finish.
+// wg는 프로그램의 종료를 대기하기 위해 사용한다.
 var wg sync.WaitGroup
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Allocate 1 logical processors for the scheduler to use.
+	// 스케줄러에 하나의 논리 프로세서만 할당한다.
 	runtime.GOMAXPROCS(1)
 
-	// Add a count of two, one for each goroutine.
+	// 고루틴마다 하나씩, 두 개의 카운트를 추가한다.
 	wg.Add(2)
 
-	// Create two goroutines.
-	fmt.Println("Create Goroutines")
+	// 두 개의 고루틴을 생성한다.
+	fmt.Println("고루틴을 실행합니다.")
 	go printPrime("A")
 	go printPrime("B")
 
 	// Wait for the goroutines to finish.
-	fmt.Println("Waiting To Finish")
+	fmt.Println("대기 중...")
 	wg.Wait()
 
-	fmt.Println("Terminating Program")
+	fmt.Println("프로그램을 종료합니다.")
 }
 
-// printPrime displays prime numbers for the first 5000 numbers.
+// 소수 중 처음 5000개를 출력하는 함수
 func printPrime(prefix string) {
-	// Schedule the call to Done to tell main we are done.
+	// 작업이 완료되면 Done 함수를 호출하도록 예약한다.
 	defer wg.Done()
 
 next:
@@ -45,5 +45,5 @@ next:
 		}
 		fmt.Printf("%s:%d\n", prefix, outer)
 	}
-	fmt.Println("Completed", prefix)
+	fmt.Println("완료: ", prefix)
 }

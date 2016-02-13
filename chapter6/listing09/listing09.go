@@ -1,5 +1,5 @@
-// This sample program demonstrates how to create race
-// conditions in our programs. We don't want to do this.
+// 경합 상태에 놓이는 상황을
+// 재연한 예제
 package main
 
 import (
@@ -9,43 +9,43 @@ import (
 )
 
 var (
-	// counter is a variable incremented by all goroutines.
+	// 모든 고루틴이 값을 증가하려고 시도하는 변수
 	counter int
 
-	// wg is used to wait for the program to finish.
+	// 프로그램이 종료될 때까지 대기할 WaitGroup
 	wg sync.WaitGroup
 )
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Add a count of two, one for each goroutine.
+	// 고루틴 당 하나씩, 총 두 개의 카운트를 추가한다.
 	wg.Add(2)
 
-	// Create two goroutines.
+	// 고루틴을 생성한다.
 	go incCounter(1)
 	go incCounter(2)
 
-	// Wait for the goroutines to finish.
+	// 고루틴의 실행이 종료될 때까지 대기한다.
 	wg.Wait()
-	fmt.Println("Final Counter:", counter)
+	fmt.Println("최종 결과:", counter)
 }
 
-// incCounter increments the package level counter variable.
+// 패키지 수준에 정의된 counter 변수의 값을 증가시키는 함수
 func incCounter(id int) {
-	// Schedule the call to Done to tell main we are done.
+	// 함수 실행이 종료되면 main 함수에 알리기 위해 Done 함수 호출을 에약한다.
 	defer wg.Done()
 
 	for count := 0; count < 2; count++ {
-		// Capture the value of Counter.
+		// counter 변수의 값을 읽는다.
 		value := counter
 
-		// Yield the thread and be placed back in queue.
+		// 스레드를 양보하여 큐로 돌아가도록 한다.
 		runtime.Gosched()
 
-		// Increment our local value of Counter.
+		// 현재 카운터 값을 증가시킨다.
 		value++
 
-		// Store the value back into Counter.
+		// 원래 변수에 증가된 값을 다시 저장한다.
 		counter = value
 	}
 }

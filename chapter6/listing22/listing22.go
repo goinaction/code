@@ -1,5 +1,5 @@
-// This sample program demonstrates how to use an unbuffered
-// channel to simulate a relay race between four goroutines.
+// 버퍼가 없는 채널을 이용해
+// 계주 경기를 묘사하는 예제
 package main
 
 import (
@@ -8,56 +8,56 @@ import (
 	"time"
 )
 
-// wg is used to wait for the program to finish.
+// 프로그램이 종료될 때까지 대기할 WaitGroup
 var wg sync.WaitGroup
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Create an unbuffered channel.
+	// 버퍼가 없는 채널을 생성한다.
 	baton := make(chan int)
 
-	// Add a count of one for the last runner.
+	// 마지막 주자를 위해 하나의 카운터를 생성한다.
 	wg.Add(1)
 
-	// First runner to his mark.
+	// 첫 번째 주자가 경기를 준비한다.
 	go Runner(baton)
 
-	// Start the race.
+	// 경기 시작!
 	baton <- 1
 
-	// Wait for the race to finish.
+	// 경기가 끝날 때까지 기다린다.
 	wg.Wait()
 }
 
-// Runner simulates a person running in the relay race.
+// 계주의 각 주자를 표현하는 Runner 함수
 func Runner(baton chan int) {
 	var newRunner int
 
-	// Wait to receive the baton.
+	// 바톤을 전달받을 때까지 기다린다.
 	runner := <-baton
 
-	// Start running around the track.
-	fmt.Printf("Runner %d Running With Baton\n", runner)
+	// 트랙을 달린다.
+	fmt.Printf("%d 번째 주자가 바톤을 받아 달리기 시작했습니다.\n", runner)
 
-	// New runner to the line.
+	// 새로운 주자가 교체지점에서 대기한다.
 	if runner != 4 {
 		newRunner = runner + 1
-		fmt.Printf("Runner %d To The Line\n", newRunner)
+		fmt.Printf("%d 번째 주자가 대기합니다.\n", newRunner)
 		go Runner(baton)
 	}
 
-	// Running around the track.
+	// 트랙을 달린다.
 	time.Sleep(100 * time.Millisecond)
 
-	// Is the race over.
+	// 경기가 끝났는지 검사한다.
 	if runner == 4 {
-		fmt.Printf("Runner %d Finished, Race Over\n", runner)
+		fmt.Printf("%d 번째 주자가 도착했습니다. 경기가 끝났습니다. \n", runner)
 		wg.Done()
 		return
 	}
 
-	// Exchange the baton for the next runner.
-	fmt.Printf("Runner %d Exchange With Runner %d\n",
+	// 다음 주자에게 바톤을 넘긴다.
+	fmt.Printf("%d 번째 주자가 %d 번째 주자에게 바톤을 넘겼습니다.\n",
 		runner,
 		newRunner)
 

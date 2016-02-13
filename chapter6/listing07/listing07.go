@@ -1,5 +1,5 @@
-// This sample program demonstrates how to create goroutines and
-// how the goroutine scheduler behaves with two logical processor.
+// 고루틴을 생성하는 방법과 논리 프로세서가 두 개인 경우
+// 스케줄러의 동작을 설명하는 예제
 package main
 
 import (
@@ -8,24 +8,24 @@ import (
 	"sync"
 )
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Allocate two logical processors for the scheduler to use.
+	// 스케줄러가 사용할 두 개의 논리 프로세서를 할당한다.
 	runtime.GOMAXPROCS(2)
 
-	// wg is used to wait for the program to finish.
-	// Add a count of two, one for each goroutine.
+	// wg은 프로그램의 종료를 대기하기 위해 사용한다.
+	// 각각의 고루틴마다 하나씩, 총 두 개의 카운트를 추가한다.
 	var wg sync.WaitGroup
 	wg.Add(2)
 
-	fmt.Println("Start Goroutines")
+	fmt.Println("고루틴을 실행합니다.")
 
-	// Declare an anonymous function and create a goroutine.
+	// 익명함수를 선언하고 고루틴을 생성한다.
 	go func() {
-		// Schedule the call to Done to tell main we are done.
+		// main 함수에게 종료를 알리기 위한 Done 함수 호출을 예약한다.
 		defer wg.Done()
 
-		// Display the alphabet three times.
+		// 알파벳을 세 번 출력한다.
 		for count := 0; count < 3; count++ {
 			for char := 'a'; char < 'a'+26; char++ {
 				fmt.Printf("%c ", char)
@@ -33,12 +33,12 @@ func main() {
 		}
 	}()
 
-	// Declare an anonymous function and create a goroutine.
+	// 익명함수를 선언하고 고루틴을 생성한다.
 	go func() {
-		// Schedule the call to Done to tell main we are done.
+		// main 함수에게 종료를 알리기 위한 Done 함수 호출을 예약한다.
 		defer wg.Done()
 
-		// Display the alphabet three times.
+		// 알파벳을 세 번 출력한다. 
 		for count := 0; count < 3; count++ {
 			for char := 'A'; char < 'A'+26; char++ {
 				fmt.Printf("%c ", char)
@@ -46,9 +46,9 @@ func main() {
 		}
 	}()
 
-	// Wait for the goroutines to finish.
-	fmt.Println("Waiting To Finish")
+	// 고루틴이 종료될 때까지 대기한다.
+	fmt.Println("대기 중...")
 	wg.Wait()
 
-	fmt.Println("\nTerminating Program")
+	fmt.Println("\n프로그램을 종료합니다.")
 }
