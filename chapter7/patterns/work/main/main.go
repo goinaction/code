@@ -1,5 +1,5 @@
-// This sample program demonstrates how to use the work package
-// to use a pool of goroutines to get work done.
+// work 패키지의 코드를 이용하여
+// 고루틴 풀을 활용하는 방법을 보여주는 예제
 package main
 
 import (
@@ -10,7 +10,7 @@ import (
 	"github.com/goinaction/code/chapter7/patterns/work"
 )
 
-// names provides a set of names to display.
+// 화면에 출력할 이름들을 슬라이스로 선언한다.
 var names = []string{
 	"steve",
 	"bob",
@@ -19,37 +19,36 @@ var names = []string{
 	"jason",
 }
 
-// namePrinter provides special support for printing names.
+// 이름을 출력하기 위한 구조체
 type namePrinter struct {
 	name string
 }
 
-// Task implements the Worker interface.
+// Worker 인터페이스를 구현하기 위해 Task 메서드를 선언한다.
 func (m *namePrinter) Task() {
 	log.Println(m.name)
 	time.Sleep(time.Second)
 }
 
-// main is the entry point for all Go programs.
+// 애플리케이션 진입점
 func main() {
-	// Create a work pool with 2 goroutines.
+	// 2개의 고루틴을 위한 작업 풀을 생성한다.
 	p := work.New(2)
 
 	var wg sync.WaitGroup
 	wg.Add(100 * len(names))
 
 	for i := 0; i < 100; i++ {
-		// Iterate over the slice of names.
+		// 이름 슬라이스를 반복한다.
 		for _, name := range names {
-			// Create a namePrinter and provide the
-			// specific name.
+			// 이름을 지정한다.
 			np := namePrinter{
 				name: name,
 			}
 
 			go func() {
-				// Submit the task to be worked on. When RunTask
-				// returns we know it is being handled.
+				// 실행할 작업을 등록한다.
+				// Run 메서드가 리턴되면 해당 작업이 처리된 것으로 간주한다.
 				p.Run(&np)
 				wg.Done()
 			}()
@@ -58,7 +57,7 @@ func main() {
 
 	wg.Wait()
 
-	// Shutdown the work pool and wait for all existing work
-	// to be completed.
+	// 작업 풀을 종료하고 이미 등록된 작업들이
+	// 종료될 때까지 대기한다.
 	p.Shutdown()
 }
