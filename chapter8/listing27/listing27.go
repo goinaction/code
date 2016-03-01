@@ -1,4 +1,4 @@
-// This sample program demonstrates how to decode a JSON string.
+// JSON 문자열을 디코딩하는 예제
 package main
 
 import (
@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-// Contact represents our JSON string.
+// JSON 문자열을 표현하는 Contact 구조체
 type Contact struct {
 	Name    string `json:"name"`
 	Title   string `json:"title"`
@@ -17,7 +17,7 @@ type Contact struct {
 	} `json:"contact"`
 }
 
-// JSON contains a sample string to unmarshal.
+// 문자열을 가지고 있는 JSON 문서
 var JSON = `{
 	"name": "Gopher",
 	"title": "programmer",
@@ -28,11 +28,11 @@ var JSON = `{
 }`
 
 func main() {
-	// Unmarshal the JSON string into our variable.
+	// JSON 문자열을 변수에 언마샬링한다.
 	var c Contact
 	err := json.Unmarshal([]byte(JSON), &c)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("에러:", err)
 		return
 	}
 

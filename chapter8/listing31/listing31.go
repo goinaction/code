@@ -1,4 +1,4 @@
-// This sample program demonstrates how to marshal a JSON string.
+// JSON 문자열을 마샬링하는 방법을 보여주는 예제
 package main
 
 import (
@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// Create a map of key/value pairs.
+	// 키/값의 쌍을 가지는 맵을 생성한다.
 	c := make(map[string]interface{})
 	c["name"] = "Gopher"
 	c["title"] = "programmer"
@@ -17,10 +17,10 @@ func main() {
 		"cell": "415.555.5555",
 	}
 
-	// Marshal the map into a JSON string.
+	// 맵을 JSON 문자열로 마샬링한다.
 	data, err := json.MarshalIndent(c, "", "    ")
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("에러:", err)
 		return
 	}
 

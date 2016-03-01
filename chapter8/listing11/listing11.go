@@ -1,4 +1,4 @@
-// This sample program demonstrates how to create customized loggers.
+// 사용자 정의 로거를 생성하는 예제
 package main
 
 import (
@@ -9,39 +9,39 @@ import (
 )
 
 var (
-	Trace   *log.Logger // Just about anything
-	Info    *log.Logger // Important information
-	Warning *log.Logger // Be concerned
-	Error   *log.Logger // Critical problem
+	Trace   *log.Logger // 기타 모든 로그
+	Info    *log.Logger // 중요한 정보
+	Warning *log.Logger // 경고성 정보
+	Error   *log.Logger // 치명적인 오류
 )
 
 func init() {
 	file, err := os.OpenFile("errors.txt",
 		os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalln("Failed to open error log file:", err)
+		log.Fatalln("에러 로그 파일을 열 수 없습니다.", err)
 	}
 
 	Trace = log.New(ioutil.Discard,
-		"TRACE: ",
+		"추적: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
 
 	Info = log.New(os.Stdout,
-		"INFO: ",
+		"정보: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
 
 	Warning = log.New(os.Stdout,
-		"WARNING: ",
+		"경고: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
 
 	Error = log.New(io.MultiWriter(file, os.Stderr),
-		"ERROR: ",
+		"에러: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 func main() {
-	Trace.Println("I have something standard to say")
-	Info.Println("Special Information")
-	Warning.Println("There is something you need to know about")
-	Error.Println("Something has failed")
+	Trace.Println("일반적인 로그 메시지")
+	Info.Println("특별한 정보를 위한 로그 메시지")
+	Warning.Println("경고성 로그 메시지")
+	Error.Println("에러 로그 메시지")
 }

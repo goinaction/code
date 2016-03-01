@@ -1,5 +1,5 @@
-// This sample program demonstrates how to decode a JSON response
-// using the json package and NewDecoder function.
+// json 패키지와 NewDecoder 함수를 이용하여 
+// JSON 응답을 구조체로 디코딩하는 예제
 package main
 
 import (
@@ -10,7 +10,7 @@ import (
 )
 
 type (
-	// gResult maps to the result document received from the search.
+	// 검색 API의 문서를 매핑하기 위한 gResult 구조체
 	gResult struct {
 		GsearchResultClass string `json:"GsearchResultClass"`
 		UnescapedURL       string `json:"unescapedUrl"`
@@ -22,7 +22,7 @@ type (
 		Content            string `json:"content"`
 	}
 
-	// gResponse contains the top level document.
+	// 최상위 문서를 표현하기 위한 gResponse 구조체
 	gResponse struct {
 		ResponseData struct {
 			Results []gResult `json:"results"`
@@ -33,29 +33,29 @@ type (
 func main() {
 	uri := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=golang"
 
-	// Issue the search against Google.
+	// 구글에 검색을 실행한다.
 	resp, err := http.Get(uri)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("에러:", err)
 		return
 	}
 	defer resp.Body.Close()
 
-	// Decode the JSON response into our struct type.
+	// JSON 응답을 구조체로 디코딩한다.
 	var gr gResponse
 	err = json.NewDecoder(resp.Body).Decode(&gr)
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("에러:", err)
 		return
 	}
 
 	fmt.Println(gr)
 
-	// Marshal the struct type into a pretty print
-	// version of the JSON document.
+	// 구조체 타입을 보기좋게 출력할 수 있는
+	// JSON 문서로 마샬링한다.
 	pretty, err := json.MarshalIndent(gr, "", "    ")
 	if err != nil {
-		log.Println("ERROR:", err)
+		log.Println("에러:", err)
 		return
 	}
 
