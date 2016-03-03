@@ -1,4 +1,4 @@
-// Package handlers provides the endpoints for the web service.
+// 웹서비스의 종단점을 제공하는 패키지
 package handlers
 
 import (
@@ -6,12 +6,12 @@ import (
 	"net/http"
 )
 
-// Routes sets the routes for the web service.
+// 웹서비스의 라우트를 설정한다.
 func Routes() {
 	http.HandleFunc("/sendjson", SendJSON)
 }
 
-// SendJSON returns a simple JSON document.
+// SendJSON 함수는 간단한 JSON 문서를 리턴한다.
 func SendJSON(rw http.ResponseWriter, r *http.Request) {
 	u := struct {
 		Name  string

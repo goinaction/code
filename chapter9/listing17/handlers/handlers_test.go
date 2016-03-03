@@ -1,5 +1,5 @@
-// Sample test to show how to test the execution of an
-// internal endpoint.
+// 종단점의 동작을 확인하기 위한
+// 테스트 코드 예제
 package handlers_test
 
 import (
@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/goinaction/code/chapter9/listing17/handlers"
+	"github.com/webgenie/go-in-action/chapter9/listing17/handlers"
 )
 
 const checkMark = "\u2713"
@@ -18,25 +18,25 @@ func init() {
 	handlers.Routes()
 }
 
-// TestSendJSON testing the sendjson internal endpoint.
+// TestSendJSON 함수는 종단점에 대한 테스트를 수행한다.
 func TestSendJSON(t *testing.T) {
-	t.Log("Given the need to test the SendJSON endpoint.")
+	t.Log("SendJSON 종단점의 동작에 대한 테스트 시작.")
 	{
 		req, err := http.NewRequest("GET", "/sendjson", nil)
 		if err != nil {
-			t.Fatal("\tShould be able to create a request.",
+			t.Fatal("\t웹 요청을 보내는지 확인.",
 				ballotX, err)
 		}
-		t.Log("\tShould be able to create a request.",
+		t.Log("\t웹 요청을 보내는지 확인.",
 			checkMark)
 
 		rw := httptest.NewRecorder()
 		http.DefaultServeMux.ServeHTTP(rw, req)
 
 		if rw.Code != 200 {
-			t.Fatal("\tShould receive \"200\"", ballotX, rw.Code)
+			t.Fatal("\t응답 코드가 \"200\"인지 확인.", ballotX, rw.Code)
 		}
-		t.Log("\tShould receive \"200\"", checkMark)
+		t.Log("\t응답 코드가 \"200\"인지 확인.", checkMark)
 
 		u := struct {
 			Name  string
@@ -44,20 +44,20 @@ func TestSendJSON(t *testing.T) {
 		}{}
 
 		if err := json.NewDecoder(rw.Body).Decode(&u); err != nil {
-			t.Fatal("\tShould decode the response.", ballotX)
+			t.Fatal("\t응답 데이터 디코딩 동작 확인.", ballotX)
 		}
-		t.Log("\tShould decode the response.", checkMark)
+		t.Log("\t응답 데이터 디코딩 동작 확인.", checkMark)
 
 		if u.Name == "Bill" {
-			t.Log("\tShould have a Name.", checkMark)
+			t.Log("\t응답 데이터의 이름 확인.", checkMark)
 		} else {
-			t.Error("\tShould have a Name.", ballotX, u.Name)
+			t.Error("\t응답 데이터의 이름 확인.", ballotX, u.Name)
 		}
 
 		if u.Email == "bill@ardanstudios.com" {
-			t.Log("\tShould have an Email.", checkMark)
+			t.Log("\t응답 데이터의 메일 주소 확인.", checkMark)
 		} else {
-			t.Error("\tShould have an for Email.", ballotX, u.Email)
+			t.Error("\t응답 데이터의 메일 주소 확인.", ballotX, u.Email)
 		}
 	}
 }

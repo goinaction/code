@@ -1,6 +1,6 @@
-// Sample benchmarks to test which function is better for converting
-// an integer into a string. First using the fmt.Sprintf function,
-// then the strconv.FormatInt function and then strconv.Itoa.
+// 정수를 문자열로 변환하는 가장 빠른 방법을 테스트하기 위해 벤치마킹을 활용하는 예제
+// 첫 번째 방법은 fmt.Sprintf 함수를, 두 번째 방법은 strconv.FormatInt 함수를 테스트하며,
+// 마지막으로는 strconv.Itoa 함수를 테스트한다.
 package listing05_test
 
 import (
@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-// BenchmarkSprintf provides performance numbers for the
-// fmt.Sprintf function.
+// BenchmarkSprintf 함수는 fmt.Sprintf 함수의
+// 성능을 테스트한다.
 func BenchmarkSprintf(b *testing.B) {
 	number := 10
 
@@ -21,8 +21,8 @@ func BenchmarkSprintf(b *testing.B) {
 	}
 }
 
-// BenchmarkFormat provides performance numbers for the
-// strconv.FormatInt function.
+// BenchmarkFormat 함수는 strconv.FormatInt 함수의
+// 성능을 테스트한다.
 func BenchmarkFormat(b *testing.B) {
 	number := int64(10)
 
@@ -33,8 +33,8 @@ func BenchmarkFormat(b *testing.B) {
 	}
 }
 
-// BenchmarkItoa provides performance numbers for the
-// strconv.Itoa function.
+// BenchmarkItoa 함수는 strconv.Itoa 함수의
+// 성능을 테스트한다.
 func BenchmarkItoa(b *testing.B) {
 	number := 10
 

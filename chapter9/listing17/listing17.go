@@ -1,4 +1,4 @@
-// This sample code implement a simple web service.
+// 간단한 웹서비스 예제
 package main
 
 import (
@@ -8,10 +8,10 @@ import (
 	"github.com/goinaction/code/chapter9/listing17/handlers"
 )
 
-// main is the entry point for the application.
+// 애플리케이션 진입점
 func main() {
 	handlers.Routes()
 
-	log.Println("listener : Started : Listening on :4000")
+	log.Println("웹서비스 실행 중: 포트: 4000")
 	http.ListenAndServe(":4000", nil)
 }

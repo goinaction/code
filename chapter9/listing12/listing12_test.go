@@ -1,5 +1,5 @@
-// Sample test to show how to mock an HTTP GET call internally.
-// Differs slightly from the book to show more.
+// HTTP GET의 모의 호출을 사용하는 예제
+// 책에서 사용한 예제와는 다소 다른 부분이 있다.
 package listing12
 
 import (
@@ -13,7 +13,7 @@ import (
 const checkMark = "\u2713"
 const ballotX = "\u2717"
 
-// feed is mocking the XML document we except to receive.
+// feed 변수에는 우리가 기대하는 모의 응답 데이터를 대입한다.
 var feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss>
 <channel>
@@ -29,7 +29,7 @@ var feed = `<?xml version="1.0" encoding="UTF-8"?>
 </channel>
 </rss>`
 
-// mockServer returns a pointer to a server to handle the get call.
+// mockServer 함수는 GET 요청을 처리할 서버에 대한 포인터를 리턴한다.
 func mockServer() *httptest.Server {
 	f := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
@@ -40,49 +40,49 @@ func mockServer() *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(f))
 }
 
-// TestDownload validates the http Get function can download content
-// and the content can be unmarshaled and clean.
+// TestDownload 함수는 HTTP GET 요청을 이용해 콘텐츠를 다운로드 한 후
+// 해당 콘텐츠를 언마샬링 할 수 있는지 확인한다.
 func TestDownload(t *testing.T) {
 	statusCode := http.StatusOK
 
 	server := mockServer()
 	defer server.Close()
 
-	t.Log("Given the need to test downloading content.")
+	t.Log("콘텐츠 다운로드 기능 테스트를 시작.")
 	{
-		t.Logf("\tWhen checking \"%s\" for status code \"%d\"",
+		t.Logf("\tURL \"%s\" 호출 시 상태 코드가 \"%d\"인지 확인.",
 			server.URL, statusCode)
 		{
 			resp, err := http.Get(server.URL)
 			if err != nil {
-				t.Fatal("\t\tShould be able to make the Get call.",
+				t.Fatal("\t\tHTTP GET 요청을 보냈는지 확인.",
 					ballotX, err)
 			}
-			t.Log("\t\tShould be able to make the Get call.",
+			t.Log("\t\tHTTP GET 요청을 보냈는지 확인.",
 				checkMark)
 
 			defer resp.Body.Close()
 
 			if resp.StatusCode != statusCode {
-				t.Fatalf("\t\tShould receive a \"%d\" status. %v %v",
+				t.Fatalf("\t\t상태 코드가 \"%d\" 인지 확인. %v %v",
 					statusCode, ballotX, resp.StatusCode)
 			}
-			t.Logf("\t\tShould receive a \"%d\" status. %v",
+			t.Logf("\t\t상태 코드가 \"%d\" 인지 확인. %v",
 				statusCode, checkMark)
 
 			var d Document
 			if err := xml.NewDecoder(resp.Body).Decode(&d); err != nil {
-				t.Fatal("\t\tShould be able to unmarshal the response.",
+				t.Fatal("\t\t콘텐츠 언마샬링에 실패했습니다.",
 					ballotX, err)
 			}
-			t.Log("\t\tShould be able to unmarshal the response.",
+			t.Log("\t\t콘텐츠 언마샬링이 성공했습니다.",
 				checkMark)
 
 			if len(d.Channel.Items) == 1 {
-				t.Log("\t\tShould have \"1\" item in the feed.",
+				t.Log("\t\t피드에 \"1\" 개의 아이템이 존재하는지 확인.",
 					checkMark)
 			} else {
-				t.Error("\t\tShould have \"1\" item in the feed.",
+				t.Error("\t\t피드에 \"1\" 개의 아이템이 존재하는지 확인.",
 					ballotX, len(d.Channel.Items))
 			}
 		}
