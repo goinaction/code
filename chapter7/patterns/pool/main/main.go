@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	maxGoroutines   = 25 // 실행할 수 있는 고루틴의 최대 갓수
+	maxGoroutines   = 25 // 실행할 수 있는 고루틴의 최대 갯수
 	pooledResources = 2  // 풀이 관리할 리소스의 갯수
 )
 
@@ -57,7 +57,7 @@ func main() {
 	// 풀에서 데이터베이스 연결을 가져와 질의를 실행한다.
 	for query := 0; query < maxGoroutines; query++ {
 		// 각 고루틴에는 질의 값의 복사본을 전달해야 한다.
-		// 그렇지 않으면 고루틴들이 동을한 질의 값을
+		// 그렇지 않으면 고루틴들이 동일한 질의 값을
 		// 공유하게 된다.
 		go func(q int) {
 			performQueries(q, p)
