@@ -40,7 +40,7 @@ func New(fn func() (io.Closer, error), size uint) (*Pool, error) {
 // 풀에서 리소스를 획득하는 메서드
 func (p *Pool) Acquire() (io.Closer, error) {
 	select {
-	// 사용 가능한 리소스이 있는지 검사한다.
+	// 사용 가능한 리소스가 있는지 검사한다.
 	case r, ok := <-p.resources:
 		log.Println("리소스 획득:", "공유된 리소스")
 		if !ok {
@@ -48,7 +48,7 @@ func (p *Pool) Acquire() (io.Closer, error) {
 		}
 		return r, nil
 
-	// 사용 가능한 리소스이 없는 경우 새로운 리소스를 생성한다.
+	// 사용 가능한 리소스가 없는 경우 새로운 리소스를 생성한다.
 	default:
 		log.Println("리소스 획득:", "새로운 리소스")
 		return p.factory()
