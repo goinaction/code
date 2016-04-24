@@ -19,12 +19,12 @@ type Pool struct {
 	closed    bool
 }
 
-// ErrPoolClosed 에러는 리소스을 획득하려 할 때
+// ErrPoolClosed 에러는 리소스를 획득하려 할 때
 // 풀이 닫혀있는 경우에 발생한다. 
 var ErrPoolClosed = errors.New("풀이 닫혔습니다.")
 
 // New 함수는 리소스 관리 풀을 생성한다.
-// 풀은 새로운 리소스을 할당하기 위한 함수와
+// 풀은 새로운 리소스를 할당하기 위한 함수와
 // 풀의 크기를 매개변수로 정의한다.
 func New(fn func() (io.Closer, error), size uint) (*Pool, error) {
 	if size <= 0 {
@@ -48,7 +48,7 @@ func (p *Pool) Acquire() (io.Closer, error) {
 		}
 		return r, nil
 
-	// 사용 가능한 리소스이 없는 경우 새로운 리소스을 생성한다.
+	// 사용 가능한 리소스이 없는 경우 새로운 리소스를 생성한다.
 	default:
 		log.Println("리소스 획득:", "새로운 리소스")
 		return p.factory()
