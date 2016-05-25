@@ -1,115 +1,140 @@
 // Sample program demonstrating interface composition.
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"math/rand"
+	"time"
+)
 
-// Board represents a surface we can work on.
-type Board struct {
-	NailsNeeded int
-	NailsDriven int
+func init() {
+	rand.Seed(time.Now().UnixNano())
 }
 
 // =============================================================================
 
-// NailDriver represents behavior to drive nails into a board.
-type NailDriver interface {
-	DriveNail(nailSupply *int, b *Board)
-}
+// EOD represents the end of the data stream.
+var EOD = errors.New("EOD")
 
-// NailPuller represents behavior to remove nails into a board.
-type NailPuller interface {
-	PullNail(nailSupply *int, b *Board)
-}
-
-// NailDrivePuller represents behavior to drive and remove nails into a board.
-type NailDrivePuller interface {
-	NailDriver
-	NailPuller
+// Data is the structure of the data we are copying.
+type Data struct {
+	Line string
 }
 
 // =============================================================================
 
-// Mallet is a tool that pounds in nails.
-type Mallet struct{}
-
-// DriveNail pounds a nail into the specified board.
-func (Mallet) DriveNail(nailSupply *int, b *Board) {
-	*nailSupply--
-	b.NailsDriven++
-	fmt.Println("Mallet: pounded nail into the board.")
+// Puller declares behavior for pulling data.
+type Puller interface {
+	Pull(d *Data) error
 }
 
-// Crowbar is a tool that removes nails.
-type Crowbar struct{}
+// Storer declares behavior for storing data.
+type Storer interface {
+	Store(d Data) error
+}
 
-// PullNail yanks a nail out of the specified board.
-func (Crowbar) PullNail(nailSupply *int, b *Board) {
-	b.NailsDriven--
-	*nailSupply++
-	fmt.Println("Crowbar: yanked nail out of the board.")
+// PullStorer declares behavior for both pulling and storing.
+type PullStorer interface {
+	Puller
+	Storer
 }
 
 // =============================================================================
 
-// Toolbox can contains a Mallet and a Crowbar.
-type Toolbox struct {
-	Mallet
-	Crowbar
+// Xenia is a system we need to pull data from.
+type Xenia struct{}
 
-	nails int
-}
+// Pull knows how to pull data out of Xenia.
+func (Xenia) Pull(d *Data) error {
+	switch rand.Intn(10) {
+	case 1, 9:
+		return EOD
 
-// =============================================================================
+	case 5:
+		return errors.New("Error reading data from Xenia")
 
-// Contractor carries out the task of securing boards.
-type Contractor struct{}
-
-// Fasten will drive nails into a board.
-func (Contractor) Fasten(d NailDriver, nailSupply *int, b *Board) {
-	for b.NailsDriven < b.NailsNeeded {
-		d.DriveNail(nailSupply, b)
+	default:
+		d.Line = "Data"
+		fmt.Println("In:", d.Line)
+		return nil
 	}
 }
 
-// Unfasten will remove nails from a board.
-func (Contractor) Unfasten(p NailPuller, nailSupply *int, b *Board) {
-	for b.NailsDriven > b.NailsNeeded {
-		p.PullNail(nailSupply, b)
-	}
+// Pillar is a system we need to store data into.
+type Pillar struct{}
+
+// Store knows how to store data into Pillar.
+func (Pillar) Store(d Data) error {
+	fmt.Println("Out:", d.Line)
+	return nil
 }
 
-// ProcessBoards works against boards.
-func (c Contractor) ProcessBoards(dp NailDrivePuller, nailSupply *int, boards []Board) {
-	for i := range boards {
-		b := &boards[i]
+// =============================================================================
 
-		fmt.Printf("Contractor: examining board #%d: %+v\n", i+1, b)
+// System wraps Xenia and Pillar together into a single system.
+type System struct {
+	Xenia
+	Pillar
+}
 
-		switch {
-		case b.NailsDriven < b.NailsNeeded:
-			c.Fasten(dp, nailSupply, b)
+// =============================================================================
 
-		case b.NailsDriven > b.NailsNeeded:
-			c.Unfasten(dp, nailSupply, b)
+// IO provides support to copy bulk data.
+type IO struct{}
+
+// pull knows how to pull bulks of data from any Puller.
+func (IO) pull(p Puller, data []Data) (int, error) {
+	for i := range data {
+		if err := p.Pull(&data[i]); err != nil {
+			return i, err
+		}
+	}
+
+	return len(data), nil
+}
+
+// store knows how to store bulks of data from any Storer.
+func (IO) store(s Storer, data []Data) error {
+	for _, d := range data {
+		if err := s.Store(d); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Copy knows how to pull and store data from any System.
+func (io IO) Copy(ps PullStorer, batch int) error {
+	for {
+		data := make([]Data, batch)
+
+		i, err := io.pull(ps, data)
+		if i > 0 {
+			if err := io.store(ps, data[:i]); err != nil {
+				return err
+			}
+		}
+
+		if err != nil {
+			return err
 		}
 	}
 }
 
 // =============================================================================
 
-// main is the entry point for the application.
 func main() {
-	boards := []Board{
-		{NailsDriven: 3},
-		{NailsNeeded: 2},
+
+	// Initialize the system for use.
+	sys := System{
+		Xenia:  Xenia{},
+		Pillar: Pillar{},
 	}
 
-	tb := Toolbox{
-		Mallet:  Mallet{},
-		Crowbar: Crowbar{},
-		nails:   10,
+	var io IO
+	if err := io.Copy(&sys, 3); err != EOD {
+		fmt.Println(err)
 	}
-
-	var c Contractor
-	c.ProcessBoards(&tb, &tb.nails, boards)
 }

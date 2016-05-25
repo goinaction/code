@@ -1,97 +1,122 @@
 // Sample program demonstrating struct composition.
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"math/rand"
+	"time"
+)
 
-// Board represents a surface we can work on.
-type Board struct {
-	NailsNeeded int
-	NailsDriven int
+func init() {
+	rand.Seed(time.Now().UnixNano())
 }
 
 // =============================================================================
 
-// Mallet is a tool that pounds in nails.
-type Mallet struct{}
+// EOD represents the end of the data stream.
+var EOD = errors.New("EOD")
 
-// DriveNail pounds a nail into the specified board.
-func (Mallet) DriveNail(nailSupply *int, b *Board) {
-	*nailSupply--
-	b.NailsDriven++
-	fmt.Println("Mallet: pounded nail into the board.")
-}
-
-// Crowbar is a tool that removes nails.
-type Crowbar struct{}
-
-// PullNail yanks a nail out of the specified board.
-func (Crowbar) PullNail(nailSupply *int, b *Board) {
-	b.NailsDriven--
-	*nailSupply++
-	fmt.Println("Crowbar: yanked nail out of the board.")
+// Data is the structure of the data we are copying.
+type Data struct {
+	Line string
 }
 
 // =============================================================================
 
-// Toolbox can contains a Mallet and a Crowbar.
-type Toolbox struct {
-	Mallet
-	Crowbar
+// Xenia is a system we need to pull data from.
+type Xenia struct{}
 
-	nails int
-}
+// Pull knows how to pull data out of Xenia.
+func (Xenia) Pull(d *Data) error {
+	switch rand.Intn(10) {
+	case 1, 9:
+		return EOD
 
-// =============================================================================
+	case 5:
+		return errors.New("Error reading data from Xenia")
 
-// Contractor carries out the task of securing boards.
-type Contractor struct{}
-
-// Fasten will drive nails into a board.
-func (Contractor) Fasten(m Mallet, nailSupply *int, b *Board) {
-	for b.NailsDriven < b.NailsNeeded {
-		m.DriveNail(nailSupply, b)
+	default:
+		d.Line = "Data"
+		fmt.Println("In:", d.Line)
+		return nil
 	}
 }
 
-// Unfasten will remove nails from a board.
-func (Contractor) Unfasten(cb Crowbar, nailSupply *int, b *Board) {
-	for b.NailsDriven > b.NailsNeeded {
-		cb.PullNail(nailSupply, b)
-	}
+// Pillar is a system we need to store data into.
+type Pillar struct{}
+
+// Store knows how to store data into Pillar.
+func (Pillar) Store(d Data) error {
+	fmt.Println("Out:", d.Line)
+	return nil
 }
 
-// ProcessBoards works against boards.
-func (c Contractor) ProcessBoards(tb *Toolbox, nailSupply *int, boards []Board) {
-	for i := range boards {
-		b := &boards[i]
+// =============================================================================
 
-		fmt.Printf("Contractor: examining board #%d: %+v\n", i+1, b)
+// System wraps Xenia and Pillar together into a single system.
+type System struct {
+	Xenia
+	Pillar
+}
 
-		switch {
-		case b.NailsDriven < b.NailsNeeded:
-			c.Fasten(tb.Mallet, nailSupply, b)
+// =============================================================================
 
-		case b.NailsDriven > b.NailsNeeded:
-			c.Unfasten(tb.Crowbar, nailSupply, b)
+// IO provides support to copy bulk data.
+type IO struct{}
+
+// pull knows how to pull bulks of data from Xenia.
+func (IO) pull(x *Xenia, data []Data) (int, error) {
+	for i := range data {
+		if err := x.Pull(&data[i]); err != nil {
+			return i, err
+		}
+	}
+
+	return len(data), nil
+}
+
+// store knows how to store bulks of data from Pillar.
+func (IO) store(p *Pillar, data []Data) error {
+	for _, d := range data {
+		if err := p.Store(d); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// Copy knows how to pull and store data from the System.
+func (io IO) Copy(sys *System, batch int) error {
+	for {
+		data := make([]Data, batch)
+
+		i, err := io.pull(&sys.Xenia, data)
+		if i > 0 {
+			if err := io.store(&sys.Pillar, data[:i]); err != nil {
+				return err
+			}
+		}
+
+		if err != nil {
+			return err
 		}
 	}
 }
 
 // =============================================================================
 
-// main is the entry point for the application.
 func main() {
-	boards := []Board{
-		{NailsDriven: 3},
-		{NailsNeeded: 2},
+
+	// Initialize the system for use.
+	sys := System{
+		Xenia:  Xenia{},
+		Pillar: Pillar{},
 	}
 
-	tb := Toolbox{
-		Mallet:  Mallet{},
-		Crowbar: Crowbar{},
-		nails:   10,
+	var io IO
+	if err := io.Copy(&sys, 3); err != EOD {
+		fmt.Println(err)
 	}
-
-	var c Contractor
-	c.ProcessBoards(&tb, &tb.nails, boards)
 }
