@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/ardanlabs/gotraining/topics/composition/example7/pubsub"
+	"github.com/goinaction/code/chapter10/listing06/pubsub"
 )
 
 // publisher is an interface to allow this package to mock the
@@ -32,15 +32,20 @@ func (m *mock) Subscribe(key string) error {
 }
 
 func main() {
-	var p publisher
 
-	// Use the pubsub package.
-	p = pubsub.New("localhost")
-	p.Publish("key", "value")
-	p.Subscribe("key")
+	// Create a slice of publisher interface values. Assign
+	// the address of a pubsub.PubSub value and the address of
+	// a mock value.
+	pubs := []publisher{
+		pubsub.New("localhost"),
+		&mock{},
+	}
 
-	// Use the mock type value.
-	p = &mock{}
-	p.Publish("key", "value")
-	p.Subscribe("key")
+	// Range over the interface value to see how the publisher
+	// interface provides the level of decoupling the user needs.
+	// The pubsub package did not need to provide the interface type.
+	for _, p := range pubs {
+		p.Publish("key", "value")
+		p.Subscribe("key")
+	}
 }

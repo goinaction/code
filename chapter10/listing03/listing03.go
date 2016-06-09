@@ -4,6 +4,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"math/rand"
 	"time"
 )
@@ -13,9 +14,6 @@ func init() {
 }
 
 // =============================================================================
-
-// EOD represents the end of the data stream.
-var EOD = errors.New("EOD")
 
 // Data is the structure of the data we are copying.
 type Data struct {
@@ -49,7 +47,7 @@ type Xenia struct{}
 func (Xenia) Pull(d *Data) error {
 	switch rand.Intn(10) {
 	case 1, 9:
-		return EOD
+		return io.EOF
 
 	case 5:
 		return errors.New("Error reading data from Xenia")
@@ -80,11 +78,8 @@ type System struct {
 
 // =============================================================================
 
-// IO provides support to copy bulk data.
-type IO struct{}
-
 // pull knows how to pull bulks of data from any Puller.
-func (IO) pull(p Puller, data []Data) (int, error) {
+func pull(p Puller, data []Data) (int, error) {
 	for i := range data {
 		if err := p.Pull(&data[i]); err != nil {
 			return i, err
@@ -95,7 +90,7 @@ func (IO) pull(p Puller, data []Data) (int, error) {
 }
 
 // store knows how to store bulks of data from any Storer.
-func (IO) store(s Storer, data []Data) error {
+func store(s Storer, data []Data) error {
 	for _, d := range data {
 		if err := s.Store(d); err != nil {
 			return err
@@ -106,13 +101,13 @@ func (IO) store(s Storer, data []Data) error {
 }
 
 // Copy knows how to pull and store data from any System.
-func (io IO) Copy(ps PullStorer, batch int) error {
+func Copy(ps PullStorer, batch int) error {
 	for {
 		data := make([]Data, batch)
 
-		i, err := io.pull(ps, data)
+		i, err := pull(ps, data)
 		if i > 0 {
-			if err := io.store(ps, data[:i]); err != nil {
+			if err := store(ps, data[:i]); err != nil {
 				return err
 			}
 		}
@@ -133,8 +128,7 @@ func main() {
 		Pillar: Pillar{},
 	}
 
-	var io IO
-	if err := io.Copy(&sys, 3); err != EOD {
+	if err := Copy(&sys, 3); err != io.EOF {
 		fmt.Println(err)
 	}
 }

@@ -1,5 +1,5 @@
-// Package pubsub simulates a package that provides publication/subscription
-// type services.
+// Package pubsub simulates a package that provides
+// publication/subscription type services.
 package pubsub
 
 // PubSub provides access to a queue system.
