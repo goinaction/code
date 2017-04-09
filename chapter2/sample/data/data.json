@@ -135,7 +135,7 @@
 	"type" : "rss"
 },
 {
-	"site" : "foxnews",
+	"site" : "cnn",
 	"link" : "http://rss.cnn.com/rss/cnn_topstories.rss",
 	"type" : "rss"
 },
