@@ -53,6 +53,9 @@ func (r *Runner) Start() error {
 	// We want to receive all interrupt based signals.
 	signal.Notify(r.interrupt, os.Interrupt)
 
+	// Stop signal while Start finished its work
+	defer signal.Stop(r.interrupt)
+
 	// Run the different tasks on a different goroutine.
 	go func() {
 		r.complete <- r.run()
@@ -72,9 +75,9 @@ func (r *Runner) Start() error {
 // run executes each registered task.
 func (r *Runner) run() error {
 	for id, task := range r.tasks {
-		// Check for an interrupt signal from the OS.
-		if r.gotInterrupt() {
-			return ErrInterrupt
+		// Check for interrupt and timeout signal.
+		if err := r.needStop(); err != nil {
+			return err
 		}
 
 		// Execute the registered task.
@@ -84,17 +87,19 @@ func (r *Runner) run() error {
 	return nil
 }
 
-// gotInterrupt verifies if the interrupt signal has been issued.
-func (r *Runner) gotInterrupt() bool {
+// needStop verifies if the interrupt signal or timeout signal has been issured
+func (r *Runner) needStop() error {
 	select {
-	// Signaled when an interrupt event is sent.
+	// return ErrInterrupt when an interrupt event is sent.
+	// Not need call signal.Stop because Start function will do it.
 	case <-r.interrupt:
-		// Stop receiving any further signals.
-		signal.Stop(r.interrupt)
-		return true
+		return ErrInterrupt
+	// return ErrTimeout when a timeout signal is sent.
+	case <-r.timeout:
+		return ErrTimeout
 
 	// Continue running as normal.
 	default:
-		return false
+		return nil
 	}
 }
