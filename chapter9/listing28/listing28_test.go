@@ -1,7 +1,7 @@
 // Sample benchmarks to test which function is better for converting
 // an integer into a string. First using the fmt.Sprintf function,
 // then the strconv.FormatInt function and then strconv.Itoa.
-package listing05_test
+package listing28_test
 
 import (
 	"fmt"
