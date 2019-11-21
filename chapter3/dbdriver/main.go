@@ -4,7 +4,7 @@ package main
 
 import (
 	"database/sql"
-
+//空白符 让init运行 还不会因为包未使用产生错误
 	_ "github.com/goinaction/code/chapter3/dbdriver/postgres"
 )
 

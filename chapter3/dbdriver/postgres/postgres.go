@@ -18,7 +18,7 @@ func (dr PostgresDriver) Open(string) (driver.Conn, error) {
 var d *PostgresDriver
 
 // init is called prior to main.
-func init() {
+func init() {//初始化函数 把数据注册到sql包里
 	d = new(PostgresDriver)
 	sql.Register("postgres", d)
 }

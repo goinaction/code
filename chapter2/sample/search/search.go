@@ -112,7 +112,7 @@ func Run(searchTerm string) {//一个string类型参数
 	go func() {//匿名函数 使用闭包访问waitGroup 和results变量
 		// Wait for everything to be processed.
 		waitGroup.Wait()//递减计数
-
+		//直到调用了done方法 wait 就是回放 之后关闭通道 通道关闭 goroutine就不再工作
 		// Close the channel to signal to the Display
 		//results 之前定义了 用关闭通道的方式 通知display函数 可以退出了
 		// function that we can exit the program.
@@ -124,6 +124,7 @@ func Run(searchTerm string) {//一个string类型参数
 	// return after the final result is displayed.
 	//调用match的display函数
 	Display(results)
+	//关闭通道 display也会返回
 }
 
 // Register is called to register a matcher for use by the program.
@@ -134,4 +135,7 @@ func Register(feedType string, matcher Matcher) {
 
 	log.Println("Register", feedType, "matcher")
 	matchers[feedType] = matcher
+	//将一个matcher值保存到注册匹配的映射中 
+	//会在main函数之前被完成。 
+	//
 }
