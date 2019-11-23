@@ -56,3 +56,60 @@ func appendValue(){
 	fmt.Println("增加容量")
 	
 }
+
+func threeSlice(){
+slice :=[]string{"Apple","Orange","Plum","Bannane","Grape"}
+//长度为1个元素 容量为2个元素
+newSlice :=slice[2:3:4]
+//slice [i:j:k] 第一个表示开始的索引位置，
+//第二个表示索引位置加上元素的个数 1 结果是3 为了设置容量，
+//从索引位置开始 加上希望容量包含的元素个2  结果是4
+//长度j-i 
+//容量k-i
+//容量大于已有容量会报错 就是超过原来的容量
+fmt.Println(newSlice)
+//panic: runtime error: slice bounds out of range
+//	f :=slice[2:3:6]
+//	fmt.Println(f)
+}
+
+func sameLens(){
+	source := []string{"Apple","Orange","Plum","Bannane","Grape"}
+	slice := source[2:3:3]
+	//长度和容量一样
+	//现在长度和容量一致，还是共享着底层数组但是后面再进行append操作时创建新的数组
+	slice=append(slice,"232332")//最佳字符串
+	slice=append(slice,"333")//最佳字符串
+
+	s1 :=[]int{1,2}
+	s2 :=[]int{3,4}
+	fmt.Printf("%v\n",append(s1,s2...))
+	for index, value := range slice{
+		fmt.Printf("Index:%d value :%s\n",index,value)
+	}
+	for index ,value := range slice{
+		fmt.Printf("value %s vlaue-addr%X elemAddr %X\n",
+		value,&value,&slice[index])
+		//range 返回的是副本 不是原始值 value 地址不变 要使用index 的方式访问
+	}
+	for _,val :=range s1{
+		fmt.Printf("value%d:",$val)
+	}
+
+	for index:=1;index <len(slice);index++{
+		fmt.Printf("Index: %d Value :%d\n",index ,slice[index])
+	}
+}
+
+func twoSlice(){
+	slice :=[][]int{{10}, {100,200}}
+	slice[0] =append(slice[0],20)
+	//append 先增长切片 再将新的整型切片赋值为外发切片的第一个元素
+	fmt.Println(slice)
+	slice :make([]int, le6)
+	newslice := foo(slice)
+	fmt.Println(len(newslice),cap(newslice))
+}
+func foo(slice []int) []int{
+	return slice
+}//一个切片大小是24个字节  地址8个长度8容量8个字节
