@@ -24,5 +24,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(string(data))
+	System.out.Println(string(data));
 }
