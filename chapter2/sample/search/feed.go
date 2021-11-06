@@ -2,6 +2,7 @@ package search
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
@@ -24,7 +25,12 @@ func RetrieveFeeds() ([]*Feed, error) {
 
 	// Schedule the file to be closed once
 	// the function returns.
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(file)
 
 	// Decode the file into a slice of pointers
 	// to Feed values.
