@@ -5,33 +5,41 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 )
 
 type (
 	// gResult maps to the result document received from the search.
-	gResult struct {
-		GsearchResultClass string `json:"GsearchResultClass"`
-		UnescapedURL       string `json:"unescapedUrl"`
-		URL                string `json:"url"`
-		VisibleURL         string `json:"visibleUrl"`
-		CacheURL           string `json:"cacheUrl"`
-		Title              string `json:"title"`
-		TitleNoFormatting  string `json:"titleNoFormatting"`
-		Content            string `json:"content"`
-	}
+	//gResult struct {
+	//	GsearchResultClass string `json:"GsearchResultClass"`
+	//	UnescapedURL       string `json:"unescapedUrl"`
+	//	URL                string `json:"url"`
+	//	VisibleURL         string `json:"visibleUrl"`
+	//	CacheURL           string `json:"cacheUrl"`
+	//	Title              string `json:"title"`
+	//	TitleNoFormatting  string `json:"titleNoFormatting"`
+	//	Content            string `json:"content"`
+	//}
 
 	// gResponse contains the top level document.
 	gResponse struct {
-		ResponseData struct {
-			Results []gResult `json:"results"`
-		} `json:"responseData"`
+		Error struct {
+			Code   int64 `json:"code"`
+			Errors []struct {
+				Domain  string `json:"domain"`
+				Message string `json:"message"`
+				Reason  string `json:"reason"`
+			} `json:"errors"`
+			Message string `json:"message"`
+			Status  string `json:"status"`
+		} `json:"error"`
 	}
 )
 
 func main() {
-	uri := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=golang"
+	uri := "https://www.googleapis.com/customsearch/v1?q=golang"
 
 	// Issue the search against Google.
 	resp, err := http.Get(uri)
@@ -39,7 +47,21 @@ func main() {
 		log.Println("ERROR:", err)
 		return
 	}
-	defer resp.Body.Close()
+
+	//body, err := ioutil.ReadAll(resp.Body)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//fmt.Printf("Code: %d\n", resp.StatusCode)
+	//fmt.Printf("Body: %s\n", body)
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 
 	// Decode the JSON response into our struct type.
 	var gr gResponse
@@ -49,7 +71,7 @@ func main() {
 		return
 	}
 
-	fmt.Println(gr)
+	fmt.Println("Non-Pretty Format: \n", gr)
 
 	// Marshal the struct type into a pretty print
 	// version of the JSON document.
@@ -59,5 +81,5 @@ func main() {
 		return
 	}
 
-	fmt.Println(string(pretty))
+	fmt.Println("\nPretty Format: \n", string(pretty))
 }
