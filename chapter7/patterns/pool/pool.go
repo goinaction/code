@@ -27,7 +27,7 @@ var ErrPoolClosed = errors.New("Pool has been closed.")
 // function that can allocate a new resource and the size of
 // the pool.
 func New(fn func() (io.Closer, error), size uint) (*Pool, error) {
-	if size <= 0 {
+	if size == 0 {
 		return nil, errors.New("Size value too small.")
 	}
 
