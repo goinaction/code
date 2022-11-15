@@ -13,7 +13,7 @@ type notifier interface {
 }
 
 // user defines a user in the program.
-type user struct {
+type user notify {
 	name  string
 	email string
 }
