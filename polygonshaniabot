@@ -1,0 +1,30 @@
+from telegram import Bot, Update from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext import requests, os
+
+TOKEN = os.environ.get("BOT_TOKEN") CHANNEL_USERNAME = os.environ.get("CHANNEL_USERNAME") REFERRALS = {}
+
+bot = Bot(TOKEN)
+
+def start(update: Update, context: CallbackContext): update.message.reply_text("Welcome to Polygon Shania Bot! Use /calculate <amount> <rate>% to estimate profits.")
+
+def calculate(update: Update, context: CallbackContext): try: amount = float(context.args[0]) rate = float(context.args[1].replace('%', '')) profit = amount * (rate / 100) update.message.reply_text(f"Investment: {amount} | Rate: {rate}% | Profit: {profit}") except: update.message.reply_text("Usage: /calculate <amount> <rate>%")
+
+def track_referral(update: Update, context: CallbackContext): referrer = update.message.text.split()[-1] user = update.message.from_user.username if referrer not in REFERRALS: REFERRALS[referrer] = [] if user not in REFERRALS[referrer]: REFERRALS[referrer].append(user) update.message.reply_text(f"You were referred by {referrer}. Total referrals: {len(REFERRALS[referrer])}")
+
+def post_update(update: Update, context: CallbackContext): message = "📢 New Investment Update! Check out the latest opportunity." bot.send_message(chat_id=CHANNEL_USERNAME, text=message)
+
+def fetch_news(update: Update, context: CallbackContext): url = "https://api.coingecko.com/api/v3/coins/polygon" response = requests.get(url).json() news = f"Latest MATIC price: ${response['market_data']['current_price']['usd']}" bot.send_message(chat_id=CHANNEL_USERNAME, text=news)
+
+def main(): updater = Updater(TOKEN, use_context=True) dp = updater.dispatcher
+
+dp.add_handler(CommandHandler("start", start))
+dp.add_handler(CommandHandler("calculate", calculate))
+dp.add_handler(CommandHandler("referral", track_referral))
+dp.add_handler(CommandHandler("update", post_update))
+dp.add_handler(CommandHandler("news", fetch_news))
+dp.add_handler(MessageHandler(Filters.text & ~Filters.command, track_referral))
+
+updater.start_polling()
+updater.idle()
+
+if name == 'main': main()
+
