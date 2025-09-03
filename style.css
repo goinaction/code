@@ -1,0 +1,32 @@
+body {
+  font-family: Tahoma;
+  background: #f0f0f0;
+  padding: 20px;
+  direction: rtl;
+}
+h2 {
+  color: #333;
+}
+.layer {
+  background: #fff;
+  border: 1px dashed #aaa;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+input[type="text"] {
+  width: 80%;
+  padding: 8px;
+  font-size: 16px;
+}
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #005fa3;
+}
