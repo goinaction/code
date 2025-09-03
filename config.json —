@@ -1,0 +1,12 @@
+{
+  "botName": "AhmadAI",
+  "language": "fa",
+  "cloudStorage": {
+    "enabled": true,
+    "provider": "GoogleDrive",
+    "backup": "OneDrive"
+  },
+  "responseMode": "smart",
+  "version": "2.0.1.7",
+  "developer": "ahmad"
+}
