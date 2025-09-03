@@ -1,0 +1,29 @@
+import { saveToCloud } from './cloud.js';
+
+function processMessage() {
+  const input = document.getElementById("userInput").value.trim().toLowerCase();
+  let type = "unknown";
+  let answer = "";
+
+  if (input.includes("سلام")) {
+    type = "greeting";
+    answer = "سلام! چطور می‌تونم کمکت کنم؟";
+  } else if (input.includes("خداحافظ")) {
+    type = "farewell";
+    answer = "خدانگهدار! موفق باشی.";
+  } else if (input.includes("سؤال") || input.includes("سوال")) {
+    type = "question";
+    answer = "بپرس عزیز دل، من آماده‌ام.";
+  } else if (input.includes("کمک") || input.includes("راهنما")) {
+    type = "help_request";
+    answer = "برای راهنمایی بیشتر، لطفاً سوال دقیق‌تری بپرس.";
+  } else {
+    answer = "متوجه نشدم، لطفاً واضح‌تر بپرس.";
+  }
+
+  document.getElementById("layer2").innerText = `Message type: ${type}`;
+  document.getElementById("layer3").innerText = `Generated response: ${answer}`;
+  document.getElementById("layer4").innerText = answer;
+
+  saveToCloud(input, answer);
+}
