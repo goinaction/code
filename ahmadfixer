@@ -1,0 +1,16 @@
+# AhmadFixer - رمزنگاری ساده توسط احمد جان 😤
+
+def encrypt(text, key=5):
+    return ''.join([chr(ord(char) + key) for char in text])
+
+def decrypt(text, key=5):
+    return ''.join([chr(ord(char) - key) for char in text])
+
+if __name__ == "__main__":
+    original = "سلام احمد جان"
+    encrypted = encrypt(original)
+    decrypted = decrypt(encrypted)
+
+    print("🔐 متن اصلی:", original)
+    print("🧠 رمزنگاری شده:", encrypted)
+    print("✅ رمزگشایی شده:", decrypted)
