@@ -1,0 +1,252 @@
+-- Nuts Menu Mobile/PC Script
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Tạo GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "NutsMenu"
+screenGui.Parent = player.PlayerGui
+
+-- Frame chính
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 350)
+frame.Position = UDim2.new(0.5, -150, 0.5, -175)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+frame.Parent = screenGui
+
+-- Tiêu đề
+local title = Instance.new("TextLabel")
+title.Text = "Nuts Menu"
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 20
+title.Parent = frame
+
+-- Nút đóng/mở cho mobile
+local mobileToggle = Instance.new("TextButton")
+mobileToggle.Text = "≡"
+mobileToggle.Size = UDim2.new(0, 50, 0, 50)
+mobileToggle.Position = UDim2.new(1, -55, 0, 5)
+mobileToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+mobileToggle.TextColor3 = Color3.new(1, 1, 1)
+mobileToggle.Font = Enum.Font.GothamBold
+mobileToggle.TextSize = 24
+mobileToggle.Visible = false -- Chỉ hiện trên mobile
+mobileToggle.Parent = screenGui
+
+-- Các tính năng
+local features = {
+    superAttackSpeed = false,
+    superRunSpeed = false,
+    waterWalk = false,
+    clearFog = false
+}
+
+-- Tạo các button
+local buttonHeight = 50
+local yOffset = 60
+
+-- 1. Tốc độ đánh siêu nhanh
+local attackSpeedBtn = Instance.new("TextButton")
+attackSpeedBtn.Text = "⚡ Super Attack: OFF"
+attackSpeedBtn.Size = UDim2.new(1, -20, 0, buttonHeight)
+attackSpeedBtn.Position = UDim2.new(0, 10, 0, yOffset)
+attackSpeedBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+attackSpeedBtn.TextColor3 = Color3.new(1, 1, 1)
+attackSpeedBtn.Font = Enum.Font.Gotham
+attackSpeedBtn.TextSize = 18
+attackSpeedBtn.Parent = frame
+
+local attackSpeedConnection
+attackSpeedBtn.MouseButton1Click:Connect(function()
+    features.superAttackSpeed = not features.superAttackSpeed
+    attackSpeedBtn.Text = "⚡ Super Attack: " .. (features.superAttackSpeed and "ON" or "OFF")
+    
+    if features.superAttackSpeed then
+        -- Kích hoạt tốc độ đánh nhanh
+        attackSpeedConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            for _, tool in character:GetChildren() do
+                if tool:IsA("Tool") then
+                    local animationTrack = tool:FindFirstChildOfClass("AnimationTrack")
+                    if animationTrack then
+                        animationTrack:AdjustSpeed(5) -- Tăng tốc độ animation lên 5 lần
+                    end
+                end
+            end
+        end)
+    else
+        -- Tắt tính năng
+        if attackSpeedConnection then
+            attackSpeedConnection:Disconnect()
+        end
+        -- Reset animation speed
+        for _, tool in character:GetChildren() do
+            if tool:IsA("Tool") then
+                local animationTrack = tool:FindFirstChildOfClass("AnimationTrack")
+                if animationTrack then
+                    animationTrack:AdjustSpeed(1)
+                end
+            end
+        end
+    end
+end)
+
+yOffset = yOffset + buttonHeight + 10
+
+-- 2. Tốc độ chạy
+local runSpeedBtn = Instance.new("TextButton")
+runSpeedBtn.Text = "🏃 Super Run: OFF"
+runSpeedBtn.Size = UDim2.new(1, -20, 0, buttonHeight)
+runSpeedBtn.Position = UDim2.new(0, 10, 0, yOffset)
+runSpeedBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+runSpeedBtn.TextColor3 = Color3.new(1, 1, 1)
+runSpeedBtn.Font = Enum.Font.Gotham
+runSpeedBtn.TextSize = 18
+runSpeedBtn.Parent = frame
+
+runSpeedBtn.MouseButton1Click:Connect(function()
+    features.superRunSpeed = not features.superRunSpeed
+    runSpeedBtn.Text = "🏃 Super Run: " .. (features.superRunSpeed and "ON" or "OFF")
+    
+    if features.superRunSpeed then
+        character.Humanoid.WalkSpeed = 120
+    else
+        character.Humanoid.WalkSpeed = 16
+    end
+end)
+
+yOffset = yOffset + buttonHeight + 10
+
+-- 3. Đi trên mặt nước
+local waterWalkBtn = Instance.new("TextButton")
+waterWalkBtn.Text = "🌊 Water Walk: OFF"
+waterWalkBtn.Size = UDim2.new(1, -20, 0, buttonHeight)
+waterWalkBtn.Position = UDim2.new(0, 10, 0, yOffset)
+waterWalkBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+waterWalkBtn.TextColor3 = Color3.new(1, 1, 1)
+waterWalkBtn.Font = Enum.Font.Gotham
+waterWalkBtn.TextSize = 18
+waterWalkBtn.Parent = frame
+
+local waterWalkConnection
+waterWalkBtn.MouseButton1Click:Connect(function()
+    features.waterWalk = not features.waterWalk
+    waterWalkBtn.Text = "🌊 Water Walk: " .. (features.waterWalk and "ON" or "OFF")
+    
+    if features.waterWalk then
+        waterWalkConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                local ray = Ray.new(rootPart.Position, Vector3.new(0, -10, 0))
+                local hit = workspace:FindPartOnRay(ray, character)
+                
+                -- Kiểm tra nếu đang ở gần mặt nước
+                if rootPart.Position.Y < 2 and (not hit or hit.Name == "Water") then
+                    rootPart.CFrame = CFrame.new(rootPart.Position.X, 3, rootPart.Position.Z)
+                end
+            end
+        end)
+    else
+        if waterWalkConnection then
+            waterWalkConnection:Disconnect()
+        end
+    end
+end)
+
+yOffset = yOffset + buttonHeight + 10
+
+-- 4. Xóa sương mù
+local clearFogBtn = Instance.new("TextButton")
+clearFogBtn.Text = "☀️ Clear Fog: OFF"
+clearFogBtn.Size = UDim2.new(1, -20, 0, buttonHeight)
+clearFogBtn.Position = UDim2.new(0, 10, 0, yOffset)
+clearFogBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+clearFogBtn.TextColor3 = Color3.new(1, 1, 1)
+clearFogBtn.Font = Enum.Font.Gotham
+clearFogBtn.TextSize = 18
+clearFogBtn.Parent = frame
+
+clearFogBtn.MouseButton1Click:Connect(function()
+    features.clearFog = not features.clearFog
+    clearFogBtn.Text = "☀️ Clear Fog: " .. (features.clearFog and "ON" or "OFF")
+    
+    if features.clearFog then
+        workspace.CurrentCamera.FogEnd = 99999
+        workspace.CurrentCamera.FogStart = 99998
+    else
+        workspace.CurrentCamera.FogEnd = 1000
+        workspace.CurrentCamera.FogStart = 0
+    end
+end)
+
+-- Phát hiện thiết bị
+local userInputService = game:GetService("UserInputService")
+local isMobile = userInputService.TouchEnabled
+
+if isMobile then
+    -- Cho mobile: nút toggle và menu ẩn mặc định
+    frame.Visible = false
+    mobileToggle.Visible = true
+    
+    mobileToggle.MouseButton1Click:Connect(function()
+        frame.Visible = not frame.Visible
+    end)
+    
+    -- Kéo frame để di chuyển trên mobile
+    local dragging = false
+    local dragInput
+    local dragStart
+    local startPos
+    
+    local function update(input)
+        local delta = input.Position - dragStart
+        frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, 
+                                   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+    
+    title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    title.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch and dragging then
+            dragInput = input
+        end
+    end)
+    
+    userInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+else
+    -- Cho PC: mở/đóng bằng phím N
+    frame.Visible = false
+    
+    userInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.N then
+            frame.Visible = not frame.Visible
+        end
+    end)
+end
+
+-- Auto update character nếu chết
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+    -- Reset các tính năng khi respawn
+    if features.superRunSpeed then
+        newChar:WaitForChild("Humanoid").WalkSpeed = 120
+    end
+end)
